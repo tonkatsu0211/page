@@ -1,0 +1,67 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<canvas id="map" width="800" height="1200"></canvas>
+<br><br>
+<p>
+    出典：防災科学技術研究所 強震モニタ<br>
+    本表示は観測データを加工して表示したものです。
+</p>
+
+<script>
+    const minLat = 24;
+    const maxLat = 46;
+    const minLon = 123;
+    const maxLon = 146;
+
+    function geoToXY(lat, lon, width, height) {
+        const x = ((lon - minLon) / (maxLon - minLon)) * width;
+        const y = ((maxLat - lat) / (maxLat - minLat)) * height;
+        return { x, y };
+    }
+
+    function intensityColor(i) {
+        if (i >= 6.5) return "#800000";
+        if (i >= 6.0) return "#ff0000";
+        if (i >= 5.5) return "#ff6600";
+        if (i >= 5.0) return "#ff9900";
+        if (i >= 4.0) return "#ffff00";
+        if (i >= 3.0) return "#00ff00";
+        if (i >= 2.0) return "#00ccff";
+        if (i >= 1.0) return "#0000ff";
+        return "#666666";
+    }
+
+    const canvas = document.getElementById("map");
+    const ctx = canvas.getContext("2d");
+
+    async function update() {
+        const res = await fetch("/niedProc/api/kyoshin");
+        const json = await res.json();
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (const id in json.area) {
+            const p = json.area[id];
+            if (!p.lat || !p.lon) continue;
+
+            const { x, y } = geoToXY(
+                p.lat,
+                p.lon,
+                canvas.width,
+                canvas.height
+            );
+
+            ctx.fillStyle = intensityColor(p.i);
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    setInterval(update, 3000);
+    update();
+</script>
+
+<%- include("../settings/footer") %>

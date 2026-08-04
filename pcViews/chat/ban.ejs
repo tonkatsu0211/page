@@ -1,0 +1,30 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+
+    <div class="main">
+      <img
+        src="<%= assets %>/accessDenied.png"
+        width="1000"
+      />
+      <h1 id="text">アクセスが拒否されました。</h1>
+      <% if (text != "null") { %>
+        <h3>
+          チャットサイトで禁止行為を繰り返したか製作者のBANまたは管理者権限の削除を試みたため、BANされました。製作者がBANを解除するまで、チャットサイトは使用できません。
+        </h3>
+        <div style="padding-bottom: 5px;">
+          <a href='/chat?f=ban' class="warnButton3">
+            BANされるようなことをした覚えがない(誤BANかもしれない)場合
+          </a>
+        </div>
+       <% } else { %>
+        <h3>
+          <%= text %>
+        </h3>
+      <% } %>
+      <div style="padding-bottom: 5px;">
+        <a href='/' class="blueButton30">
+          トップページに戻る
+        </a>
+      </div>
+
+<%- include("../settings/footer") %>

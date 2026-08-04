@@ -1,0 +1,55 @@
+<%- include("settings/header") %>
+<%- include("settings/nav") %>
+<%- include("settings/top") %>
+
+      <p>
+        scratch:
+        <a href="https://scratch.mit.edu/users/tonkatsu0211" target="_blank"
+          >https://scratch.mit.edu/users/tonkatsu0211</a
+        >
+      </p>
+      <p>
+        Twtter(Xは甘え):
+        <a href="https://twitter.com/_tonkatsu_0211" target="_blank"
+          >https://twitter.com/_tonkatsu0211_</a
+        >
+      </p>
+      <p>
+        Discord: _tonkatsu_0211
+      </p>
+      <p>
+        メール(outlookで開く):
+        <a href="#"
+           onclick="sendMail()">
+          tonkatsu-0211@outlook.jp
+        </a>
+        (対応可能時間:毎日9:00ごろ〜21:00ごろ、場合によっては対応できない場合があります)
+      </p>
+
+<script>
+function sendMail() {
+  const email = "tonkatsu-0211@outlook.jp";
+  const subject = "ホームページ「お問い合わせ」より";
+
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+  
+  //const webFallback = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}`;
+  const webFallback = `https://outlook.office.com/mail/0/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}`;
+  
+  let clicked = false;
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = mailtoLink;
+  document.body.appendChild(iframe);
+
+  setTimeout(() => {
+    if (!clicked) {
+      window.open(webFallback, "_blank");
+    }
+    document.body.removeChild(iframe);
+  }, 2000);
+}
+</script>
+
+  
+<%- include("settings/footer") %>

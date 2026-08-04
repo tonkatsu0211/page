@@ -1,0 +1,59 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+      <p>
+        _tonkatsu_のWebサービス一覧です。
+      </p>
+      <p>下のボタンを押すと各サービスページに移動できます。</p>
+      <br>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[0] %>' class="blueButton30">
+          <%= serviceNames[0] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[1] %>' class="blueButton30">
+          <%= serviceNames[1] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[2] %>' class="blueButton30">
+          <%= serviceNames[2] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[3] %>' class="blueButton30">
+          <%= serviceNames[3] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[6] %>' class="blueButton30">
+          <%= serviceNames[6] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[7] %>' class="blueButton30">
+          <%= serviceNames[7] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[8] %>' class="blueButton30">
+          <%= serviceNames[8] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/service/<%= serviceIds[9] %>' class="blueButton30">
+          <%= serviceNames[9] %>
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href='/break' class="blueButton30" style="background-color: #de2020 !important;">
+          履歴破壊
+        </a>
+      </div>
+      <% if (version == "1.5.12") { %>
+      <% } %>
+      <br>
+
+<%- include("../settings/footer") %>

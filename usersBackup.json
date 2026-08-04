@@ -1,0 +1,1393 @@
+{
+  "users": {
+    "482000": {
+      "passwordHash": "$2b$10$7aS0yPncQnr81nr4hCLZSey3wnN4vpufr.GVh/wLEz9Aznsyg7Qji",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b649cfd1-c9af-413d-8dea-0461310a995e"
+    },
+    "810114514": {
+      "passwordHash": "$2b$10$4iSZ0SAF84HIj93RdJejrO2dZu9wBhL7Yq99Z6/iM6N5EjJYWmYa.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-addbb95f-01ae-4127-82f7-865be314f607"
+    },
+    "_tonkatsu_": {
+      "passwordHash": "$2b$10$WroltOOVPIUP1roFdVuoK.gpQYBX7.MJXbehPF2LXW94Z2aoGX25O",
+      "isAdmin": "true",
+      "color": "#aa8855",
+      "uid": "'UID'-tonkatsu"
+    },
+    "床": {
+      "passwordHash": "$2b$10$Sh6Y/tsGpxQ2BID5xbMixulG4w3z/roT72OR3KfS6thk3W8D.GYZ6",
+      "isAdmin": "true",
+      "color": "#330099",
+      "uid": "'UID'-2593f046-0969-4341-ae43-76c3098e7c1a"
+    },
+    "almbl": {
+      "passwordHash": "$2b$10$UuH9C4yXcxIyKbrgH4lxE.kY.zReBQlkiOdtxYfFikcEZXa/joiUy",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-3a19c6b0-61ba-451f-8956-58d741c3e8d5"
+    },
+    "lmnopmdanldb": {
+      "passwordHash": "$2b$10$FTq0mFKGs7Q5s07BVt8Stetpb9I3RAXYryqMlIFZkkj6yMHQt8zKq",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-be762a86-e916-43ab-af64-ccc25f385046"
+    },
+    "Uruhuierhiuiuherhiurec": {
+      "passwordHash": "$2b$10$1WKHJSWoTJ/ofMdwPgInWugqHLjmRWuvTT2PPKl0qXCsw7ywOBZ2K",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-46d9e2eb-3445-4cca-903c-4659a9d84319"
+    },
+    "たけ": {
+      "passwordHash": "$2b$10$0Ce9fL88SVNLlgv8FS0CTOwqYtTqm.P//4ELCVcBxFjtDZa/U7iKu",
+      "isAdmin": "true",
+      "color": "#38b48b",
+      "uid": "'UID'-fd1cca3e-3c5d-4f8c-bd53-e298efb6fdc2"
+    },
+    "たけっち": {
+      "passwordHash": "$2b$10$qeew8AREi0sAlSQ/GEYPRukkC7/JKB7gRJiP5D12E1sEfzynk15sS",
+      "isAdmin": "false",
+      "color": "#38b48b",
+      "uid": "'UID'-d0cf83e1-0b7b-4184-8934-cbcc87fd3200"
+    },
+    "ぷれいやー1": {
+      "passwordHash": "$2b$10$.iqDaP0QLTVvb3l819J.9uXqZRDJWgJJry8ZeNXnMaXlpubIMHhqS",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-ece98966-5f74-4b20-ae63-281f64c8bcad"
+    },
+    "takumak7": {
+      "passwordHash": "$2b$10$kwchH09Hog5yoK.XTx5Y..eNcnKqhDlr9vIOG3ZQR2P9h6Y5cwZV6",
+      "isAdmin": "true",
+      "color": "#aaaaaa",
+      "uid": "'UID'-c6d93eb0-609a-4993-848a-261cc2c8e28e"
+    },
+    "玲雄": {
+      "passwordHash": "$2b$10$aVzUrfSaFJPMilR.UksdxeEOVtgj4LkgPFcZjMQQk2Zi6awsE17q.",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-517d87b4-fef7-4e23-ae39-f06cc9417352"
+    },
+    "ミッチー": {
+      "passwordHash": "$2b$10$kZTtDNKJ7FLnZcVmVAqxJOzjx5ZptK43Dz48TMsGquA7P8uuVguFW",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-7f952a13-acd3-45d6-a93d-292d65ef5ecb"
+    },
+    "aqqw": {
+      "passwordHash": "$2b$10$niJrC3TNTXf5pi6TNsKUM.nHNE.8.gVgkuxpqZ7gh8m5/03pq3av.",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "tarko962": {
+      "passwordHash": "$2b$10$.5b2onGIQizSDGzKdA4cOuD9JYK6JzLzRzAYxKSrQRftEjvgqtHlu",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "2021s2403@sngwed.onmicrosoft.com": {
+      "passwordHash": "$2b$10$7T69upmFN1uaME8WkYxwy.Pm2HY1ttJ9/KsK6l37ST35w9bsmQq2.",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "koshou": {
+      "passwordHash": "$2b$10$SkYh25LY8lf.gQCSFHkteer.ReQAuNzHWJRvcCNzlPCWfPW/NQMAe",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "かしわもち": {
+      "passwordHash": "$2b$10$jIE/iXQKpXxoGSixmngVXePlJib2d5QVfAuwZfk06cwCDyKvickTu",
+      "isAdmin": "false"
+    },
+    "ユオウ": {
+      "passwordHash": "$2b$10$2w0SbM2kVIKWb1zmsH2d.eLd.LrlvHqxkH3SQrrGLhL7M6JeJcLIa",
+      "isAdmin": "false"
+    },
+    "s200552@mitaka.ed.jp": {
+      "passwordHash": "$2b$10$53asXH5zHkoCjmVux3QHdeEnQdWAqWCmhZPv3tVyILoqmvGtvHPy.",
+      "isAdmin": "false"
+    },
+    "system": {
+      "passwordHash": "",
+      "isAdmin": "false"
+    },
+    "あいうえー": {
+      "passwordHash": "$2b$10$6/moC1UKON.bQ9C7ycz9hudRN1mPq7FTedRznDHAd4P78ztW4pDAu",
+      "isAdmin": "false"
+    },
+    "いけしー": {
+      "passwordHash": "$2b$10$6/A6gomGwBm.x6O6MhFrLueqJzcNbTQmrBR8GnhH2pRudebKR8qCO",
+      "isAdmin": "false"
+    },
+    "sっk": {
+      "passwordHash": "$2b$10$d/YtIhmWwHKXAciBDeR7zuAx30x64TDaDjQmU3AsbUSRbdwOuLpem",
+      "isAdmin": "false"
+    },
+    "test001": {
+      "passwordHash": "$2b$10$OCY/amnnB9SpR/clJfBwGOZ0Q/Jpx.AeNIaUiXNZLdQjHAjNK2chG",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "Sdfty": {
+      "passwordHash": "$2b$10$RnbrQBDdn3q/B0MTCkh/iOzHOvaSqHHqAocxCJPz7t3pBsYIMfN/a",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "No Name": {
+      "passwordHash": "$2b$10$8HIXmSUR4MA4/M2pHcGqnuWMZ.b/GTqgGMsaY7ypGPa/3Xlj47tt6",
+      "isAdmin": "false",
+      "color": "#aaaaaa",
+      "uid": "'UID'-d8d6bcc0-5985-4def-b1bc-8e06aa4aaa7b"
+    },
+    "testUser001": {
+      "passwordHash": "$2b$10$lbwIYe6q/Jg7r26iBlCOMemwqjAjDI.2a2UebK9smGGfARTyborVS",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "すーしー": {
+      "passwordHash": "$2b$10$VhqwHs.IP3B2IEgD7V3aY.Ytipu7k4JiJIejcBMOp5r2/BFJ.lXMa",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "トワ釜": {
+      "passwordHash": "$2b$10$PnOG6RxoQwOJYqwDr4.tuO0BDtd01FGtvPN9Wg.VlzmzqPJ9ju7Zq",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "050300": {
+      "passwordHash": "$2b$10$LExvuGclqEIb5tIaHvjCD.M1LcdPCN.Oz1ZQfTkyx9EQ88hWT61BO",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "らん": {
+      "passwordHash": "$2b$10$zs9bQKyg9jrBGBBbCwfKFeJBZQboO05JMYVB.vtKTssghktK4dqq6",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "ONEpmn": {
+      "passwordHash": "$2b$10$UUULepadt4n6ewp3E.w3pe/eA0OD6bmP.NxdYse06BTT7aIaRwZJW",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "･:*+.るーど.:+": {
+      "passwordHash": "$2b$10$CNGDNItzEqB4LshtazKjAORcbT09d6Bapq5fsKiCB5S6fZwZ.ZlvC",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "ペペロンチーノ": {
+      "passwordHash": "$2b$10$wDaJuWObGIxx.yBMSC8IVu/Ov9W0g84ynFk2ta19Zh5HJNz2MnNEC",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "さくらもち": {
+      "passwordHash": "$2b$10$efTmW.wKtJLto.giT51ScO6TYPpN2nmeuo5xdPT1GoaXjxYC/0a22",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "rrrrrrru": {
+      "passwordHash": "$2b$10$7RRsiHY45QGVPfPapwPdneBok8AIrOhwfckhRnxKY0AyjADgh5i1y",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "さくらもち２": {
+      "passwordHash": "$2b$10$4vTcsNcJ5HHKs6SULuEMQ.eCVr/K6ItXNZmkoDMg/3znKBNelAI6y",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "さくらもち３": {
+      "passwordHash": "$2b$10$F7/WRZTbXIRujlQb6kJQlO8/h8y97Sd/u5uCSR8JpQJBsFInjA8IC",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "伊藤誠": {
+      "passwordHash": "$2b$10$GoId36/Y/PJQHOw8u3xVBetIyi9zV.24p09VpArxFKhmLs/bK6/f2",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "ryyyyy": {
+      "passwordHash": "$2b$10$DRxRNkI/Xnj3HO.IVTIwOu9pFmRlEkoUQwLAdADNKTMwOCxUt0wDa",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "qsisxmdms": {
+      "passwordHash": "$2b$10$U.0LiFSQaiRDw84KiNZhh.cd96HKATprHU3AIh11PexoVk6yJe.9K",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "わき": {
+      "passwordHash": "$2b$10$xl3BklEeR9EAeJOIfC6puudoYPbyXBoJiOohxXRPGo2ehNI.vEWxy",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "そま": {
+      "passwordHash": "$2b$10$t.fgCrHYQq4c8bMY/TTvjun5fzDd16oPTEsIMtx.BpWFnTtl8wUcC",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "ryyyy": {
+      "passwordHash": "$2b$10$ZqScEVCaVAv7mwjjJIn8Zezj1hwCUB79l0wolNusrxQcDazGi1U6C",
+      "isAdmin": "false",
+      "color": "#aaaaaa"
+    },
+    "Hirateta": {
+      "passwordHash": "$2b$10$dHKSiUnRTtldmn6Uq.rPcOEAYU6sdfgoEaGjlayd.mm6uKtKYwKn.",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "ゆうすけ": {
+      "passwordHash": "$2b$10$nXrCH4k4wAe9IoXCEMYeAe.Z4LkOJr4p5hfIN83yGGkNEob/pk1gu",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "みたらし団子": {
+      "passwordHash": "$2b$10$7z6tthat1zysFwJNqW0lDe99QEj8w45GI7P2v2ikItv6ikfhluT5W",
+      "isAdmin": "false",
+      "color": "#6495ed"
+    },
+    "wakisan": {
+      "passwordHash": "$2b$10$WXkXKlFcS.Lbzqg1S/Tvk.FqIw6Smd6cchyCcp3zi4zq0CvBTgx0e",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-d9899411-fc20-486b-8c1b-5ec7a761a3d6"
+    },
+    "amakone2": {
+      "passwordHash": "$2b$10$5KOQWglLrbtyvYYM1HNJyupajQy3.T5zs4Su2JUjulWtkj2XND9Ze",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "神": {
+      "passwordHash": "$2b$10$Z1nNIjjVT/EmNWBYo97wiu0s6TYmUvH65pJ1pOI3U2x6ogWLXbSEa",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "かきくけこ": {
+      "passwordHash": "$2b$10$9hKcFXS9V8/DMzVXX2x22un9lDXW5X5Nj/ngnRqT3DQsKxQ.GDbLm",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "いさみ": {
+      "passwordHash": "$2b$10$hmi8FwvivO/r1Z6ib3X0cu2zzRP/EsR3ycImvtjCjk2F4aMmq20oq",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "一寸法師": {
+      "passwordHash": "$2b$10$5i2m7cDUK9RaNni8pBGuTePk4g0HX6mxj8w1tOARhhi2tQjzBijHa",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "kw.1716082@mie-c.ed.jp": {
+      "passwordHash": "$2b$10$ZMag5ScjoAH8Ova7mU7/.uYbqSH7mD5YTOUV8oNOTbf60Rw8GJiZK",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "kamomo": {
+      "passwordHash": "$2b$10$VxZiPTflW4tHjgF/tZvKl.xt.Gly8Nq.0XXP6fdPBEV5KVRVdSP92",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "Shinichi4862": {
+      "passwordHash": "$2b$10$l9HiHZ6BI/Xv/1.bLXGuju2y7rO92j4f5.9ZtCQKetUQ5SC8GqSYy",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "レイ": {
+      "passwordHash": "$2b$10$je0wrVX8A.wMHNFJEh1tD.cvWioOVFc8px9yZMV/ymxy7HxXi4D6i",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "ささs": {
+      "passwordHash": "$2b$10$X/0rVVoS9FwHUj96T09yk.5YQ2Pq31CFFHLBmf8Sd/rMAhoDRwJLi",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "sotander": {
+      "passwordHash": "$2b$10$nB6FOf/2gkIWFksokdyA4OMDvu9igEhdMr3ngptnmkM8GvxiKfJ3u",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "aoedo": {
+      "passwordHash": "$2b$10$CIRd/Osz1VdirOOXsY79L.OPN6lFpM/rD1/0./SqYYy4zklWlmz0O",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "はれ": {
+      "passwordHash": "$2b$10$H0L6Aw.nsWK8IJqV4oViluzcN0vo1VHDzqXNrga2mmUoYdGXkdEC6",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "らっぴい": {
+      "passwordHash": "$2b$10$JGf0AA4QTNSqaym.rlnTs.wYaPFaVxfe9djStnFT4wjIK8gx4mF3i",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "rozukimusasi": {
+      "passwordHash": "$2b$10$1yPc7tQrGFpzrI7jrR0pmuvUKAWmlTWL0mRPsa8WdDWYGuXhE88SO",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "赤き井": {
+      "passwordHash": "$2b$10$1ow2SKl7tJrJ3CB8YJ4.yuyWeuotb3KtQXL.P9ZCipCUCfxoe1qWS",
+      "isAdmin": "true",
+      "color": "#aaa",
+      "uid": "'UID'-5f38f206-d3f7-4e6a-8e98-9c63454b35c6"
+    },
+    "krous": {
+      "passwordHash": "$2b$10$6yfVE9cRRY3EjQjq0bVaCu02kvVHtw6uVhYj173J9tGYrEJQmMU3q",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "H": {
+      "passwordHash": "$2b$10$DmglbI8Ly.yi6SzCi7I9reOjW/lvHGFs2ALkmiPFwLOdHb6MAjHfW",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "https://www.youtube.com/watch?v=bbQ150FDwTo": {
+      "passwordHash": "$2b$10$H2tOeeFZTTrt3QpP8ZMtse29r5BtpTlMbmlrnQ6mPO5I5Z1DhzHoG",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "yoshikunTA": {
+      "passwordHash": "$2b$10$91tqAQ5CK8m66L8d5bA15Ok3Wo8.9R0H2fYJlKiwwxLN2p9pKknn6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-a019a1b1-d4fa-4651-b3fd-e4df28f7d191"
+    },
+    "shidaken": {
+      "passwordHash": "$2b$10$VOMmmmQ3PVK0Bc4E.IRz..zKRZaldPT1wWApOsTIHnkIGEA5OXI.G",
+      "isAdmin": "false",
+      "color": "#ff0000",
+      "uid": "'UID'-a341944f-e06b-4443-80eb-ee6285163739"
+    },
+    "EMLY6": {
+      "passwordHash": "$2b$10$myXk3uj//YTC4N817.Eb7.RYZhjsy3eQmsfwNChsvh12CjhX.foJK",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "Night-Official": {
+      "passwordHash": "$2b$10$1rZi7WCxHbC9B0W56T90fO8QhSETIr3zNjNCfUjBToW94BH1eDJem",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "あ": {
+      "passwordHash": "$2b$10$wLhvKgsEMP/PxAsf3eAm/etnbx42gC.K1k1Un1UO7ZNhKLgUar9US",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "あうあう": {
+      "passwordHash": "$2b$10$aND00Ffz5KE8/2iZ2Io98uIF1gqv/Ls1R9/Tbg5gtZjFxOkORM3vq",
+      "isAdmin": "false",
+      "color": "#aaa"
+    },
+    "アンガルフ": {
+      "passwordHash": "$2b$10$VldD0LSCerFdvmhe3DBp3.SaJJKoQMscOGXr.BoH0JGCEX5g4zfLi",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-d122de15-01e0-49d3-9ecf-e5426d67ce8a"
+    },
+    "yangyangye2025@gmail.com": {
+      "passwordHash": "$2b$10$R6UeOh.CqoBG9JgQmLCqQ.aUwGgaV6N/1uN53r/dTTfxQJgLkbnVG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-6a29dcaf-68ed-4de7-8870-51b28bf6d61b"
+    },
+    "たなかさぶろう": {
+      "passwordHash": "$2b$10$df4WcAgPJ8AuFMt6Wpksle5gbuJYvx1T5R57x2hHO/jUQEbJNmexS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-857ebced-6da0-437b-8b02-1db4590b014d"
+    },
+    "あーなるあなる": {
+      "passwordHash": "$2b$10$mKWpyWEBMfr78M8lC0.S1OjgawKLVtejL7mZvGyX9O8Px3/C713uS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-0b127410-7dfa-42b5-9223-f98a94ef921d"
+    },
+    "優等生222": {
+      "passwordHash": "$2b$10$VCnMRGSCuxhI8vI.AIy5puQB2NiDpx73cugnpOh90DttliAD03g9y",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-47d0c7df-9ec2-4542-af1a-0a593a6a9e13"
+    },
+    "アカ": {
+      "passwordHash": "$2b$10$rqP0ztovb3uXtYiDtGmNNu8dwSF1jT84u/HpaGHHW3bsscuqFE15a",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c4918350-08b7-4ac0-87f5-f4299b05d31f"
+    },
+    "ry-4": {
+      "passwordHash": "$2b$10$zzEDTgcwznvhDDLl1qTpte9wVwAtop4kzUlnYo9f00fisAZCYBlG.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-cf825b68-08c2-4a9c-b8fd-d1ff069d9503"
+    },
+    "けおけお": {
+      "passwordHash": "$2b$10$U2e9jwvSdOapx2uVS/8j/Of12WI7QvVRWgX/i/czUGVOJTm4ULGtm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-cebcff46-b640-4092-8ecd-757a5facb0b7"
+    },
+    "Aka": {
+      "passwordHash": "$2b$10$heTtCX4fO1Pr41aGObeBCus.juf/muaLl/ca.NO2CMCwCPt2UN8gq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8014518b-8d9c-41ee-a340-dbf63d710278"
+    },
+    "Avis": {
+      "passwordHash": "$2b$10$PzdkSbdLA1Bb1LrsQMoE9Oy4At7j6TgZKtp.gHYnqfaap1NtNvA5G",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-1ec602b2-d28a-4fc9-8e3f-fe32723bd874"
+    },
+    "きすみ": {
+      "passwordHash": "$2b$10$BBuOUD/iBWmoTzGNtDQ2cep3IdxZaHcdHS1go6.sLTm4nYzhrKT2m",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c3860951-20a9-4b90-9100-d690eea20b3a"
+    },
+    "willy": {
+      "passwordHash": "$2b$10$ak7XxSTJQU3hoQLEseqe5OhbDjK8lV/Kzhe079c7hNu.hhssqlSjm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e14d613e-69d5-4178-831d-1a71c413001b"
+    },
+    "けお": {
+      "passwordHash": "$2b$10$GX00sFPfOYaQLPkB8yabkOeJwH8AtkXKn4lJ1eW4vI2zzeALBWEyO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-892d2707-0033-49c3-a0ef-1c389692e333"
+    },
+    "sabbi-0": {
+      "passwordHash": "$2b$10$mdlEz2KT7iyyipyL.EQf0OB7uUQvPi9JK70QsbwG4Isuc16eH8CEC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b495ff97-437b-4dbc-9a4e-257fa820c1bb"
+    },
+    "mmmmmmmmmmmm": {
+      "passwordHash": "$2b$10$9Wu4ehpNqZFKHaMr4nfIxu.9CmXmD5eiV3hv0oqkB.ZO2TmZtzYCG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-efc0f104-e31d-4c07-816f-1febcf07bdc0"
+    },
+    "happy？": {
+      "passwordHash": "$2b$10$ssC1EZ60YDP.iNWUC3kLNOHX4cqqIAB.YeIKwTg0.CBCGVz6GLDHK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-6f1a085b-f336-49f6-be6c-f0180cb632e3"
+    },
+    "ハロン": {
+      "passwordHash": "$2b$10$dZ/cZEK0fZGls76OB.a4J.xq7iTHjm8.jbYWx9CcVkniF1G8tcaU6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-6d4a7ef1-1c6d-426d-b2a4-5c8a61fe9fa2"
+    },
+    "ojarumaru": {
+      "passwordHash": "$2b$10$/a.3OekwQlWsS6.qEwH3/eYfNkSviCfgnnRqkj0owtE1KUlx0CxGu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-96beb5ee-b458-458b-b3d5-e6067bf01f42"
+    },
+    "galaxy": {
+      "passwordHash": "$2b$10$1896e8nlxEFXsPsaNMzjquM4WksFmjIG1iKJmoKZoFmepMXlTfoYu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-ea28b652-6a6f-475a-bc24-705392285d7e"
+    },
+    "EMLY6-sub": {
+      "passwordHash": "$2b$10$hd3s0VnXr7idgK83omtpIOSK9fwZQhZcUz7/E70bsufVdrii8Sx/.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-96cb7a74-bd97-4c63-9ba5-d10b21ebf7d3"
+    },
+    "a": {
+      "passwordHash": "$2b$10$6zlC2VZesElOWaET2gPxtuX9oAfX78G.Sk/WgPE74z5.l.kiEnSKa",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-dd449c01-411c-4ae8-a30c-d213f860c78a"
+    },
+    "nnuunnu": {
+      "passwordHash": "$2b$10$ZbA1iOkFpkKPy.zPnBEXxOs0bWftlmb00hjVjEneGK.44gyWpQvBm",
+      "isAdmin": "false",
+      "color": "#F6ADC6",
+      "uid": "'UID'-94b50222-4c1c-4a73-b065-9eb0aad105ae"
+    },
+    "ことは": {
+      "passwordHash": "$2b$10$.ZT6VVoSTTrseqssw3b0F.D/ICDcjkxUrcQI6hz4VqYnTCuejdk4W",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b637a3f5-b0c7-4762-a4da-abe5189a8cc5"
+    },
+    "oguemon": {
+      "passwordHash": "$2b$10$mbLml/QBOdxXQf5Gehoyp.tlQccrfk2/Z0eqVr2JN11jCnDDBEaCu",
+      "isAdmin": "false",
+      "color": "#006400",
+      "uid": "'UID'-415067d7-2f34-4910-a80c-7d020308666e"
+    },
+    "あかさ": {
+      "passwordHash": "$2b$10$oXQzAR/1TrRSMgMiuZHCGuT0B7HhX.6UBF4mossWgpoGkYENVqYgu",
+      "isAdmin": "true",
+      "color": "#aaa",
+      "uid": "'UID'-fab511be-acac-4ac3-bdbd-7f8ad5c5d35b"
+    },
+    "床2": {
+      "passwordHash": "$2b$10$YSUw572hOA4Cm.7qjdpRtOkO.G6nxDpdjc7WCTERl3eEkzGKtsiYO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-79518fdb-7f7a-4ae4-b76c-c7548499527a"
+    },
+    "Rappi": {
+      "passwordHash": "$2b$10$uuEvuIEqRjuqepu4aL.JAuKxH1oLZ2TvDINUrLqGMUyZn9PH9LZRW",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-a1002e91-060f-46b5-bb53-dd3e7634da7f"
+    },
+    "K-u444333": {
+      "passwordHash": "$2b$10$sr8ynXvX365ofMYG1mvbw.inlCtpwcNtL0kpfL1RQLvHq9egiaUgm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b6417dc4-6a30-4f6d-a99c-9b2cb40eec98"
+    },
+    "test": {
+      "passwordHash": "$2b$10$OJS28R7VAuh6BY/L1T7eeevs1g1eelbUAhuSLI4gt9E7bnGS82SGC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-29eb7c95-dac7-4663-b42d-48976c6f089c"
+    },
+    "Noa": {
+      "passwordHash": "$2b$10$KnTQtyEnXWpGUEgMr45xnujBT1O5nR.hQLL0OhnVJo0m1K.FQtQfa",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b475ba14-e87f-4129-a570-4132dd84c34d"
+    },
+    "aniuesama": {
+      "passwordHash": "$2b$10$4TqeyGlhCFjuJqA4bkpoIuh3lWQHPjl1HPZPT6iFjyLLFQ4VqfQiO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-03602c27-4716-4480-94ff-69953058d67b"
+    },
+    "GENPAKU1616": {
+      "passwordHash": "$2b$10$5NyYIKk3hmqJmeYgt0ma0u8.XLGbe5r7oX/bYVqTx0nKvEIpV55EK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-68a809a3-0800-4f6c-9fb1-c577c7d3563f"
+    },
+    "障害者": {
+      "passwordHash": "$2b$10$o1zeBWz8whvQMN/GHjCeyeAuV71.6VGfBNBqPigqBA6SQ0DbHtt9m",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-9b0922a4-bf78-45a0-9855-0a08661ab9d9"
+    },
+    "test1": {
+      "passwordHash": "$2b$10$nPbALCVJEj02Ys6KOGt7r.18Xjf4Ep3so/KJoZiM6mMm4pZnmtUOS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-509cd78c-e47f-449f-84cc-1a6c52edb904"
+    },
+    "x_Sanon_x": {
+      "passwordHash": "$2b$10$LDO4UlRYkLKOlhghxzf8luH0J.QNTGOkvqKMZWzXTlQMQMpyzJGS2",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4b6aa225-f7af-4175-b684-e716981e6b66"
+    },
+    "瑠龍": {
+      "passwordHash": "$2b$10$Wh39Rdw5kApGZMVR9rFOtOzYsB91FmH259Epe2ZP0NaqTiD1wWFqG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c0678824-0127-46a6-b733-5251e790a6e6"
+    },
+    "YktDellPvP": {
+      "passwordHash": "$2b$10$qdp0qPG5kxv6mKklMbyQxuo6BK7ERpo1CP5CpxgXc080aUG6y3qDO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-81b4ceb0-550b-472e-8710-79fd77de27cf"
+    },
+    "はさ": {
+      "passwordHash": "$2b$10$XjkaqucscMyWDyDXUXLMmuNVsKbzfXx2ceVOQ.c1ZiCH6ovI/s/2m",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b67df19e-23c8-4362-9d6c-f9f6f2593420"
+    },
+    "きのこ": {
+      "passwordHash": "$2b$10$DfM8oDvLsvdMJCCBr6WMQujiVQ8kqsYNhmeCvdK9svTlLwzsz.RJ6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-90d66b0b-e9a6-4a37-834a-5a0e78d8147c"
+    },
+    "aran": {
+      "passwordHash": "$2b$10$BCJgiS5RRGpW2Yuox0gdfuZpJe6QSKyZw9pyiEMlfyRTM968cof06",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-30876047-8198-40ac-84a0-dd0be187f3f3"
+    },
+    "meikon1110": {
+      "passwordHash": "$2b$10$sa9vo4dkADI3/3K0m0/Ae.MLT81QkxHmSthYEX0V2Qrix0jcz2iiK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-1f1c7cf8-2082-4aac-adf9-7cc03589cda5"
+    },
+    "mi-na-38": {
+      "passwordHash": "$2b$10$Q6.zCrG//zYMhztyhkuB2./68tESkeGUUU67yiWzHJ5L0ANrvMFMq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5ffeb86e-31a3-4567-bb08-826f6ef1d101"
+    },
+    "Test": {
+      "passwordHash": "$2b$10$F7OenB81XAlYI3qLVN5gn.GpEJmgEsj0nJKwluf2GBMkdUUBnRB0i",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5d7cd6cd-9667-45f6-a28c-3c0550262752"
+    },
+    "Ramo-": {
+      "passwordHash": "$2b$10$f0hlEXTOgH5dIdZqsEIOZedzgqHLsAFEJcADot/d2r1MGp1XpxI6i",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-793d3685-d485-43b7-9f32-dc5e9921969f"
+    },
+    "Tree": {
+      "passwordHash": "$2b$10$tR.VZAHsQcvCOQnzgg.vquFVKI/8e/8aYFRZRUybiqk/LBT8AuC8u",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-37789a09-0e05-4cd0-9a5b-b9f40facefd3"
+    },
+    "mahiro0622": {
+      "passwordHash": "$2b$10$bwVtHZg7mkHIajrjRtJUHea0GSjHrXNqyianAzPYJ7maOsqMCh0s6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4dc529ff-f39e-4824-a5ee-6c650bccb34d"
+    },
+    "Kuzq343": {
+      "passwordHash": "$2b$10$6.duZntaAodL4hVBndf1se3PhJ3cDOJyLIHwzTcqmEmMqovVTS6UW",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fffe1c7a-48c0-41c5-9289-ebf95a38b49d"
+    },
+    "まっつー": {
+      "passwordHash": "$2b$10$34Lz5WJxKHADB38gvmq9iun.sgETbx8je7XdovO1WkcgZyPZkHqVW",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-92e85cb4-a3be-4ab4-8a2f-94a3ca4c71d1"
+    },
+    "io1205": {
+      "passwordHash": "$2b$10$6GwzOo3cSY3.8tafiHacSOkWzQiTC6Mrd/k8UPIjtXEMBG9X3p.ke",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7e695920-bcb0-45b2-98c3-7a8f0e3eeaa6"
+    },
+    "air-con_": {
+      "passwordHash": "$2b$10$Q4/vmooD4UjUNdpN/VsTsuxdWZv0ELvmxPi1bsmCVPEY29vEMPsru",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-2a251d06-7ca9-4a34-a660-ad6e4bf9e47d"
+    },
+    "Taiyaki_4646_Nise": {
+      "passwordHash": "$2b$10$2Qd/EkPQiUg2jEpxqPoqu.uvw3w6B9gQNg9FeV3BepQdafT2j0xe6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b776c609-7698-4307-93fd-675acc9af8e7"
+    },
+    "w": {
+      "passwordHash": "$2b$10$fyNhR/6jaVdn3L180boimeO.iG6f2nGCld.A78EKKLg0Z6ZflkB7C",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-1760bf24-872a-469b-945f-01221c8a47d3"
+    },
+    "subesube": {
+      "passwordHash": "$2b$10$ScSajHsY3ULiBidgT34fHebolmXPDYfv4YRWMYyZbqpadEqEh3fBC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c23fe3c3-87cc-4792-a7ae-bf24b86b1577"
+    },
+    "こ": {
+      "passwordHash": "$2b$10$ohetZySJ/rLo9lkw4RvK/euMVLTR8T5iM3WwIWwsQiw2JieNeNYVC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-01bac2bc-9b82-4f84-b9b0-852c22b29a2c"
+    },
+    "栗松様": {
+      "passwordHash": "$2b$10$n/s6fMgfoNJ8jUaYR3B87uelkCf6GsNq.XVHsnaMlrCdPT7wTZLMm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-03cfa288-1eec-4991-b6a9-93a10e7d384f"
+    },
+    "lgry": {
+      "passwordHash": "$2b$10$zomAVqw5jzJ2fpsZEGpCtuL5SG9NrYK.R7pE6BciJ68F6qT7J5X12",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7f928655-d2fe-45ee-b9ad-98a8a6d6036f"
+    },
+    "まっちゃ": {
+      "passwordHash": "$2b$10$Ti2bIDXKd1BKclAl08fHBOBTv9ZwN25n1uOr92WYEswZePxB0dC56",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b1f6236b-21b8-45e9-af51-2bac468757ed"
+    },
+    "-zuzu-0": {
+      "passwordHash": "$2b$10$vD.L1FU/9WfhsDC4a9QiweREyPPJsT1.4Lf1/C7acI3u35diXcCXG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e90c39cf-d923-4375-a23c-605f42caa8e2"
+    },
+    "Hi": {
+      "passwordHash": "$2b$10$yZBIMawSOnlc0fNn5AEMwu1KOw5gGW6dSIAXUV5DRidzzCyU42kWy",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e1e534bf-01ab-4795-9d68-0803ffa8717b"
+    },
+    "pokemonnfor": {
+      "passwordHash": "$2b$10$5O./d6fS6EGqaLSqwmGnGOSD6rTnCOz7yqAkF0gWE1Dmnzn7CIb.S",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-6fb14be0-0347-43ae-a0d3-bb7cb6faff4e"
+    },
+    "あいうえお": {
+      "passwordHash": "$2b$10$uPclFABNMV8XOs0lDsANgeTHd5CsQ8AGTPFiz0ooPIa8s.lNKxYha",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e33b5dd0-5f06-4890-ab2e-b6981f58001c"
+    },
+    "k": {
+      "passwordHash": "$2b$10$2NcJPf2GP2UQvtuObzYwpe0Yu2o8Z.P3m9XgHMI.Z4dyYLKSshFGK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fd4b2d30-1a5c-4c78-8aea-c02cf51e8852"
+    },
+    "naoko6161@icloud.com": {
+      "passwordHash": "$2b$10$4cvhYKPlt02LysvGT/40UezmuMWEMfvFbHPHfBoqIKkyCVOdgwqdq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-35104ad8-dcdb-4b27-9acc-e1b6e8818778"
+    },
+    "きら": {
+      "passwordHash": "$2b$10$5sN9piUJgjML7l8..sgB7.5iVg42h6vN/gKqPwmOVTU6jmCIJdnCi",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e9e53dcd-3695-4692-bf66-819cd4a9dd9f"
+    },
+    "きゃらめる": {
+      "passwordHash": "$2b$10$UjheSV33aLm7OGHPkgDX5.n12KicatMFVVgijybGCctKN9uci93d.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-253c6a6d-3ee8-47ff-9c7b-d03d1e803dc7"
+    },
+    "あらすたー": {
+      "passwordHash": "$2b$10$it6360xdWY06KZTKzN2FcureS/Kd/zI6Ygod0QKlEJwfUlELY2rVW",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-90bc297d-9d51-4135-a95f-81e36dd16820"
+    },
+    "海斗": {
+      "passwordHash": "$2b$10$NgOsd5.YPvPQwVzlun13K.VLboSTEOD.FORFMmLfyeU1eNLXL5b3.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-009dae98-b04b-4818-996f-500125295db8"
+    },
+    "kuru": {
+      "passwordHash": "$2b$10$IcasRwK5ZUgeEdpL6qsd5O2JTKS1AlB4hoNzXYfyKMdIW4u34MkVa",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-78bb7fe0-43f8-4d37-8d6e-f7305c8d165a"
+    },
+    "あかさたな": {
+      "passwordHash": "$2b$10$NkipA.xH98jj/wOJ.BwQFeXW328ozmPBkrj9NG19XgFz8LE7u4cB.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8716d270-7a55-4365-b3e0-5670fbc7ea88"
+    },
+    "kq": {
+      "passwordHash": "$2b$10$dv9fajmNwb33mhejhWaQueMF/ec6vAeQ1PQuFB1BVQrR9PcFi.FpO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-09c9f093-9550-4050-8aea-cf828b3b068f"
+    },
+    "miyukirei": {
+      "passwordHash": "$2b$10$DFpPG92qOaS2L/e/KcvLCe2rDn8xX7H0Zi2nt0uVqh0G5czpIePgq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b24f5788-3dd5-4109-bbfb-1742c45774c5"
+    },
+    "​": {
+      "passwordHash": "$2b$10$66.gMVkTbw1ILL2uH1NC3ung8.MRSEMowyvh6PUTSyrfMsAled62i",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-50dff6ca-3e70-418f-b3de-ceea83c48aec"
+    },
+    "kakukakk15": {
+      "passwordHash": "$2b$10$HhSp1YikwADMNsf8y7kInu5w/zdwCUxrCTyIXuCePn6lQn3z3ArG.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-acc75af4-04fe-46a9-bb57-abf3fd38f6c6"
+    },
+    "akama1321": {
+      "passwordHash": "$2b$10$NAqsZvPOPbs3T1Nq1Gj5r.lunyDiARy9ZNOH8PtaC/0Jj6yuVUW3K",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-6ae6dc05-9d9b-4bd0-9488-1125eabd47a0"
+    },
+    "s1805767@cgedu.cabinet-cbc.ed.jp": {
+      "passwordHash": "$2b$10$GOMq45l/vW7DS3wc36DFV.VSaC4Nh92RC8X.4W5CqLoVsy3stkXum",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7da8e882-3802-458b-8823-c259d37def23"
+    },
+    "Aaaa": {
+      "passwordHash": "$2b$10$KOxMSCLvxxyxj22.hbFCb.LDUbzT6A/1z2yqd73RradJCci6gJIte",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-bb68048b-203a-4c3c-bcdf-afb3bb0f5d9b"
+    },
+    "kezu0120": {
+      "passwordHash": "$2b$10$umi/B2H0nI9NyAmg9rSZOuSyO8.IiBzcia2ALk.cwe6tivhV5QFa2",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-9205246c-86f1-4a3a-b848-9893a2f886b5"
+    },
+    "やーまん": {
+      "passwordHash": "$2b$10$G0e4qJPIzQVrVDNul.VfNOXmUMPBw5cK0ghfBCzlDeEHlfBjcMloS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c0f058a9-2fc7-437b-bd37-3b68804fa9ce"
+    },
+    "aoshima1129": {
+      "passwordHash": "$2b$10$4ilSz2JUOXW1ZzL81kLoSuh8ypihYv9okTykjtOrE3aDlDXOFlxla",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5570ec37-4abe-4c45-8d29-80395d004217"
+    },
+    "wtnb": {
+      "passwordHash": "$2b$10$CA8mBuMhsXupmerV17nh9.DTZDcB6yy1JFtEp1Lt/NaeaDOB4aBHm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c273f9e4-1c6b-45c9-8d53-e3dbb21e2e06"
+    },
+    "katsu3211": {
+      "passwordHash": "$2b$10$xNgT5Itp9bzig/kxxF7Wkerad9JDmlUefxJvmoa/2SJ3rpvTgnF9C",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-a373e27a-2f1c-41ad-a734-d693d1848958"
+    },
+    "ゆき": {
+      "passwordHash": "$2b$10$Wxx/vGf6lhNmtAqc4OLcyeIU6vAmSPJJufU1aBwUUWUg7VYxbYLUu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-eab2f780-914e-436c-9c32-9f879ad3fc38"
+    },
+    "takatyan": {
+      "passwordHash": "$2b$10$mNJHTW15fTfWx6l.wdf6B.pXdR/Mxv4typkExsCX8XfTo71DoGCcm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-9fc08b95-1224-4ff6-b52b-c94e4272eab7"
+    },
+    "佳大": {
+      "passwordHash": "$2b$10$3SEjAVqBU92fhUKX7rxWv.b4ccjo/PYsWEtlZ4.S7ogD.4toX1u8m",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-07c44fbc-f20d-4637-9884-35eaf8959530"
+    },
+    "202a260065@ita.ed.jp": {
+      "passwordHash": "$2b$10$g9twAZQXWlVJqnajd8NDFeoY0BqufKeNMXe71gDUbnnzYqe6zlsO.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fcad4532-d225-469d-9377-645b63435dbd"
+    },
+    "あう": {
+      "passwordHash": "$2b$10$nd1M1JWnqgQoYooenRbG1uY7W.PAzA56jYQpp3CVLISXAAZO43kMm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fe694a5b-3981-4c44-8ffa-dec03131be09"
+    },
+    "ムスカ大佐": {
+      "passwordHash": "$2b$10$fNjbcXSLfjeWNcgC.U6X4OtdnA6T8XPShxhjBxMMbNOr5F7ERXvlG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-a5f7bf31-0720-493c-8e5f-87ea217f8989"
+    },
+    "っkqかっk神": {
+      "passwordHash": "$2b$10$yWN2w2gkiKW.2sZWDXJB3OmMYB2ETecwp8Bdu/MhCL4U28Q/AofK6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4e24cc5f-fd69-4fda-8ea8-f1f05bdd744e"
+    },
+    "さっきょ": {
+      "passwordHash": "$2b$10$vB8NkOh/f04xkUDuJ6N9x.cHP4j4w8s.k0TMuaK26Iq74bRfXhrDK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-323bd2b5-5887-46d9-beac-442be257c659"
+    },
+    "ミスったー": {
+      "passwordHash": "$2b$10$s2iLUtzvTfb7MQcDTHkjLeBN0fCPFWkcZtQedSzgOjM.ItVDLPrWO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-57ac83d2-5429-4fe0-8375-ac1cc5129b44"
+    },
+    "椋鳥": {
+      "passwordHash": "$2b$10$uHMDQsgmX.9hanxDlQpthOpz4RBAtkFFWioSdoL5JZFYfg8tfgLoy",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-99c597f1-8ab6-4128-893c-cfc4c29f2881"
+    },
+    "そら": {
+      "passwordHash": "$2b$10$5yems/Bat8TgaRCAWpIDieZEEBankI34hwWP9CiRC6tT94TjYVXYW",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-f3499ade-67a4-43a7-85fb-e383b721659d"
+    },
+    "Maesuke": {
+      "passwordHash": "$2b$10$8EP5HFnoSJ3Bo4Y8v../Z.T4I34ayVIyiOkM5fbyrNbt7tJIBuIja",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e86b2014-ebbd-47a6-a7d8-16a4d12b09d4"
+    },
+    "みな": {
+      "passwordHash": "$2b$10$x/BOa24TiOCh62Q/295WyexeEp5xxHGgewjMlYncGy7XIiVB8.zGm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5924c575-4927-413a-9f65-bca54e0df2f6"
+    },
+    "葵": {
+      "passwordHash": "$2b$10$CIb4yBabKQ.9i74P1uu0y.GXto0E4QL0OVohqPGU57kvvtj.NRsGq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fadb3cc9-d567-41d2-a978-e9b30fdeb85d"
+    },
+    "あかさ2": {
+      "passwordHash": "$2b$10$MykkYVhtPNWEGuJbNhnHeOwkxvBJVBINJR0fz9wj2x1ZR4UqCQUEO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-de2cd894-296c-4afd-ba86-d43b745b830f"
+    },
+    "あええええ": {
+      "passwordHash": "$2b$10$X/17Vw7WtcacV0gVW9o.b.YoY0A1INgJISuSDBqEMV7tC9J/enV0G",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e8d87d8f-94db-4afb-8132-807a8a512d10"
+    },
+    "waki": {
+      "passwordHash": "$2b$10$zKOqPRS5diTyUStuBA.3V.XDidK.EY6u1/H/vjkkHZsfPo907lUQq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-38fd61db-f849-4f0d-be69-eb1bcad35702"
+    },
+    "みそかつ": {
+      "passwordHash": "$2b$10$wAlmFj0l5q1HrZqPm9AZpetveI0zq7hNAvRLb4luVNd5cxrk./zGO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b7d87145-3ac7-493b-b4ab-95bf16cf4e07"
+    },
+    "北朝鮮": {
+      "passwordHash": "$2b$10$pNKly4khdk5aifrgDf0HiuEeyrtFtMp1TAmXyrkclYTa9oOgTyRv6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-d9c6736c-0f0c-43ce-86b0-d784ff0df0c4"
+    },
+    "集": {
+      "passwordHash": "$2b$10$z5oXMVpUDI/oG64.HoBNkOeRJj280H6zjdoWrvg78KkpFXrTZCmlC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4c71872b-6bf2-431e-b20c-b5c98969b780"
+    },
+    "おかぴー307": {
+      "passwordHash": "$2b$10$E1HK99cHI1LeLkSO3rFFGeaCbdAQyswWrp2Wih/PpAZwqc/m7xsv2",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-32f7e316-6a4d-4d2d-9900-5d33d7271a3e"
+    },
+    "神林": {
+      "passwordHash": "$2b$10$/BnpgIbUYmtCioX.W5ahUuuNzSek/dpibw2Z0Lk5nDadEudt5B.6S",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fdee8aec-6e7d-4ea0-a9c5-663dd58b4180"
+    },
+    "op": {
+      "passwordHash": "$2b$10$oxgYmgofNSOggscfSA9Xru0bTgfyliRU8ohlFodcMWCa4gOrzCzNy",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7e98b1ce-f00e-4f52-8653-dc7ffd059e88"
+    },
+    "アイウエオか": {
+      "passwordHash": "$2b$10$rfOBPlTmYfXACmJAWoSIhelmIz6it8F0wrs8WDv5rPXmDkC/hBvSm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4b8efc97-84d1-491f-89bc-e3a1a95e4a8a"
+    },
+    "zucchini1009": {
+      "passwordHash": "$2b$10$KzNslQ/XkPqzr.C95qejveo7ci34ZGgMWC919kkcPrr.0zS/6roqu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-97db017c-e405-486f-b548-dca114712514"
+    },
+    "おくぉくぉおq": {
+      "passwordHash": "$2b$10$q2A5J/biYzDbTiwDzeknS.6NOR.W5sbPwnTRMMVAx8zlNyZbBQWpu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7d4eb274-79fb-425e-9bd2-f4c0cec8e7f5"
+    },
+    "ぽいぽい": {
+      "passwordHash": "$2b$10$ugeCYCK21iGjUMOfQmhtWu.aKhyXF75RMyZo4mSo4xhwWMzktVtaK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-2b3d05f9-5670-4faa-ba26-0dfb75fdb330"
+    },
+    "kisete499@heisei.be": {
+      "passwordHash": "$2b$10$bnTCxsPXsHR3NWFPnuWwRuSgZfzkMAsxkznkX8kwXP7qu97JCmY8e",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e2e9438b-545f-4393-849e-9ed5e5345d1a"
+    },
+    "Usuusussei": {
+      "passwordHash": "$2b$10$lLofP3mVYabx2ZLNKJE7GupXFOFnjyL4j60BUI2bAK6WtW0HhfstS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-14a1586e-48ae-4fd3-9016-5e196a384e4c"
+    },
+    "レンタカー": {
+      "passwordHash": "$2b$10$BH1nwIT.wCMADZL9BIpoE.OtlyXTj4.gZGh9W8TsC6kOIWMkSHGnC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-05ba8284-d21e-40b7-a817-9d427662ca87"
+    },
+    "uma-asd": {
+      "passwordHash": "$2b$10$Zsbia4MMdAK5VQzaK4TGT.e/GFqhf6ScSiUxwI93UsEGHywks5Rbm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-a29cecab-7152-46d1-b005-242224835a7b"
+    },
+    "nikusigo": {
+      "passwordHash": "$2b$10$qZCCsTCRPP/9jGRy4.3bv.w6qsB2IZY6TjrcuEdzC.0j4vx0JJA72",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e85f2d0f-bc81-48fd-9501-69d8687dd107"
+    },
+    "はる": {
+      "passwordHash": "$2b$10$b02oVWEZEizodsjW3b0OzOKOKe1lpjAuQ7YBwKSACZEgSxln1IaJO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-aa7e5094-6e71-4650-928c-13e60f4b39ee"
+    },
+    "ああ": {
+      "passwordHash": "$2b$10$cl8qHqSEjbEdstIREmCDQ.JQTvQ5EUGPC0XbX6kFyRRRLXj5ksCmS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-021a2906-5374-4e11-aba3-ba230b6537a0"
+    },
+    "Rax-zaku": {
+      "passwordHash": "$2b$10$78WWhEXfAMXzWgCx4saWJOwFr.7Dh95uVM5tWwSLvr26HVD596b8a",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-98ebdedb-e045-41f9-b922-a9e61581d6e8"
+    },
+    "wikiw": {
+      "passwordHash": "$2b$10$7nlAC17eAJEaTg.HLjIUde8IOmyCwBsllN8sEjnf1YQUOmMzjVNSi",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5631562b-305d-4371-9a65-275f4e82108c"
+    },
+    "mihyu": {
+      "passwordHash": "$2b$10$.byFlvfI8/38r2QJNg5TrOl7dukWy5OU3jKkVaNqJdrfw.4T2XOTe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8fb54f74-64dd-4011-ae6a-731c59c533cb"
+    },
+    "shikiman": {
+      "passwordHash": "$2b$10$HtvuXTOr1B2dEnLLDLhQ9eR2E9d3BcbKT.lUzl2Livdnw6MfdUvfa",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-15a35815-e371-4eac-a1ef-b0fd22a636d5"
+    },
+    "shikiman15000": {
+      "passwordHash": "$2b$10$i4ZGvbIcfem5ruFEcVq/6OxxezC3EUEP7NDU6Li0BMrFVGS57QtL.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e145a723-5656-45e6-9c67-07bf4abbb5b5"
+    },
+    "のどか": {
+      "passwordHash": "$2b$10$TCNS.Vi1afP0.NEsIH7nSeWAnuUYurQoFKW/qDSGzMFv7I3jxaHXe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8d56fdcb-c79f-4a69-b954-947a83220102"
+    },
+    "uta": {
+      "passwordHash": "$2b$10$YtZx7gSczi8aeTwzuKAZiOYbw5fdM3X.26mfl16ACl3hozW4EZdLu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-0ec33ecf-1f2e-4ef8-a500-ef98b79c4649"
+    },
+    "Oo-onpu-oO": {
+      "passwordHash": "$2b$10$nPQMLVhrZuPHjHvFm0vrcOHwAwVsSvufeXY5wEEpEQCV.JTJ5MfVe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-59011050-cffe-47d1-a979-6fe52fcca87d"
+    },
+    "Jariboy_": {
+      "passwordHash": "$2b$10$YNo0AHMhxs8KswM8SIZ..ufs8WMogxuu5ddH9ul8scWdxO8YZ8yt2",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-b7b915bd-e8c3-43ee-9427-14f8014e25db"
+    },
+    "クシャクシャイン": {
+      "passwordHash": "$2b$10$8p.aO6b/aexAJkDsfwt21uQSzWcnUh0xwvizhZgKLTDsk3gN9bZOC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-9c587bb6-bf5e-411a-a95b-20430cd91c25"
+    },
+    "龍": {
+      "passwordHash": "$2b$10$DlBDs4t9qIbjeOML.wze1uJz/f4py3escs00ET9AEvLVjMGleGrza",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8f0bd5b2-2213-41f3-bb62-5dc8e82f010b"
+    },
+    "タンスの角と喧嘩中": {
+      "passwordHash": "$2b$10$cG1bi63/tpPrEr9TnW8OfOAbnffAwjHSnzh9Wcn1dN4wP3GmCddX.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-27fb4079-8d5d-4ef8-933b-b86805c2163d"
+    },
+    "x": {
+      "passwordHash": "$2b$10$DLmKHLMkhF38jCtFOTq5D.7qC72S8RIK3q.g0Mk5tm7ssPvKZt/9a",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-9f04b95c-2852-4562-ab73-2f02b6d960d0"
+    },
+    "usi": {
+      "passwordHash": "$2b$10$NiSw5Ld8hLWPXoGyLLEmheyp5IswDek81evug2dD8hRugRo5k.at6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4de537be-aa96-44a8-8754-1fe8bbc97536"
+    },
+    "西園寺": {
+      "passwordHash": "$2b$10$ApN64Nf506Ua1U3rsH7CLOvvs5J0zVBK1a15Lyyo0/eXeLsagvI3y",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-31571463-fd72-4e0b-bbb5-c7acb743f9d2"
+    },
+    "ゴキブリ": {
+      "passwordHash": "$2b$10$Gs02LpUhw/wOv919ggDv/uVGoFIfrAq7ktXm6cNVnvRtFk7zABLYG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-af9bfd74-6054-4320-8880-f98ee114cfe7"
+    },
+    "Ko": {
+      "passwordHash": "$2b$10$xxTKCOZCQrVWYjiPJbvTLO71K5ruFIKooiitab8TIPPUhHAan/DHe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5f6d087e-a7ae-49f3-848d-2aa854adb8ff"
+    },
+    "takorisu102938": {
+      "passwordHash": "$2b$10$3ST2aVP/bAheRe/p7iZdT.JdKF2p8xUbaCvhSezSpc0vSDITf5J5W",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c144b7da-70cb-4b4f-9822-259986215b39"
+    },
+    "Ishikawa123456": {
+      "passwordHash": "$2b$10$3WyLYvtcCfy.DR9ufSZ88eJGScADKjEg.ENGAkQ/7R1F1uz7yJEpu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-32e388d0-2819-4501-91bb-73a2142e2e63"
+    },
+    "あえいうえお": {
+      "passwordHash": "$2b$10$zedvRq2JS1pmXSE82YOIlOH8.ugfmZphJOJGpJ1ZQW/RjmqF7ZLR.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c6850cda-f651-423e-ac79-130b309ced3c"
+    },
+    "DJXyClqRTeNpwZx": {
+      "passwordHash": "$2b$10$jP2Al2zv4iu0NegaukGjI./OwGvEE06xo5uPhkNONJ21NZzaSb2V.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-d585f4c9-914b-4606-bbdd-ffae2aef999f"
+    },
+    "nuntyaku": {
+      "passwordHash": "$2b$10$1BaXcZ0Q6ueT/z/ySe5ng.Lvdq/vxl65ngsYg5LXT3Yml2G0G2q.C",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-69cb464a-6966-4f32-b44a-2fd3c7c3fd49"
+    },
+    "う、うお笑": {
+      "passwordHash": "$2b$10$f1WWZ6SmyFOTxT.l5R.pyOCk2B.N0vw45P8DZouOqoRcAaH8t1hIS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-a51ba689-fe0b-41d5-8dd8-a920c9c76fa8"
+    },
+    "medamayaki": {
+      "passwordHash": "$2b$10$rAgYcHQdKMHTy011JjHRjO5UElzdOg520nXZmR2//ppqYNTOB922S",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383"
+    },
+    "Rennkonn": {
+      "passwordHash": "$2b$10$tjESCN9H/e7G7vk7Tm6wxepN40ZtzsLNm2N96TthuRmsR2KOxd9J6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-027e5a09-3af3-4fee-9f01-b01ef1d3f843"
+    },
+    "wwamoyu": {
+      "passwordHash": "$2b$10$44v.X9jgl/IDyUAE1eeijuUpC.Va.THW3W.roqWPuRsSWDbzCFeJm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-57945e31-d324-4501-8a1b-807a1cb97757"
+    },
+    "寝る人": {
+      "passwordHash": "$2b$10$4rgU8nhNPysznsBhyVK5JuxqWReCwKiH6vY5VHakFQSXDu2dssroq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7d693902-cb7a-4a23-a131-916711bb3e44"
+    },
+    "Nyu-chan-kun": {
+      "passwordHash": "$2b$10$Yi0MDKZRG8AsP1BJcJLWBOfF1VL.APZgbKMYNE/xrzWP1q6q2i2Dm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-0d817284-554c-4363-a44f-6f1fa57123ab"
+    },
+    "N!W4$!": {
+      "passwordHash": "$2b$10$8p/n.CF0dOHU7Hl7uQf8ROldfrbiWNyOkaiCYQ4epqIvWhh7CFc0a",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-e13cbd3b-5828-4bf3-aa8e-d3cd63dc7a19"
+    },
+    "q": {
+      "passwordHash": "$2b$10$rSORypaBfzRiIx4nuSI/IOSRcOzxKUyTy9bwxsCVYTdgzVVCHUpBa",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-869ac5b9-e6e4-49ec-a8d7-4fd6113264c5"
+    },
+    "Microsofttinemario": {
+      "passwordHash": "$2b$10$4fnSt2KhMIXuYEn78HcA2.7rfN4S8TZ87NdBo/Ad49hQjHl.Y85nK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-4686bc47-76fb-4968-91b6-b010ef96c40e"
+    },
+    "⠀": {
+      "passwordHash": "$2b$10$2OTl4B5XtvMKCbK7A2kfQO5qYDZPgf0dG2Ba5mdQCoBiSRpDuFkWi",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-fadae0b4-b3f2-4328-b08b-759a66fb6800"
+    },
+    "karaagetabetai002": {
+      "passwordHash": "$2b$10$3jgJeGBnQrH1Q/aOd8Emfe3isCeNU4xkuuVjiGPgDtF29pGglIeD.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8cb657ed-617b-4b0b-9396-40b4a1c4ace0"
+    },
+    "k3": {
+      "passwordHash": "$2b$10$3fvyBJRBtaqmDiBBSsi9t.yE6wybtTACI/Ow5PRA1A2/JagBrRSdK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-3fbd2816-fe17-463a-902e-d4f44c7e2830"
+    },
+    "雪": {
+      "passwordHash": "$2b$10$V03X2Drnvncbj0biZ7AmluOMkqUjhPYVCXlx7LE7sSNU8Un8tjgEm",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-f271b7d1-3b83-49ac-835e-bb582fbfc035"
+    },
+    "わん": {
+      "passwordHash": "$2b$10$FmJUj53C0DTQs3WxyrMHr.ccD19N4ZjgaO3Ww98gx5nmM41jNFdP2",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-657b1c84-256e-4a39-bd66-a0a6edc72a83"
+    },
+    "わをん": {
+      "passwordHash": "$2b$10$wbngBGcqjwYPfLYCBF/dX.Eo/k0hVKCH03BIcfLqY1Nf0weRGOSCu",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-68d9663e-b733-4b25-83be-a2ba8f804565"
+    },
+    "颯真": {
+      "passwordHash": "$2b$10$AAgdvyuPirmGENcrYUDa5.aMVTj/xjr62Y.UTi4hkvae/Q.yR1BMK",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-09929a6f-5969-4495-888b-aad35f20c3f7"
+    },
+    "べかお": {
+      "passwordHash": "$2b$10$6xwYxIEbnXp9u1al5laneuhxTAgCIoFhCzqdPkArw7LMA/R.UrQKS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c28c80eb-49ba-48ac-87b6-e657d6a21053"
+    },
+    "jhsudy": {
+      "passwordHash": "$2b$10$ddJKO9/22QB.wrTsov9id.OlUFMhZB73lhB2z0sLjcSP.HOSM/mvC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-549b8cfd-ced9-41ff-91f5-4be192564406"
+    },
+    "ゆうまままっまま": {
+      "passwordHash": "$2b$10$v5agH99YijezQ2yQWrLTfOPbutaEG5uMNlLD6fBc5IiTmTWoprBcS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c157f215-f72c-45a3-8a62-dd0596491e92"
+    },
+    "ゆゆゆ": {
+      "passwordHash": "$2b$10$drcxXWEPNssI6tiokceobOu.nHbeGanhgd6WMhnFVUCCqlpaoLAku",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7646919b-52d0-46de-83c4-0a44bd04c3a7"
+    },
+    "るい": {
+      "passwordHash": "$2b$10$TwjdybLgkLapiIcCRPq3ye2Zv80khbAK5VBhC/63vGhxjwhJQRn2m",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-6bf1adef-6d8b-457d-8e63-cee8b8a6dcf5"
+    },
+    "ゆうまっまm12": {
+      "passwordHash": "$2b$10$jSItnl47emo0Mtxqt0XGc.rNYRlVyOk/lcmyaHockSo3fLG0X6zMq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-7c6bffec-82a5-45c4-ba5b-46540332fd5c"
+    },
+    "まままま123": {
+      "passwordHash": "$2b$10$kfYT4Lm82N3ZG5s4Yxkr0uWHGvj9Ba2ktFyyoKVTFScsEzruB2PMe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8ccb8c4d-b61a-4296-82ae-8933cdf315f8"
+    },
+    "悟空": {
+      "passwordHash": "$2b$10$C4RO3TNblxpftW/MFWUGfeCsQXNbZrdVdkukxnYEkaXbkj/OUtXxC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-41751e38-aa06-4077-81e9-ec6c21ce3459"
+    },
+    "っっっっっっっyっっっy": {
+      "passwordHash": "$2b$10$mm0afse8HGptoflMZyKBXuzEZYBHW1YvPtlUrHs4263AFIorzowI.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-9db43a7e-618e-4d71-bdda-8fbc2fc18660"
+    },
+    "るか": {
+      "passwordHash": "$2b$10$jlv5fnG5Bb3fo02mV2cZ3eDfb7f424lDdbNIVkns7OTfXjOQGiu5W",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8e7734b7-59b6-4a80-a68b-5d0989e326e0"
+    },
+    "gisyo46-210204@gifus.onmicrosoft.com": {
+      "passwordHash": "$2b$10$rwQ1/t.zOltdryyM78pdZuOHy5AgLWIsiIegvZCAwwD/N0HQx8HKe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-ffd55568-2cbf-4683-af53-7b1a79c0886a"
+    },
+    "ゆゆゆ123": {
+      "passwordHash": "$2b$10$KsMXMXc4Ee9c5.CIMD13TeTLZSsqUEhHjQfuyau7Cq8jdT4VCJZCC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-c78c5eba-639f-46a1-8731-cf89075736fb"
+    },
+    "闇蓮": {
+      "passwordHash": "$2b$10$1NGrXozu99Grefr52desKuLOFXc/g2DSZzVYWIqAFRvEbvSJxY96C",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-1161f729-5452-41a8-95b4-191e4e599039"
+    },
+    "ゆゆゆy": {
+      "passwordHash": "$2b$10$hgqkwHrjJe3WdykZSwuJMuSxjtaeCuNAoR73kbmpNjlfIIYcO44qO",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-131a97ae-4f2b-4277-a1ad-d895199670cb"
+    },
+    "わほー": {
+      "passwordHash": "$2b$10$wP.u6GGhp/tQrZw5ypUFNeK55xL4IC2TORITIYNTSmIDSF99GIKfq",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-80b4bee1-d198-4136-bbec-9c6206b88802"
+    }
+  }
+}

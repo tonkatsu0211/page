@@ -1,0 +1,22 @@
+  <body>
+    <header>_tonkatsu_ / tonkatsu0211のページ
+      <div id="note" class="header-note"></div>
+    </header>
+    <script>
+      const colors = [
+        ["#3dcbfc", "#464646", "X"],
+        ["#fe5455", "#303030", "Y"],
+        ["#36c28b", "#3e3e3E", "Z"],
+        ["#ed89b3", "#505050", "N"],
+        ["#f08c3a", "#353535", "V"]
+      ];
+      const number = Math.floor(Math.random() * colors.length);
+      const [backgroundColor, textColor, albumName] = colors[number];
+      const header = document.querySelector("header");
+      const headerNote = document.getElementById("note");
+      header.style.backgroundColor = backgroundColor;
+      header.style.color = textColor;
+      headerNote.style.color = textColor;
+      headerNote.textContent = `[${albumName}]`;
+      headerNote.href = `https://nayutalien.com/${albumName.toLowerCase()}/`;
+    </script>

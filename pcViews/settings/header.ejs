@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pcStyle.css" />
+    <link
+      rel="icon"
+      href="https://y3sjh2.csb.app/fabicon.ico?v=1"
+      type="image/x-icon"
+    />
+    <link
+      rel="icon"
+      href="https://y3sjh2.csb.app/fabicon.png?v=1"
+      type="image/png"
+    />
+    <link rel="preload"
+      href="/fonts/Corporate-Logo-Medium-ver2.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin>
+    <link rel="preload"
+      href="/fonts/Corporate-Logo-Bold-ver2.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="_tonkatsu_のページ">
+    <meta property="og:description" content="_tonkatsu_(tonkatsu0211)のホームページ">
+    <meta property="og:url" content="https://wf8xw3-3000.csb.app">
+    <meta property="og:image" content="https://y3sjh2.csb.app/fabicon.png?v=1">
+    <meta property="og:site_name" content="_tonkatsu_のぺージ">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_tonkatsu_0211">
+    <meta name="twitter:title" content="_tonkatsu_のページ">
+    <meta name="twitter:description" content="_tonkatsu_(tonkatsu0211)のホームページ">
+    <meta name="twitter:image" content="https://y3sjh2.csb.app/fabicon.png?v=1">
+
+    <meta name="description" content="_tonkatsu_(tonkatsu0211)のホームページです。">
+    <meta name="keywords" content="_tonkatsu_,tonkatsu0211,ホームページ">
+    <script>
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.addEventListener("beforeunload", () => {
+        window.scrollTo(0, 0);
+      });
+    </script>
+  </head>
+  <body>
+    <header>_tonkatsu_ / tonkatsu0211のページ
+      <a id="note" class="header-note" target="_blank"></a>
+    </header>
+    <script>
+      const colors = [
+        ["#3dcbfc", "#464646", "X"],
+        ["#fe5455", "#303030", "Y"],
+        ["#36c28b", "#3e3e3E", "Z"],
+        ["#ed89b3", "#505050", "N"],
+        ["#f08c3a", "#353535", "V"]
+      ];
+      const number = Math.floor(Math.random() * colors.length);
+      const [backgroundColor, textColor, albumName] = colors[number];
+      const header = document.querySelector("header");
+      const headerNote = document.getElementById("note");
+      header.style.backgroundColor = backgroundColor;
+      header.style.color = textColor;
+      headerNote.style.color = textColor;
+      headerNote.textContent = `[${albumName}]`;
+      headerNote.href = `https://nayutalien.com/${albumName.toLowerCase()}/`;
+    </script>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>テトリス</title>
+
+  <style>
+    body {
+      background: #333;
+    }
+    #game-wrapper {
+      display: flex;
+      width: fit-content;
+      margin: 0 auto;
+    }
+    #uiRight {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    #uiLeftBottom {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      background: #222;
+      padding: 10px;
+      color: white;
+      font-family: monospace;
+      border-radius: 6px;
+    }
+    .configItem {
+      margin-top: 5px;
+    }
+    .configItem input {
+      width: 60px;
+    }
+  </style>
+  <link rel="icon"href="https://y3sjh2.csb.app/fabicon.ico"type="image/x-icon">
+  <link rel="icon"href="https://y3sjh2.csb.app/fabicon.png"type="image/png">
+</head>
+<body>
+
+  <div id="game-wrapper">
+    <!-- HOLD -->
+    <div id="side-left">
+      <div>HOLD</div>
+      <canvas id="holdBox" width="120" height="120" style="background:#444;"></canvas>
+    </div>
+
+    <!-- MAIN -->
+    <div id="container">
+      <canvas id="canvas" width="300" height="600"></canvas>
+    </div>
+
+    <!-- NEXT -->
+    <div id="uiRight">
+      <canvas id="nextCanvas" width="120" height="300" style="background:#444;"></canvas>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="uiLeftBottom">
+      <div class="configItem">DAS <input id="dasInput" type="number" value="150"></div>
+      <div class="configItem">ARR <input id="arrInput" type="number" value="50"></div>
+      <div class="configItem">SDF <input id="sdfInput" type="number" value="50"></div>
+      <div class="configItem">DCD <input id="dcdInput" type="number" value="10"></div>
+    </div>
+  </div>
+
+  <script src="/tet.js"></script>
+  <div id="debug" style="white-space:pre; color:#0f0; font-family:monospace; background:#000; padding:10px; margin-top:20px;"></div>
+  <script>
+    function debugLog(msg) {
+      const div = document.getElementById("debug");
+      div.textContent += msg + "\n";
+    }
+  </script>
+</body>
+</html>

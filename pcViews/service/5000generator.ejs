@@ -1,0 +1,152 @@
+<%- include("../settings/header-resume-head.ejs") %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <!-- Stylesheets -->
+    <link href="/5000generator/bootstrap.min.css" rel="stylesheet">
+    <link href="/5000generator/style.css" rel="stylesheet">
+    
+    <!-- Google tag (gtag.js)
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-97FERNR8ZQ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-97FERNR8ZQ');
+    </script>
+
+	<script>
+		// サーバーが発行したセッショントークン
+		window.SESSION_ID = '188ceaca95262593';
+		window.UPLOAD_TOKEN = '188ceaca95268e3c';
+	</script>-->
+	</head>
+<%- include("../settings/header-after-head.ejs") %>
+<%- include("../settings/nav.ejs") %>
+<%- include("../settings/top.ejs") %>
+    <div class="container">
+        <div class="mainbox">
+            <!-- ヘッダー画像 -->
+            <div class="mx-auto" style="max-width: 700px;">
+                <img src="/5000generator/top.png" alt="5000兆円ジェネレーター" class="kotei-img">
+            </div>
+
+            <!-- メインカード -->
+            <div class="card">
+                <h5 class="card-header">
+                    下のフォームに入れたい言葉を入れて「5000兆円欲しい風画像」を生成しよう！
+                </h5>
+                <div class="card-body">
+                    <!-- 更新情報
+                    <div class="alert alert-success" role="alert">
+                        <strong>2025年11月更新:</strong> セキュリティ強化、コード最適化、エラー通知機能を追加しました。<br>
+                        「欲しい！」の部分がドラッグ可能です。スマートフォンの場合は横向き推奨です。
+                    </div>-->
+
+                    <!-- キャンバス -->
+                    <div class="canvas-wrapper">
+                        <canvas id="canvas" width="1500" height="290"></canvas>
+                    </div>
+
+                    <!-- 入力フォーム -->
+                    <div class="form-group">
+                        <label for="textboxTop">上段のテキスト</label>
+                        <input 
+                            type="text" 
+                            id="textboxTop" 
+                            class="form-control" 
+                            placeholder="5000兆円"
+                            maxlength="50"
+                            spellcheck="false"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="textboxBottom">下段のテキスト（ドラッグで位置調整可能）</label>
+                        <input 
+                            type="text" 
+                            id="textboxBottom" 
+                            class="form-control" 
+                            placeholder="欲しい！"
+                            maxlength="50"
+                            spellcheck="false"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <!-- サイレントモード -->
+                    <div class="form-check mb-3" style="display: none;">
+                        <input 
+                            type="checkbox" 
+                            class="form-check-input" 
+                            id="silentMode"
+                        >
+                        <label class="form-check-label" for="silentMode">
+                            サイレントモード（サーバーに保存しない）
+                        </label>
+                    </div>
+
+                    <!-- ボタン -->
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-primary" onclick="saveImage()">
+                            画像を保存する
+                        </button>
+                    </div>
+
+                    <!-- 広告スペース（既存の広告コードを保持）
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3761835579827953"
+                        crossorigin="anonymous"></script>
+                    <!-- 5000-aurigadev --
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-3761835579827953"
+                        data-ad-slot="5059167169"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+
+                    <!-- 他のジェネレーター --
+                    <h5 class="mt-4">他のジェネレーター</h5>
+                    <a href="https://auri.ga/voicetext/">
+                        <img src="index.png" alt="他のジェネレーター" class="kotei-img">
+                    </a>-->
+                </div>
+            </div>
+
+            <!-- 履歴表示カード --
+            <div class="card mt-3">
+                <h5 class="card-header">みんなの生成履歴（ランダム5件）</h5>
+                <div class="card-body">
+                    <a href="gallery.html" class="btn btn-primary btn-lg">もっと見る</a>
+                    
+                    <!-- 広告 --
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3761835579827953"
+                        crossorigin="anonymous"></script>
+                    <!-- 5000-aurigadev --
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-3761835579827953"
+                        data-ad-slot="5059167169"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                                        
+                    <iframe src="gallery-random.html" height="400px" style="border:0"></iframe>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>&copy; <a href="https://5000generator.autiga.dev/">5000兆円ジェネレーター</a></p>
+
+    <!-- JavaScript -->
+    <script src="/5000generator/config.js"></script>
+    <script src="/5000generator/TopText.js"></script>
+    <script src="/5000generator/BottomText.js"></script>
+    <script src="/5000generator/Drawer.js"></script>
+    <script src="/5000generator/app.js"></script>
+<%- include("../settings/footer.ejs") %>

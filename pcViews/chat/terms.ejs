@@ -1,0 +1,152 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+  
+  <p id="1">
+    第1条(適用) この利用規約は、<a href="<%= origin %>/chat/main" target="_blank" style="color: #000000;">tonkatsuチャット</a>(以下｢当チャット｣といいます)における、_tonkatsu_(以下｢製作者｣といいます)と当チャットを利用するユーザー(以下｢ユーザー｣といいます)との一切の関係およびユーザー同士の一切の関係に適用されるものとします。
+  </p>
+  <p id="2">
+    第2条(目的) 当チャットは、製作者が運営・管理し、利用者同士の交流を深めるためのコミュニケーションツールです。
+  </p>
+  <p id="3">
+    第3条(禁止行為) 以下の行為は禁止し、もし確認された場合はアカウント削除などの対応を行います。
+  </p>
+  <p style="padding-left: 20px;" id="3-1">
+    第1項 チャットを1秒間に3回以上送信すること。
+  </p>
+  <p style="padding-left: 20px;" id="3-2">
+    第2項 何らかの方法で当チャットを改変等し、制限を超えた文字数や頻度のチャットを送信すること。
+  </p>
+  <p style="padding-left: 20px;" id=3-3>
+    第3項 過度に公序良俗に反したチャットを送信すること。
+  </p>
+  <p style="padding-left: 20px;" id="3-4">
+    第4項 特定のユーザーへの誹謗中傷や過度な批判、程度を超えた論争を行うこと。
+  </p>
+  <p style="padding-left: 20px;" id="3-5">
+    第5項 管理者権限を持つユーザー(以下｢管理者｣といいます)が職権濫用を行い、過度な対応や管理者のみ使用可能なコマンド(以下｢管理コマンド｣といいます)をみだりに使用すること。
+  </p>
+  <p style="padding-left: 20px;" id="3-6">
+    第6項 製作者が認めた場合を除き、個人が2つ以上のアカウントを作成、使用すること。
+  </p>
+  <p style="padding-left: 20px;" id=3-7>
+    第7項 何らかの方法で当チャットを改変し、サインアップ時の入力データ(以下｢ユーザーデータ｣といいます)やチャットの送信履歴データ(以下｢チャットデータ｣といいます)、およびユーザーID(以下｢UID｣といいます)を破壊・閲覧・複製・共有・入手・保存・保管のいずれかを行うこと。
+  </p>
+  <p style="padding-left: 20px;" id="3-8">
+    第8項 他ユーザーが作成したアカウントにアカウント作成者の許可なくログインすること。
+  </p>
+  <p style="padding-left: 20px" id="3-9">
+    第9項 管理者が、正当な理由なく、他のユーザーをBANしたり、他のユーザーの管理者権限を削除すること。
+  </p>
+  <p id="4">
+    第4条(制限) 製作者および管理者は、ユーザーデータやチャットデータ、UID、管理コマンドを当チャットの運営・管理・治安の維持のみに使用すること。
+  </p>
+  <p id="5">
+    第5条(報告の義務) 第3条の違反行為を発見した場合は、製作者や管理者(管理者が違反行為を発見した場合は他の管理者)に報告を行うこと。
+  </p>
+  <p id=6>
+    第6条(治安維持の義務) 製作者および管理者は、当チャットの治安を維持するために、第3条の違反行為の報告や目撃があった場合は、速やかにBANや管理者権限の削除を行うこと。
+  </p>
+  <br>
+  <p>
+    この利用規約は、予告なく変更となる場合がありますが、必ず変更後にチャットおよびページ更新履歴で通知します。
+  </p>
+  <br>
+  <br>
+  <p>
+    2025/6/20 施行
+  </p>
+  <p>
+    2025/6/21 改定(第1訂)
+  </p>
+  <p>
+    2025/6/27 改定(第2訂)
+  </p>
+  <p>
+    2025/6/30 改定(第3訂)
+  </p>
+  <p>
+    2025/10/16 改定(第4訂)
+  </p>
+  <p>
+    2025/11/18 利用規約第5訂公告
+  </p>
+  <p>
+    2025/12/4 利用規約第5訂施行
+  </p>
+  <br>
+  <br>
+  <div>
+  <a href='/chat' class="blueButton30">
+    チャットトップ
+  </a>
+  <a href='/chat/main' class="blueButton30">
+    チャットページ
+  </a>
+  <a href='/chat/login' class="blueButton30">
+    ログインページ
+  </a>
+  <a href='/chat/signup' class="blueButton30">
+    サインアップページ
+  </a>
+  </div>
+  <br>
+  
+  <style>
+    .rule-highlight {
+      animation: 
+        ruleHighlightAnim 1s ease-in-out 0s 3,
+        ruleFade 0.5s ease-in-out 3s 1;
+      box-shadow: 0 0 0 4px rgba(255,224,0,0.5);
+      background-color: transparent;
+      border-radius: 4px;
+    }
+    @keyframes ruleHighlightAnim {
+      0%   { background-color: transparent; }
+      50%  { background-color: #ffe000; }
+      100% { background-color: transparent; }
+    }
+
+    @keyframes ruleFade {
+      0%   { box-shadow: 0 0 0 4px rgba(255,224,0,0.5); }
+      100% { box-shadow: 0 0 0 4px rgba(255,224,0,0); }
+    }
+  </style>
+    
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        const rawHash = window.location.hash;
+        if (!rawHash) return;
+    
+        const id = rawHash.slice(1);
+        if (!id) return;
+    
+        const target = document.getElementById(id);
+        if (!target) {
+          const alt = decodeURIComponent(id);
+          if (alt !== id) {
+            const altTarget = document.getElementById(alt);
+            if (altTarget) {
+              scrollAndHighlight(altTarget);
+            }
+          }
+          return;
+        }
+    
+        setTimeout(() => scrollAndHighlight(target), 50);
+    
+        function scrollAndHighlight(el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+    
+          el.classList.add("rule-highlight");
+    
+          setTimeout(() => el.classList.remove("rule-highlight"), 3500);
+        }
+      } catch (e) {
+        console.error("terms hash handling error:", e);
+      }
+    });
+  </script>
+  
+<%- include("../settings/footer") %>

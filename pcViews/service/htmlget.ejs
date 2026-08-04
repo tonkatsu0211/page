@@ -1,0 +1,119 @@
+<%- include("../settings/header-resume-head") %>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+<style>
+  #result {
+    border: 1px solid #444;
+    border-radius: 8px;
+    max-height: 600px;
+    text-align: left;
+    overflow: scroll;
+    padding: 15px;
+    filter: brightness(0.75) saturate(2);
+    background: #444;
+    overscroll-behavior: contain;
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: auto;
+  }
+  .cm-editor {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 14px;
+  }
+  .cm-scroller {
+    overflow: auto;
+  }
+</style>
+<%- include("../settings/header-after-head") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<p>
+  URLを入力すると、そのページのHTMLを表示します。
+</p>
+
+<h2>
+  <input type="url" id="url" placeholder="example.com" class="loginText">
+</h2>
+<button id="enter" class="blueButton30" onclick="loadHtml();">HTMLを取得する</button>
+
+<br>
+<br>
+
+<p id="error" style="color: red; display: none;"></p>
+<p id="status" style="font-weight: normal; display: none;"></p>
+<br><button id="copy" class="blueButton25" style="display: none;" onclick="copyHtml();">HTMLをコピー</button>
+<pre id="result" style="display: none;"><code class="language-markup"></code></pre>
+<br><br>
+
+<script>  
+  let fetching = false;
+  const error = document.getElementById("error");
+  const status = document.getElementById("status");
+  const copy = document.getElementById("copy");
+  const result = document.getElementById("result");
+
+  async function loadHtml() {
+    if (fetching) return;
+    fetching = true;
+    let url = document.getElementById("url").value;
+    if (!url) {
+      fetching = false;
+      return alert("URLを入力してください");
+    }
+    url = url.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      url = "https://" + url;
+    }
+    error.style.display = "none";
+    result.style.display = "none";
+    copy.style.display = "none";
+    status.textContent = "HTMLを取得中…";
+    status.style.display = "inline";
+    try {
+      const res = await fetch("/api/html", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ url })
+      });
+      
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+
+      const html = await res.text();
+
+      result.querySelector("code").textContent = html;
+      Prism.highlightElement(result.querySelector("code"));
+      result.style.display = "block";
+      copy.style.display = "inline";
+      status.style.display = "none";
+    } catch (e) {
+      console.error(e);
+      status.style.display = "none";
+      error.textContent = e.message;
+      error.style.display = "inline";
+    } finally {
+      fetching = false;
+    }
+  }
+
+  document.getElementById("url").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      loadHtml();
+    }
+  });
+
+  async function copyHtml() {
+    try{
+      await navigator.clipboard.writeText(result.textContent);
+      alert("HTMLをコピーしました!");
+    } catch (e) {
+      alert(`HTMLのコピーに失敗しました: ${e.message}`);
+    }
+  }
+</script>
+
+<%- include("../settings/footer") %>

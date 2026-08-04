@@ -1,0 +1,60 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<p>
+  Scratchのユーザー名を入力して、ユーザーの通知数を確認できます。
+</p>
+
+<h2>
+  <input width="300px" class="loginText" type="text" id="targetname" placeholder="Scratchのユーザー名を入力">
+</h2>
+<button id="enter" class="blueButton30">通知数を取得</button>
+
+<br>
+<br>
+
+<p id="caution" style="color: red; display: none;"></p>
+
+<p id="name" style="font-weight: normal; display: none;"></p><br>
+<p id="count" style="display: none;"></p><br>
+<br><br>
+
+<script>
+  const button = document.getElementById("enter")
+  const username = document.getElementById("targetname");
+  const name = document.getElementById("name");
+  const count = document.getElementById("count");
+  const caution = document.getElementById("caution");
+	button.addEventListener("click", async function() {
+    name.style.display = "inline";
+    name.textContent = "通知数を取得中…";
+    count.style.display = "none";
+    caution.style.display = "none";
+    const s = username.value;
+    try{
+      const url = `/api/scratch/messages/${s}`
+      const r = await fetch(url);
+      if (r.status != 200) throw new Error("fetch failed");
+      const res = await r.json();
+      if (!res) throw new Error("parse to json failed");
+      if (typeof res.count != "number") {
+        if (res.code == "NotFound") {
+          throw new Error("存在しないユーザー名です");
+        } else {
+          throw new Error("count not found");
+        }
+      };
+      name.textContent = "ユーザー:"+ s;
+      name.style.fontWeight = "bold";
+      count.textContent = "通知数:" + res.count;
+      count.style.display = "inline";
+    } catch (e) {
+      caution.textContent = "エラー: " + e.message;
+      caution.style.display = "inline";
+      name.style.display = "none";
+    }
+	});
+</script>  
+
+<%- include("../settings/footer") %>

@@ -1,0 +1,48 @@
+</div>
+<script src="/eruda.js"></script>
+<script>
+  let useEruda = localStorage.getItem("eruda") || false;
+  if (useEruda == "true") eruda.init();
+  const isMac = /Mac|iPhone|iPad/.test(navigator.userAgent);
+  document.addEventListener("keydown", (e) => {
+    const mod = isMac ? e.metaKey : e.ctrlKey;
+    if (mod && e.shiftKey && e.key == "i") {
+      if (useEruda == "true") {
+        localStorage.setItem("eruda", false);
+        useEruda = "false";
+        alert("eruda disabled");
+      } else {
+        localStorage.setItem("eruda", true);
+        useEruda = "true";
+        alert("eruda enabled");
+        eruda.init();
+      }
+    }
+  });
+</script>
+<footer>
+  <div class="footer-inner">
+  <div class="option-noUnderline">
+    <a
+      href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja"
+      target="_blank"
+      class="option-noPadding-underline"
+      >CC BY-NC-SA 4.0</a
+    >
+    <p>
+      &copy; _tonkatsu_ /
+      <a
+        href="https://scratch.mit.edu/users/tonkatsu0211"
+        target="_blank"
+        class="option-noPadding-underline"
+        >tonkatsu0211</a
+      >
+      All rights reserved.
+    </p>
+    <p><%= last_update %>(JST) V<%= version %></p>
+    <p>Sponsored by <a href="https://teams.live.com/l/community/FBAIBgzAVilLs8GdQ?v=g1" target="_blank" class="option-noPadding-underline">学校PCのすゝめ</a></p>
+  </div>
+  </div>
+</footer>
+</body>
+</html>

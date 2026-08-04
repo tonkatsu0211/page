@@ -1,0 +1,34 @@
+<%- include("../settings/header") %>
+<style>
+  #clock {
+    font-size: 15em;
+    font-family: monospace;
+    background-color: #000;
+    color: #0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+    <div id="clock">00:00:00</div>
+    <br>
+
+    <script>
+      function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        const s = String(now.getSeconds()).padStart(2, "0");
+        document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+      }
+
+      setInterval(updateClock, 1000);
+
+
+      updateClock();
+    </script>
+
+<%- include("../settings/footer") %>

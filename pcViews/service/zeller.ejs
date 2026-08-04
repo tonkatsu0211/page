@@ -1,0 +1,87 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<p>
+  年・月・日を入力すると、ツェラーの公式を利用して曜日を求めます。
+</p>
+
+<div class="date-input-container" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+  <h2>
+    <input type="number" id="year" placeholder="年" min="1" max="275760" style="width: 80px;" class="loginText">
+    <input type="number" id="month" placeholder="月" min="1" max="12" style="width: 60px;" class="loginText">
+    <input type="number" id="day" placeholder="日" min="1" max="31" style="width: 60px;" class="loginText">
+  </h2>
+</div>
+<button id="enter" class="blueButton30">曜日を求める</button>
+
+<br>
+<br>
+
+<p id="caution" style="color: red; display: none;"></p>
+
+<p id="answer" style="font-weight: normal; display: none;"></p><br>
+<br><br>
+
+<script>
+  const button = document.getElementById("enter");
+  const year = document.getElementById("year");
+  const month = document.getElementById("month");
+  const day = document.getElementById("day");
+  const answer = document.getElementById("answer");
+  const caution = document.getElementById("caution");
+	button.addEventListener("click", async function() {
+    if (!day.value || !month.value || !year.value) {
+      caution.style.display = "inline";
+      caution.textContent = "日付が入力されていません";
+      return;
+    }
+    answer.style.display = "none";
+    caution.style.display = "none";
+    try{
+      const y1 = Number(year.value);
+      if (y1 > 275760) {
+        caution.textContent = "275760年以降の年は入力できません";
+        caution.style.display = "inline";
+        return;
+      };
+      const m1 = Number(month.value);
+      const d = Number(day.value);
+
+      const checkDate = new Date(y1, m1 - 1, d);
+      
+      if (
+        checkDate.getFullYear() !== y1 ||
+        checkDate.getMonth() !== m1 - 1 ||
+        checkDate.getDate() !== d
+      ) {
+        caution.textContent = "存在しない日付です。正しい日付を入力してください。";
+        caution.style.display = "inline";
+        return;
+      }
+
+      let y2;
+      let m;
+      if (m1 < 3) {
+        y2 = y1 - 1;
+        m = m1 + 12;
+      } else {
+        y2 = y1;
+        m = m1;
+      };
+      const c = Math.floor(y2 / 100);
+      const y = y2 % 100;
+      const h = (d + y + Math.floor((13 * (m + 1)) / 5) + Math.floor(y / 4) + Math.floor(c / 4) - (2 * c) + (49 * c)) % 7;
+      const hList = ["土曜日", "日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日"];
+      answer.textContent = `${y1}年${m1}月${d}日は${hList[h]}です。`;
+      answer.style.fontWeight = "bold";
+      answer.style.display = "inline";
+    } catch (e) {
+      caution.textContent = "エラー: " + e.message;
+      caution.style.display = "inline";
+      answer.style.display = "none";
+    }
+	});
+</script>  
+
+<%- include("../settings/footer") %>

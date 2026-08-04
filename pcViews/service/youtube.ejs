@@ -1,0 +1,96 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<p>
+  YouTubeリンクまたは動画IDを入力して、動画を視聴できます(画質は360pのみ)。
+</p>
+
+<h2>
+  <input width="300px" class="loginText" type="text" id="ytUrl" placeholder="YouTubeのURLまたは動画IDを入力">
+</h2>
+<button id="enter" class="blueButton30">動画を取得</button>
+
+<br>
+<br>
+
+<p id="caution" style="color: red; display: none;"></p>
+
+<p id="title" style="font-weight: normal; display: none;"></p><br>
+<p id="author" style="display: none;"></p><br>
+<br>
+<div style="padding-bottom: 5px;"></div>
+  <a id="link" style="display: none; padding-top: 7px; padding-bottom: 7px;" class="blueButton30" target="_blank">動画を再生</a>
+</div>
+<br><br>
+
+<script>
+  const button = document.getElementById("enter")
+  const ytUrl = document.getElementById("ytUrl");
+  //const player = document.getElementById("player");
+  const link = document.getElementById("link");
+  const title = document.getElementById("title");
+  const author = document.getElementById("author");
+  const caution = document.getElementById("caution");
+  //const dlBtn = document.getElementById("download");
+  let rawTitle;
+  let videoId;
+	button.addEventListener("click", async function() {
+    title.style.display = "inline";
+    title.textContent = "動画を取得中…";
+    author.style.display = "none";
+    caution.style.display = "none";
+    link.style.display = "none";
+    const s = ytUrl.value;
+    try{
+      try{
+        const m = s.match(/(?:youtu\.be\/|(?:m\.|music\.)?youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|v=)?([A-Za-z0-9_-]{11})/);
+        if (!m) throw new Error("YouTube動画IDが取得できません");
+        videoId = m[1];
+      } catch (e) {
+        throw new Error("URLまたは動画IDが正しくありません。")
+      }
+      const url = `/api/yt/videos/${videoId}`
+      const r = await fetch(url);
+      if (r.status != 200) throw new Error("fetch failed");
+      const res = await r.json();
+      if (!res) throw new Error("parse to json failed");
+      if (!res.formatStreams) throw new Error("formatStreams not found");
+      if (
+        !res.formatStreams ||
+        typeof res.formatStreams[0].url !== "string" ||
+        !res.formatStreams[0].url.startsWith("http")
+      ) {
+        throw new Error("不正なストリームURLです");
+      }
+      title.textContent = res.title;
+      title.style.fontWeight = "bold";
+      author.textContent = res.author;
+      author.style.display = "inline";
+      link.style.display = "inline";
+      link.href = res.formatStreams[0].url;
+      rawTitle = res.title;
+    } catch (e) {
+      caution.textContent = "エラー: " + e.message;
+      caution.style.display = "inline";
+      title.style.display = "none";
+    }
+	});
+
+  /*dlBtn.addEventListener("click", async function() {
+    if (!player.src) {
+      alert("動画が読み込まれていません");
+      return;
+    }
+    try{
+      const a = document.createElement("a");
+      a.href = `/api/yt/download/${videoId}`;
+      a.rel = "noopener";
+      a.click();
+    } catch (e) {
+      alert(e.message);
+    }
+  });*/
+</script>  
+
+<%- include("../settings/footer") %>

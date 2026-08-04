@@ -1,0 +1,59 @@
+<div class="main">
+  <div class="a00">
+    <h1><%= top %></h1>
+    <button
+      id="reloadButton"
+      class="normalButton"
+      onclick="
+  const page = '<%= page %>';
+  const em = '<%= em %>'
+  document.getElementById('reloadButton').textContent = '再読み込み中...';
+  fetch('/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'reload on /<%= page %> ... OK' })
+  })
+  .catch(() => {
+    location.href = '<%= em === `true` ? `/empass/${page}` : `/${page}` %>'
+  })
+  .then(() => {
+    location.href = '<%= em === `true` ? `/empass/${page}` : `/${page}` %>'
+  });
+"
+    >
+      ページを再読み込み
+    </button>
+  </div>
+
+
+  <br id="ch1">
+  <h1 id="chText" style="font-size: 30px; color: #ff0000 !important;">
+    新サービス｢とんかTube｣は<a href="https://tonkatube.vercel.app" target="_blank" style="color: #ff0000; text-decoration: none; border-bottom: 1px solid #ff0000;">こちら</a>
+  </h1>
+  <br id="ch2">
+
+<!--
+  <br id="ch1">
+  <h1 id="chText" style="font-size: 30px; color: #ff0000 !important;">
+    製作者の環境で<a href="https://65yzth-3000.csb.app" target="_blank" style="text-decoration: none; color: #f00; border-bottom: 1px solid #f00;">https://65yzth-3000.csb.app</a>が規制されたため、
+    ページを<a href="/" style="text-decoration: none; color: #f00; border-bottom: 1px solid #f00;">https://wf8xw3-3000.csb.app</a>に移動しました。<br>
+    ブックマーク等している場合は変更をお願いします。
+  </h1>
+  <br id="ch2">
+
+  <br id="ch1" style="display: none;">
+    <h1 id="chText" style="font-size: 30px; color: #ff0000 !important; display: none;">
+      yyyy/mm/ddに<a href="/chat/terms" target="_blank" style="text-decoration: none; color: #f00; border-bottom: 1px solid #f00;">tonkatsuチャット利用規約</a>を改定いたします。<br>
+      改定する部分を<a href="/chat/newterms" style="text-decoration: none; color: #f00; border-bottom: 1px solid #f00;">新利用規約ページ</a>にて<span style="font-weight: bold; color: #000;">太字</span>と<del style="color: #888;">取り消し線</del>で示しています。<br>
+      ご確認をお願いします。
+    </h1>
+  <br id="ch2" style="display: none;">
+  --
+  <script>
+    const tag = "<%= tag %>";
+    if (tag != "chat") {
+      document.getElementById("chText").style.display = "none";
+      document.getElementById("ch1").style.display = "none";
+      document.getElementById("ch2").style.display = "none";
+    }
+  </script>-->

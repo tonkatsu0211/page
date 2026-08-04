@@ -1,0 +1,40 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+  <h3 id="e" style="color: #ff0000;"><%= err %></h3>
+  
+  <form method="POST" action="/chat/signup">
+  <h2>
+    <input class="loginText" type="text" name="username" placeholder="ユーザー名" required>
+  </h2>
+  <h2>
+    <input class="loginText" type="password" name="password" placeholder="パスワード" required>
+  </h2>
+    <label>
+      <input type="checkbox" name="save">ログインデータを保存する(推奨)</label>
+  <h2>
+  </h2>
+    <label>
+      <input type="checkbox" name="agree" required><a href="/chat/terms">利用規約</a>に同意する</label>
+  <h2>
+    <button class="blueButton20" type="submit">アカウントを作成</button>
+  </h2>
+</form>
+  <br>
+  <p>
+    サインアップすると、<a href="/chat/terms" style="color: #000000;">利用規約</a>を確認し、同意したとみなされます。  
+  </p>
+  <br>
+  <p>
+    すでにアカウントをお持ちの方は<a href="/chat/login" style="color: #000000; padding: 0; margin: 0;">こちら</a>
+  </p>
+  <br>
+
+<script>
+  if ( "<%= err %>" == "none" ){
+    document.getElementById("e").style.display = "none";
+  }
+</script>
+  
+<%- include("../settings/footer") %>

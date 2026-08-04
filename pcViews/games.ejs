@@ -1,0 +1,191 @@
+<%- include("settings/header") %>
+<%- include("settings/nav") %>
+<%- include("settings/top") %>
+
+<h1 id="chText" style="font-size: 30px; color: #ff0000 !important">
+  ※サイトを移設したため、データは消えてしまっています。申し訳ありません。
+</h1>
+
+<p>下のボタンを押すと書いてあるゲームをプレイできます。</p>
+<p style="color: #ff0000 !important; font-size: 15px; font-weight: bold">
+  ※プレイデータが保存されない場合があります。
+</p>
+<div class="game-container">
+  <div class="game-items">
+    <img src="<%= assets %>/snow.png" />
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/snow.html' class="blueButton25">
+        snowball.io をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px">よくある広告ゲー。(楽しいけど作業成分多め)</p>
+    <p style="color: #ff0000; font-size: 15px">
+      何故か動かないことがあります。
+    </p>
+  </div>
+  <div class="game-items">
+    <img src="<%= assets %>/ping-pong.jpeg" />
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/pingpong.html' class="blueButton25">
+        Ping-Pong PvP をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px">2人用リアルタイム対戦ゲーム。</p>
+    <p style="color: #ff0000; font-size: 15px">2端末必要。</p>
+  </div>
+  <div class="game-items">
+    <img src="<%= assets %>/snowrider.jpeg" />
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/snowrider.html' class="blueButton25">
+        Snow Rider 3D をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px">ソリで滑るゲーム</p>
+    <p style="color: #ff0000; font-size: 15px">データ保存たぶん対応。</p>
+  </div>
+</div>
+<!--
+      <br>
+      <br>
+      <div class="game-container">
+        <div class="game-items">
+          <img src="/2048.png">
+          <h2>
+            <button onclick="location.href='/games/2048'" class="blueButton30">
+              2048 をプレイ
+            </button>
+          </h2>
+          <p style="font-size: 15px; ">
+            いつもの。2の何乗まで行けるかな?
+          </p>
+          <p style="color: #ff0000; font-size: 15px;">
+            再読み込みするとリセットされます。
+          </p>
+        </div>
+        <div class="game-items">
+          <img src="/1.png">
+          <h2>
+            <button onclick="location.href='/games/1'" class="blueButton30">
+              1 をプレイ
+            </button>
+          </h2>
+          <p style="font-size: 15px; ">
+            2048からスタート。1を目指せ。 4x4マス。
+          </p>
+          <p style="color: #ff0000; font-size: 15px;">
+            再読み込みはリセット。
+          </p>
+        </div>
+        <div class="game-items">
+          <img src="/9007199254740992.png">
+          <h2>
+            <button onclick="location.href='/games/9007199254740992'" class="blueButton25">
+              9007199254740992 をプレイ
+            </button>
+          </h2>
+          <p style="font-size: 15px;">
+            9007兆1992億5474万992(2の53乗)。8x8マス。
+          </p>
+          <p style=" color: #ff0000; font-size: 15px;">
+            自動モードあり。再読み込みはリセット。
+          </p>
+        </div>
+      </div>
+-->
+<br />
+<br />
+<div class="game-container">
+  <div class="game-items">
+    <img src="<%= assets %>/paper.jpeg" />
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/paper.html' class="blueButton25">
+        Paper.io をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px">陣地を広げて奪い合うゲーム</p>
+    <p style="color: #ff0000; font-size: 15px">
+      アイコンはわかめTubeよりお借りしました。
+    </p>
+    <br>
+    <br>
+  </div>
+  <div class="game-items">
+    <img src="<%= assets %>/othello.jpeg" />
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/aiothello.html' class="blueButton25">
+        AIオセロ をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px">VS めちゃつよAI</p>
+    <p style="color: #ff0000; font-size: 15px">
+      わかめTubeよりお借りしました。
+    </p>
+  </div>
+  <br>
+  <br>
+  <div class="game-items">
+    <img src="<%= assets %>/tetrisneo2.png">
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/tetrisneo2v5.html' class="blueButton20" target="_self">
+        オンラインテトリスNEO2 をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px; ">
+      cosmo-zero様に感謝。<a href="https://drive.google.com/file/d/1ITzAyP7lawTDQuOXgbvG9GfknDMkN1d1/view?usp=drive_open" target="_blank">使い方</a>
+    </p>
+    <p style="color: #ff0000; font-size: 15px;">
+      アカウント登録必須(オンライン可)
+    </p>
+  </div>
+</div>
+<div class="game-container">
+  <div class="game-items">
+    <img src="<%= assets %>/tetrisbeta.png"/>
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/tetrisbeta.html' class="blueButton20" target="_self">
+        テトリス / Tetris Beta をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px; ">
+      cosmo-zero様に感謝。
+    </p>
+    <p style="color: #ff0000; font-size: 15px;">
+      アカウント登録不要(1人用)
+    </p>
+  </div>
+  <div class="game-items">
+    <img src="<%= assets %>/puyotet.png"/>
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/puyotet.html' class="blueButton20" target="_self">
+        ぷよぷよテトリス をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px; ">
+      cosmo-zero様に感謝。
+    </p>
+    <p style="color: #ff0000; font-size: 15px;">
+      オンライン対戦可(ユーザー名ランダム)
+    </p>
+  </div>
+  <div class="game-items">
+    <img src="<%= assets %>/onlinepuyo.png"/>
+    <div style="padding: 5px 0px;">
+      <a href='<%= gamepage %>/onlinepuyo.html' class="blueButton20" target="_self">
+        オンラインぷよぷよ をプレイ
+      </a>
+    </div>
+    <p style="font-size: 15px; ">
+      cosmo-zero様に感謝。
+    </p>
+    <p style="color: #ff0000; font-size: 15px;">
+      オンライン対戦可(アカウント登録推奨)
+    </p>
+  </div>
+</div>
+<br><br><br>
+<h3>クレジット</h3>
+<p>©<a href="https://scratch.mit.edu/users/cosmo-zero">cosmo-zero</a> <a href="https://creativecommons.org/licenses/by-sa/2.0/deed.ja" target="_blank" style="color: #000; text-decoration: none; border-bottom: 1px solid #000;">CC BY-SA 2.0</a><br>
+  オンラインテトリスNEO2、テトリス / Tetris Beta、ぷよぷよテトリス、オンラインぷよぷよ はcosmo-zeroの制作物です。<br>
+  再配布の際は、同じCC BY-SA 2.0ライセンスを付けてください。</p>
+
+<%- include("settings/footer") %>

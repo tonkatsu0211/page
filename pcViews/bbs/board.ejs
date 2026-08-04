@@ -1,0 +1,31 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+  <h2><%= board.name %> 板</h2>
+  <p>スレッド数: <%= board.threadCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>スレッドID</th>
+        <th>タイトル</th>
+        <th>作成者</th>
+        <th>レス件数</th>
+        <th>作成日時</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% threads.forEach(thread => { %>
+        <tr>
+          <td><a href="/bbs/thread?id=<%= thread.id %>"><%= thread.id %></a></td>
+          <td><%= thread.title %></td>
+          <td><%= thread.user %></td>
+          <td><%= thread.resCount %></td>
+          <td><%= new Date(thread.createdAt).toLocaleString("ja-JP") %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+<%- include("../settings/footer") %>

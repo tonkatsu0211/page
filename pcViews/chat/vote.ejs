@@ -1,0 +1,116 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<h1 id="chText" style="font-size: 30px; color: #ff0000 !important">
+  投票権は、
+  <ul>
+    <li>2/1〜2/27にチャットにログインした</li>
+    <li>BANされていない</li>
+    <li>被選挙者(管理者)または製作者ではない</li>
+  </ul>
+  この3つの条件を満たしているユーザーにのみ有効となります。<br>
+  また、投票期間は、3/8〜3/14です。<br>
+  投票期間外の投票はできず、投票は1人1票のみ行えます。
+</h1>
+
+<p style="font-size: 20px;">
+  下のボタンを押して投票してください。<br>
+  <strong>秘密選挙の原則に基づき、誰が誰に投票したのかは記録されないようになっています。</strong>
+</p>
+<div class="game-container">
+  <div class="game-items">
+    <button onclick="vote('たけ')" class="blueButton30" style="background-color: #38b48b !important;">
+      たけ に投票する
+    </a>
+  </div>
+  <div class="game-items">
+    <button onclick="vote('takumak7')" class="blueButton30">
+      takumak7 に投票する
+    </button>
+  </div>
+  <div class="game-items">
+    <button onclick="vote('床')" class="blueButton30" style="background-color: #330099 !important;">
+      床 に投票する
+    </button>
+  </div>
+</div>
+<br>
+<br>
+<div class="game-container">
+  <div class="game-items">
+    <button onclick="vote('赤き井')" class="blueButton30">
+      赤き井 に投票する
+    </button>
+  </div>
+  <div class="game-items">
+    <button onclick="vote('あかさ')" class="blueButton30">
+      あかさ に投票する
+    </button>
+  </div>
+</div>
+
+<br>
+<br>
+
+<div id="result"></div>
+
+<script>
+  function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+  }
+  const rawDate = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+  const firstSpace = rawDate.indexOf(" ");
+  let date;
+  if (firstSpace !== -1) {
+    date = rawDate.slice(0, firstSpace).trim();
+  }
+  const voteDates = ["2026/3/8", "2026/3/9", "2026/3/10", "2026/3/11", "2026/3/12", "2026/3/13", "2026/3/14", "2026/03/08", "2026/03/09"];
+
+  const canVote = "<%= canVote %>";
+  
+  function vote(target) {
+    const canVote2 = localStorage.getItem("voted") || false;
+    if (!voteDates.includes(date)) return alert("現在は投票期間ではありません。\n投票期間は3/8〜3/14です。");
+    if (canVote == "false" || canVote2 == "true") return alert("投票権がありません。");
+    const confirmed = confirm(`本当に${target}に投票しますか?`);
+    if (!confirmed) return alert("投票をキャンセルしました。");
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/chat/vote", true);
+    const resultDiv = document.getElementById("result");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        if (data.error) {
+          const msg = `投票処理中にエラーが発生しました: ${data.error}`;
+          resultDiv.innerHTML = `<p style="color: red;">${msg}</p>`;
+          alert(msg);
+        } else {
+          const msg = `${target} への投票が完了しました。`;
+          resultDiv.innerHTML = `<p>${msg}</p>`;
+          alert(msg);
+          localStorage.setItem("voted", true);
+        }
+      } else {
+        if (data.error) {
+          const msg = `投票処理中にエラーが発生しました: ${data.error}</p>`;
+          resultDiv.innerHTML = msg;
+          alert(msg);
+        } else {
+          const msg = "<p style='color: red;'>投票処理中にエラーが発生しました。</p>";
+          resultDiv.innerHTML = msg;
+          alert(msg);
+        }
+      }
+    };
+    xhr.onerror = function() {
+        alert("投票処理に失敗しました。");
+    };
+    xhr.send("target=" + encodeURIComponent(target));
+  };
+</script>
+
+<%- include("../settings/footer") %>

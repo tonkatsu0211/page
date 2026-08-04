@@ -1,0 +1,731 @@
+[
+  {
+    "id": "000e2453-7e55-4e57-9e64-885d54b6e8f6",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "おそうじ",
+    "timestamp": "2026/7/27 11:41:10",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "2ab6f331-f77b-414e-8a97-ce4e57a57a51",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/27 19:22:24"
+  },
+  {
+    "id": "597c19c8-0992-4878-8117-3d485af1a0ff",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "白すぎて草生える",
+    "timestamp": "2026/7/27 19:22:35",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "a804adb8-8345-46a9-8894-3a98ca392388",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/27 19:23:35"
+  },
+  {
+    "id": "2456ab12-69aa-4496-87a3-4b7a23465537",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/27 19:30:50"
+  },
+  {
+    "id": "df997623-8f35-4e7b-b494-9e9b46e3f3fd",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "誰かテラリアやってる?",
+    "timestamp": "2026/7/27 19:31:32",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "b6ba34c0-2ed2-4ef0-890c-63b5586622d3",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "というかフォント変わった?",
+    "timestamp": "2026/7/27 19:31:42",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "860bd16a-a0ff-476d-9e4b-d77d238fc62f",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/27 19:33:28"
+  },
+  {
+    "id": "dd0034d1-710c-4072-8b5a-97db0dbe5359",
+    "username": "systemC2",
+    "message": "medamayakiが再接続しました",
+    "timestamp": "2026/07/27 19:33:33"
+  },
+  {
+    "id": "937866e0-53cc-415a-aad1-308a9fb945eb",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/27 19:33:57"
+  },
+  {
+    "id": "466b807f-255f-404a-8ec6-27866368b0c8",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/27 19:35:53"
+  },
+  {
+    "id": "0bf405d7-6c74-4fc9-924a-96c6f3f69156",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/27 19:35:58"
+  },
+  {
+    "id": "2b1f3d41-1ae6-4dd0-9742-2f4a7c3dd631",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/27 19:38:51"
+  },
+  {
+    "id": "0bb968a8-f27d-460d-af59-4e3199168c74",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/27 19:38:54"
+  },
+  {
+    "id": "a76f50b7-1051-4714-a8c2-1b276207b73f",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/27 20:03:32"
+  },
+  {
+    "id": "1cc0732a-6e99-41d0-b45b-afdd607804df",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/27 20:03:33"
+  },
+  {
+    "id": "96733add-0c56-4e09-bb3e-da2a06db3fa6",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "hello!",
+    "timestamp": "2026/7/27 20:03:43",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "dc602187-008f-48c0-88eb-7ef61ba0b83e",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "変えた",
+    "timestamp": "2026/7/27 20:03:46",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": "b6ba34c0-2ed2-4ef0-890c-63b5586622d3",
+    "replyMsg": "というかフォント変わった?"
+  },
+  {
+    "id": "3b4b274d-cecc-4a60-bf6d-e85311987b78",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "なんか読みやすい",
+    "timestamp": "2026/7/27 20:03:54",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "aec019bf-fbef-4929-8fda-d5bf2806ed22",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "そういえばチャプ5のあれ、leaveじゃないやつのINでS取った(AT挑んだらCだった)",
+    "timestamp": "2026/7/27 20:04:41",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "ddf797dc-fea7-456c-a2ab-707f176c0fea",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "ナユタン星に侵略されて｢コーポレート・ロゴ｣にしました",
+    "timestamp": "2026/7/27 20:04:49",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": "3b4b274d-cecc-4a60-bf6d-e85311987b78",
+    "replyMsg": "なんか読みやすい"
+  },
+  {
+    "id": "677348ed-cde2-4b7d-b7be-4227b004878c",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "なるほどどど",
+    "timestamp": "2026/7/27 20:05:03",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "54b08e68-4ed5-4963-9103-00db36df3cbf",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "Spasmodic?\nすげー",
+    "timestamp": "2026/7/27 20:05:03",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": "aec019bf-fbef-4929-8fda-d5bf2806ed22",
+    "replyMsg": "そういえばチャプ5のあれ、leaveじゃないやつのINでS取った(AT挑んだらCだった)"
+  },
+  {
+    "id": "224687a9-315e-498b-9ff8-5bebcb4c5fcf",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "慣れれば案外行ける(トリルさえ通ればあとは簡単)",
+    "timestamp": "2026/7/27 20:05:26",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "4104c3b3-32ad-49cb-97d0-9e2696805be1",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "ちょいまち",
+    "timestamp": "2026/7/27 20:05:46",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "0bb11673-79d2-472d-b720-729ae6c310e1",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/27 20:05:49"
+  },
+  {
+    "id": "ec2ccc6f-4105-4daf-9391-3b881a9d0a94",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "待ちます",
+    "timestamp": "2026/7/27 20:05:55",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "e891b52d-1333-4516-beee-caae07fd2391",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "ティアキンなう",
+    "timestamp": "2026/7/27 20:06:19",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "bd2a2704-54cb-4a2f-9716-b6c2d1c02afa",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/27 20:12:44"
+  },
+  {
+    "id": "45b962c4-e54e-4dab-943f-a46218f13406",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "おk",
+    "timestamp": "2026/7/27 20:12:54",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "dd8fe2ae-ca9f-4344-ad69-e69f86625c97",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/27 20:12:57"
+  },
+  {
+    "id": "837f1ea6-25e3-41d5-8a00-7a45d18dcda8",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/27 20:13:08"
+  },
+  {
+    "id": "ebae14c1-e053-4622-8472-d779e5ab1f56",
+    "username": "systemC2",
+    "message": "medamayakiが再接続しました",
+    "timestamp": "2026/07/27 20:13:09"
+  },
+  {
+    "id": "df4c01e8-9995-469e-89be-067a34b551ef",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "どれぐらい待てばよろしくて",
+    "timestamp": "2026/7/27 20:13:24",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "18e011db-f046-47ec-99bb-64b80efe2c7e",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "あ、フィグ?",
+    "timestamp": "2026/7/27 20:13:45",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "6f4f14d7-0ee8-4d2f-bedf-d46c6d0fee78",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "今できない",
+    "timestamp": "2026/7/27 20:13:50",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "19d0c0c7-88a7-4475-ac3c-42da64c44409",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "OK牧場",
+    "timestamp": "2026/7/27 20:14:07",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "3888f557-2b9e-49bd-84f4-d7c13e07c98e",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/27 20:14:22"
+  },
+  {
+    "id": "471283de-486b-4cf3-8fbf-d0d4d88a9eca",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "そういえばPhigrosの略し方分からんな",
+    "timestamp": "2026/7/27 20:14:48",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "fb90d476-80f9-4834-8650-fdb664da703f",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 12:57:47"
+  },
+  {
+    "id": "cef5b2db-67d0-42a9-a9ef-b7d722d25b2a",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 12:57:52"
+  },
+  {
+    "id": "838f38cb-f248-4588-a694-373ef21795cf",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 13:27:18"
+  },
+  {
+    "id": "6026dc04-873d-4e11-bdd9-55149a35445e",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 13:27:26"
+  },
+  {
+    "id": "b2b1f8ec-f464-4b9e-b8de-c6fa598965a5",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 14:23:00"
+  },
+  {
+    "id": "cd7dc8c2-835e-4d4d-8d25-74f58a8aebdc",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 14:23:04"
+  },
+  {
+    "id": "0606f4e1-1e6e-458f-904e-95f8cec625ee",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 15:04:59"
+  },
+  {
+    "id": "67d5095e-36fa-43a9-96db-1419bca4263d",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 15:05:22"
+  },
+  {
+    "id": "daa081c0-8d3a-45df-85af-0eb02b53ac97",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 15:09:51"
+  },
+  {
+    "id": "ea9708fb-8835-4818-b3be-539571da13a8",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 15:09:54"
+  },
+  {
+    "id": "0b668e95-6694-45bf-ac1a-0846ddec1a47",
+    "username": "systemC2",
+    "message": "佳大が接続しました",
+    "timestamp": "2026/07/28 16:16:17"
+  },
+  {
+    "id": "65d9ee1f-a0b0-4f5f-9653-8cf575f0d97f",
+    "username": "佳大",
+    "uid": "'UID'-07c44fbc-f20d-4637-9884-35eaf8959530",
+    "message": "なんかユウチューブの動画頂戴",
+    "timestamp": "2026/7/28 16:17:19",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "32577eab-0c22-47d2-97ae-0060a27cd9ad",
+    "username": "systemC2",
+    "message": "佳大が切断しました",
+    "timestamp": "2026/07/28 16:17:32"
+  },
+  {
+    "id": "9818a0de-a67f-420a-a211-1d4b7562a2c1",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 16:50:11"
+  },
+  {
+    "id": "5cfc5f65-c800-4fc6-9619-a0b2de4dc606",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "\\b \\40 \\#ff0000 熊本県で震度7を観測\\\\\\",
+    "timestamp": "2026/7/28 16:50:50",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "185ff2e6-d4f5-4d37-864e-d959f3f65327",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 16:50:55"
+  },
+  {
+    "id": "faf7e803-be40-4653-bd2f-225e8a2cdfa8",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 18:24:02"
+  },
+  {
+    "id": "8585470a-1b2c-43f6-b07e-751e98267791",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 18:24:06"
+  },
+  {
+    "id": "b4a4f2da-5064-4f86-905c-f481f6fe87ac",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/28 19:48:59"
+  },
+  {
+    "id": "9a0de518-f3df-4f10-93b4-7da8a6760128",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "\\#ff0000 \\b \\60 ま　ず　い　で　す　よ\\\\\\",
+    "timestamp": "2026/7/28 19:50:25",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": "5cfc5f65-c800-4fc6-9619-a0b2de4dc606",
+    "replyMsg": "\\b \\40 \\#ff0000 熊本県で震度7を観測\\\\\\"
+  },
+  {
+    "id": "2c50d4e5-ba07-441f-a5a3-e8fa2b211cae",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "みんな大丈夫か(ワイは本州だから大丈夫だと思う)",
+    "timestamp": "2026/7/28 19:50:57",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "62f8bb68-7f9a-4ddd-8c7d-f4ffad090888",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/28 19:52:22"
+  },
+  {
+    "id": "47079f0d-e8c8-48f9-80b7-de5504aa405b",
+    "username": "systemC2",
+    "message": "medamayakiが再接続しました",
+    "timestamp": "2026/07/28 19:52:25"
+  },
+  {
+    "id": "8f6baf79-ed5e-43be-9559-be3fd93d876a",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/28 19:52:33"
+  },
+  {
+    "id": "38212f38-468d-4ea2-a44e-436522df37d3",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/28 21:19:06"
+  },
+  {
+    "id": "c8738ba7-77e7-47e8-8c6b-d69be8078f39",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/07/28 21:19:25"
+  },
+  {
+    "id": "f50324e1-9e07-4d9a-b0a7-574149c9ac39",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 21:46:04"
+  },
+  {
+    "id": "c45f75e6-f535-49d8-be8b-a89c0c1c4d39",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 21:47:04"
+  },
+  {
+    "id": "8f954384-8569-4806-9814-f7a31c516dd8",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 21:48:07"
+  },
+  {
+    "id": "89d9ebcf-df64-478e-a830-1d159932fe9b",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 21:48:09"
+  },
+  {
+    "id": "90cf993e-b7d8-47ad-9043-9816c61f62e4",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 21:48:21"
+  },
+  {
+    "id": "1a7dfdac-1e2d-44db-bc38-388b2959060b",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/28 21:54:38"
+  },
+  {
+    "id": "85cb9f7a-3b29-4b54-b16d-fcb20788ce4f",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/28 21:54:49"
+  },
+  {
+    "id": "a7afef01-59e9-4f1d-8ccf-48fae73fe835",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/29 00:18:28"
+  },
+  {
+    "id": "19e10b3b-4fdc-42da-b70e-eb2f35367ecd",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/29 00:18:31"
+  },
+  {
+    "id": "d21ba31f-c520-48dd-86f0-e9ab99947ac6",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/29 00:45:54"
+  },
+  {
+    "id": "c4ab650e-68b6-4d93-bba2-e5383acf43ce",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/29 00:46:00"
+  },
+  {
+    "id": "b1811093-59bd-4593-9db1-d40375681feb",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/29 00:50:01"
+  },
+  {
+    "id": "035b1a67-1ec1-4613-86d3-8bd66c0203e3",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/29 00:50:05"
+  },
+  {
+    "id": "8d4764f9-b9c2-4c1e-a0af-026878b0083a",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/29 01:07:16"
+  },
+  {
+    "id": "4d4cf8b4-4c78-4736-8619-8ea42f24fe8a",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/29 01:07:26"
+  },
+  {
+    "id": "f34f502c-8442-4352-a42b-f27121b70f3a",
+    "username": "systemC2",
+    "message": "はさが接続しました",
+    "timestamp": "2026/07/29 07:16:12"
+  },
+  {
+    "id": "e1c8d3cd-8d5e-462e-996e-c4b9e9f3cf64",
+    "username": "systemC2",
+    "message": "はさが切断しました",
+    "timestamp": "2026/07/29 07:16:42"
+  },
+  {
+    "id": "56b82878-4039-49db-a9e1-3800b8a63ccf",
+    "username": "systemC2",
+    "message": "はさが接続しました",
+    "timestamp": "2026/07/29 07:21:08"
+  },
+  {
+    "id": "25fa47a3-9067-4e4e-afdb-bae811614a88",
+    "username": "systemC2",
+    "message": "はさが切断しました",
+    "timestamp": "2026/07/29 07:21:44"
+  },
+  {
+    "id": "09ba5244-813c-4e09-bef0-9117fc3ea5bc",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/07/29 07:31:22"
+  },
+  {
+    "id": "6f634c20-4467-4175-b9c9-a33127fe466a",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/07/29 07:31:24"
+  },
+  {
+    "id": "20c4d3c3-0862-43df-ad62-5da5f3cab7ac",
+    "username": "systemC2",
+    "message": "佳大が接続しました",
+    "timestamp": "2026/07/29 08:17:07"
+  },
+  {
+    "id": "d50f389b-77bf-49e9-ab65-6fba1ef66bcf",
+    "username": "佳大",
+    "uid": "'UID'-07c44fbc-f20d-4637-9884-35eaf8959530",
+    "message": "やばいよな！\nイオン大爆発だって",
+    "timestamp": "2026/7/29 8:17:45",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": "5cfc5f65-c800-4fc6-9619-a0b2de4dc606",
+    "replyMsg": "\\b \\40 \\#ff0000 熊本県で震度7を観測\\\\\\"
+  },
+  {
+    "id": "53e87fb4-bb76-476c-9a0d-ac5080e98131",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/07/29 19:31:15"
+  },
+  {
+    "id": "f762ba4c-abb5-4e3b-9400-903af97be2a8",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "爆発はヤバい",
+    "timestamp": "2026/7/29 19:31:40",
+    "ipv4": "10.42.2.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  }
+]

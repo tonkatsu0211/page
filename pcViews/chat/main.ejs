@@ -1,0 +1,1149 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<style>
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+#messages {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fafafa;
+}
+.mention {
+  color: #1976d2;
+  font-weight: bold;
+}
+#cancelReply {
+  font-size: 0.7em;
+  color: red;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.message-bubble {
+  background-color: #e1faff;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  width: fit-content;
+  border: 1px solid #000;
+  max-width: 90%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.message-bubble-tell {
+  background-color: #ffd0d0;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  width: fit-content;
+  border: 1px solid #000;
+  max-width: 90%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.message-item {
+  margin-bottom: 15px;
+}
+.meta {
+  font-size: 0.75em;
+  color: #999;
+  margin-bottom: 5px;
+}
+.delete-btn {
+  font-size: 0.7em;
+  color: red;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.clean-delete-btn {
+  font-size: 0.7em;
+  color: purple;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.restore-btn {
+  font-size: 0.7em;
+  color: #5a5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.reply-btn {
+  font-size: 0.7em;
+  color: #0966c2;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.text {
+  word-break: break-word;
+  font-size: 1em;
+}
+.send {
+  display: flex;
+}
+#input {
+  flex: 1;
+  padding: 10px;
+  font-size: 1em;
+  width: 1000px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+#sendButton {
+  padding: 0 !important;
+  font-size: 30px !important;
+  width: 130px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tooltip {
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 9999;
+  white-space: nowrap;
+}
+.tooltip.show {
+  opacity: 1;
+}
+.tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+.message-bubble.highlight-reply {
+  animation: bubbleHighlight 1.2s ease-out;
+}
+@keyframes bubbleHighlight {
+  0% { background-color: rgba(255, 255, 200, 0.6); }
+  100% { background-color: #e1faff; }
+}
+</style>
+  
+  <br>
+  <div style="margin: 10px 0;">
+  <strong>現在のオンライン人数：</strong>
+  <span id="userCount">0</span>人
+</div>
+  <div id="adminUserList" style="margin: 10px 0;">
+    <strong id="userListText" style="display: none;">現在オンラインのユーザー：</strong>
+    <span id="userList" style="display: inline;"></span>
+  </div>
+<div id="chat-container">
+<div id="messages"></div>
+  <div id="replyToDisplay" style="margin: 5px; font-size: 0.9em; color: #444;"></div>
+  <h2><textarea class="chatText" id="input" maxlength="300" autocomplete="off" placeholder=""></textarea></h2>
+  <div class="send">
+    <button class="blueButton30" id="sendButton" onclick="sendChat()">送信</button>
+    <label style="font-size: 16px; font-weight: bold; padding-left: 10px;">
+      <input type="checkbox" id="enterToggle">Enterで送信</label>
+    <label style="font-size: 16px; font-weight: bold; padding-left :5px;">
+      <input type="checkbox" id="showLog">接続・切断ログを表示</label>
+    <form id="image-upload-form" enctype="multipart/form-data">
+      <input type="file" id="image-input" accept="image/*, video/mp4, video/webm, video/mov, video/mkv, video/m4v, video/ogg, video/ogv, application/pdf, audio/mp3, audio/m4a, audio/wav">
+    </form>
+  </div>
+  <div id="upload-progress" style="width: 100%; background: #333; height: 6px; margin-top: 5px; display: none;">
+    <div id="upload-bar" style="height: 100%; width: 0%; background: #4caf50;"></div>
+  </div>
+  <div id="upload-percent"></div>
+  </div>
+<h3>管理者一覧</h3>
+<div id="adminUserListDisplay" style="margin-top: 15px;"></div>
+<br>
+<h3 style="padding-top: 0;">
+  使用できるコマンド一覧
+</h3>
+<p>
+  \b 文字\ → 太字表示
+</p>
+<p>
+  \i 文字\ → イタリック(斜体)表示
+</p>
+<p>
+  \d 文字\ → 取り消し線表示
+</p>
+<p>
+  \#rrggbbもしくは#rgb 文字\ → 文字色変更
+</p>
+<p>
+  \サイズ 文字\ → 文字サイズ指定(5〜40px)
+</p>
+<p>
+  \url リンク\ → リンクを生成し、クリック時に別タブで開く(\url リンク|表示名\とすると、リンクの表示名を変更できます)
+</p>
+<p>
+  \url! リンク\ → リンクを生成し、クリック時に同タブで開く(\url! リンク|表示名\とすると、リンクの表示名を変更できます)
+</p>
+<p>
+  \photo リンク|大きさ(横幅、10〜1000px)\ → リンクの画像を埋め込み(例: \photo https://img.example.com|300\)
+</p>
+<p>
+  \video リンク|大きさ(横幅、10〜1000px)\ → リンクの動画を埋め込み(例: \video https://video.example.com|300\)
+</p>
+<p>
+  \audio リンク\ → リンクの音声を埋め込み(例: \audio https://music.example.com\)
+</p>
+<p>
+  ※ すべて「\」で閉じてください
+</p>
+<p>
+  \はMacやiPadならOption+¥、Windowsは分からないのでコピペ推奨
+</p>
+<br>
+<p>
+  ※チャットのユーザー名部分クリックでUIDをコピー可能
+</p>
+<p>
+  /name 名前 → 名前を変更
+</p>
+<p>
+  /color #rrggbbもしくは#rgb → 名前表示色を変更
+</p>
+<p>
+  /password 新パスワード → パスワードを変更
+</p>
+<p>
+  /tell 送信先のユーザー名またはUID メッセージ → 送信先(及び送信者自身)にのみ表示されるメッセージを送信
+</p>
+<p>
+  /admin ユーザー名またはUID → 管理者権限を付与(管理者か製作者のみ使用可能)
+</p>
+<p>
+  /unadmin ユーザー名またはUID → 管理者権限を削除(管理者か製作者のみ使用可能)
+</p>
+<p>
+  /delete → チャット履歴全削除(管理者か製作者のみ使用可能)
+</p>
+<p>
+  /ban ユーザー名またはUID → BAN(管理者か製作者のみ使用可能)
+</p>
+<p>
+  /unban ユーザー名またはUID → BAN解除(管理者か製作者のみ使用可能)
+</p>
+<p>
+  /reload ユーザー名またはUIDまたはeveryone → 対象者のページリロード(製作者のみ使用可能)
+</p>
+<p>
+  /alert ユーザー名またはUIDまたはeveryone メッセージ → 対象者にアラートを表示(製作者のみ使用可能)
+</p>
+<div id="imageModal" class="modal">
+  <span id="closeModal" class="close">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+<br>
+<div style="padding-bottom: 5px;">
+  <a href='/chat/terms' class="blueButton30">利用規約</a>
+</div>
+  <br>
+  <br>
+  <form action="/chat/logout" method="POST">
+    <button class="blueButton30" style="width: 180px; padding-left: 0 !important; padding-right: 0 !important; background-color: #fe3030; font-family: 'Corporate Logo', sans-serif;">ログアウト</button>
+  </form>
+  <br>
+</div>
+  
+<script src="/socket.io/socket.io.js"></script>  
+<script>
+
+  function disconnect(reason) {
+    console.log("接続が切断されました。 原因:", reason);
+    alert(`接続が切断しました。再読み込みします。(${reason})`);
+    setTimeout(() => {
+    location.reload();
+    }, 500)
+  };
+
+  const isAdmin = "<%= isAdmin %>";
+  const username = "<%= username %>";
+  const rawuid = "<%= uid %>";
+  const uid = rawuid.replace(/&#39;/g, "'");
+  let banned = "<%- banned %>";
+  const socket = io({
+    auth: { username: username || "error", uid: uid || "error"}
+  });
+  if (socket.auth.username == "error" || socket.auth.uid == "error") {
+    location.href = "/chat/login?f=chat"
+  }
+
+  if (isAdmin) {
+    const adminDiv = document.getElementById("adminUserList");
+    if (adminDiv) {
+      adminDiv.style.display = "flex";
+    } else {
+      adminDiv.style.display = "none";
+    }
+  }
+  
+  socket.on("connect_error", (err) => {
+    if (err.message === "banned") {
+      alert("あなたのIPアドレスはBANされています。チャットに接続できません。");
+      location.href = "/chat/ban";
+    }
+  });
+  
+  let replyToId = null;
+  
+  let messages;
+  window.addEventListener('DOMContentLoaded', () => {
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+    
+    const enterToggle = document.getElementById('enterToggle');
+    const inputEl = document.getElementById('input');
+    messages = document.getElementById('messages');
+    const placeholder = "最大300文字、送信は2秒毎、改行は10回まで"
+    
+    const saved = getCookie("enterToSend");
+    if (saved === "true") {
+      enterToggle.checked = true;
+      inputEl.placeholder = placeholder + "、Enterで送信、Shift+Enterで改行";
+    } else {
+      inputEl.placeholder = placeholder + "、Shift+Enterで送信、Enterで改行";
+    }
+    
+    enterToggle.addEventListener("change", () => {
+      const isChecked = enterToggle.checked;
+      setCookie("enterToSend", isChecked ? "true" : "false", 365);
+      inputEl.placeholder = isChecked
+        ? placeholder + "、Enterで送信、Shift+Enterで改行"
+        : placeholder + "、Shift+Enterで送信、Enterで改行";
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("reply-btn")) {
+        const id = e.target.getAttribute("data-id");
+        const targetUser = e.target.getAttribute("data-username");
+        replyToId = id;
+        document.getElementById("replyToDisplay").innerHTML = `
+          返信対象: @${targetUser}
+          <button id="cancelReply" style="margin-left: 10px; font-size: 0.8em;">キャンセル</button>
+        `;
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.id === "cancelReply") {
+        replyToId = null;
+        document.getElementById("replyToDisplay").innerText = "";
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.tagName === "IMG" && e.target.classList.contains("chat-image")) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modal.style.display = "block";
+        modalImg.src = e.target.src;
+      }
+    });
+
+    document.getElementById("closeModal").addEventListener("click", function () {
+      document.getElementById("imageModal").style.display = "none";
+    });
+    
+    document.getElementById("showLog").addEventListener("change", function () {
+      socket.emit("requestHistory");
+    });
+
+    document.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("copy-uid")) {
+        const tUid = e.target.dataset.uid;
+        if (!tUid) return;
+
+        try {
+          await navigator.clipboard.writeText(tUid);
+
+          const oldTooltip = document.querySelector(".tooltip");
+          if (oldTooltip) oldTooltip.remove();
+
+          const tooltip = document.createElement('div');
+          tooltip.className = 'tooltip';
+          tooltip.textContent = 'UID Copied!';
+          document.body.appendChild(tooltip);
+
+          const rect = e.target.getBoundingClientRect();
+          tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+          tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 8}px`; // 上に余白
+
+          requestAnimationFrame(() => tooltip.classList.add('show'));
+
+          setTimeout(() => {
+            tooltip.classList.remove('show');
+            setTimeout(() => tooltip.remove(), 300);
+          }, 2000);
+
+        } catch (err) {
+          console.error("クリップボードコピー失敗:", err);
+        }
+      }
+    });
+
+    inputEl.addEventListener("keydown", function (e) {
+      const isEnter = e.key === "Enter";
+      const toggle = enterToggle.checked;
+      
+      if (isEnter) {
+        if (!toggle && e.shiftKey) {
+          e.preventDefault();
+          sendChat();
+        } else if (toggle && !e.shiftKey) {
+          e.preventDefault();
+          sendChat();
+        }
+      }
+    });
+  });
+  
+  let canSend = true;
+
+  function sendChat() {
+    if (!canSend) {
+      alert("送信頻度が高すぎます。");
+      return;
+    }
+    
+    const inputEl = document.getElementById("input");
+    let message = inputEl.value.trim();
+    if (message.length === 0) return;
+    
+    const newlineCount = (message.match(/\n/g) || []).length;
+    if (newlineCount > 10) {
+      alert("改行は最大10回までにしてください。");
+      return;
+    }
+    
+    canSend = false;
+    setTimeout(() => {
+      canSend = true;
+    }, 2000);
+
+    socket.emit('chat message', {
+      message,
+      replyTo: replyToId || null
+    });
+
+    replyToId = null;
+    document.getElementById("replyToDisplay").innerText = "";
+    
+    inputEl.value = '';
+    
+    const imageInput = document.getElementById('image-input');
+    if (imageInput) {
+      imageInput.value = '';
+    }
+  }
+  
+  socket.on('connect', () => {
+    socket.emit('join', uid);
+  });
+  
+  socket.on('name changed', (newName) => {
+    document.cookie = `user=${encodeURIComponent(newName)}; path=/`;
+    alert(`名前が「${newName}」に変更されました。ページを再読み込みします。`);
+    location.reload()
+  });
+  
+  let lastPing;
+  
+  setInterval(() => {
+    socket.emit("client ping");
+  }, 2000);
+
+  socket.on("server ping", () => {
+    lastPing = Date.now();
+  });
+
+  setTimeout(() => {
+    setInterval(() => {
+      const now = Date.now();
+      if (now - lastPing > 10000) {
+        const socket = io.sockets.sockets.get(id);
+        if (socket) {
+          socket.disconnect(false);
+        }
+        disconnect("server ping timeout");
+      }
+    }, 500);
+  }, 2000);
+  
+  socket.on('password changed', (user) => {
+    if (user == username) {
+      alert("パスワードを変更しました。")
+    }
+  })
+  
+  socket.on('password change failed', (user) => {
+    if (user == username) {
+      alert("パスワードの変更に失敗しました。")
+    }
+  })
+  
+  socket.on('user count', (count) => {
+    const userCountEl = document.getElementById('userCount');
+    if (userCountEl) userCountEl.textContent = count;
+  });
+  
+  socket.on('user list', (userList) => {
+    if (!isAdmin) return;
+    const userListEl = document.getElementById('userList');
+    document.getElementById("userListText").style.display = "inline";
+    if (userListEl) {
+      userListEl.textContent = userList.join(' 、 ');
+    }
+  });
+  
+  function parseCommands(text) {
+    function parseRecursive(str, start = 0, inheritedStyle = {}) {
+      let result = '';
+      let i = start;
+
+      while (i < str.length) {
+        if (str[i] === '\\') {
+          const cmdMatch = str.slice(i).match(/^\\(b|i|d|\d{1,2}|0\.01|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|url!?|photo|video|audio)\s/);
+          if (!cmdMatch) {
+            result += '\\';
+            i++;
+            continue;
+          }
+
+          const cmd = cmdMatch[1];
+          const cmdLen = cmdMatch[0].length;
+          i += cmdLen;
+
+          let segments = [];
+          let segment = '';
+          let depth = 1;
+
+          while (i < str.length) {
+            if (str[i] === '\\') {
+              const nextCmd = str.slice(i).match(/^\\(b|i|d|\d{1,2}|0\.01|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|url!?|photo|video|audio)\s/);
+
+              if (nextCmd) {
+                segment += str.slice(i, i + nextCmd[0].length);
+                i += nextCmd[0].length;
+                depth++;
+                continue;
+              } else if (str[i + 1] !== undefined && str[i + 1] !== ' ') {
+                depth--;
+                i++;
+
+                if (depth === 0) {
+                  segments.push(segment);
+                  break;
+                }
+                segment += '\\';
+              } else {
+                segments.push(segment);
+                segment = '';
+                i++;
+              }
+            } else {
+              segment += str[i];
+              i++;
+            }
+          }
+
+          let currentStyle = { ...inheritedStyle };
+          const parsedSegments = segments.map(seg => parseRecursive(seg.trim(), 0, currentStyle)[0]).join('');
+
+          if (cmd === 'b') {
+            result += `<strong>${parsedSegments}</strong>`;
+          } else if (cmd === 'i') {
+            result += `<em>${parsedSegments}</em>`;
+          } else if (cmd === 'd') {
+            result += `<del>${parsedSegments}</del>`;
+          } else if (/^\d+$/.test(cmd) || cmd === '0.01') {
+            const size = parseInt(cmd, 10);
+            if ((size >= 5 && size <= 40) || cmd == '0.01') {
+              result += `<span style="font-size:${size || cmd}px">${parsedSegments}</span>`;
+            } else {
+              result += parsedSegments;
+            }
+          } else if (/^#[0-9a-fA-F]{6}$/.test(cmd) || /^#[0-9a-fA-F]{3}$/.test(cmd)) {
+            currentStyle.color = cmd;
+            result += `<span style="color:${cmd}">${parsedSegments}</span>`;
+          } else if (cmd === 'url' || cmd === 'url!') {
+            const parts = parsedSegments.split('|');
+            const url = parts[0]?.trim();
+            const label = parts[1]?.trim() || url;
+            if (url && /^https?:\/\/[^\s<>"']+$/.test(url)) {
+              const target = cmd === 'url!' ? '_self' : '_blank';
+              const styleAttr = currentStyle.color
+                ? ` style="color:${currentStyle.color}; text-decoration:none; border-bottom:1px solid ${currentStyle.color}"`
+                : '';
+              result += `<a href="${url}" target="${target}" rel="noopener noreferrer"${styleAttr}>${label}</a>`;
+            } else {
+              result += parsedSegments;
+            }
+          } else if (cmd === 'photo') {
+            const parts = parsedSegments.split('|');
+            const url = parts[0]?.trim();
+            const width = Math.max(10, Math.min(parseInt(parts[1], 10) || 10, 1000));
+            if (url && (
+              /^\/uploads\/[a-zA-Z0-9\-_.]+\.(png|jpg|jpeg|gif|webp)(\?.*)?$/i.test(url) ||
+              /^https?:\/\/.+\.(png|jpg|jpeg|gif|webp)(\?.*)?$/i.test(url)
+            )) {
+              result += `<img src="${url}" style="max-width: ${width}px; max-height: 300px;" class="chat-image">`;
+            } else {
+              result += `[画像読み込みエラー]`;
+            }
+          } else if (cmd === 'video') {
+            const parts = parsedSegments.split('|');
+            const url = parts[0]?.trim();
+            const width = Math.max(10, Math.min(parseInt(parts[1], 10) || 10, 1000));
+            if (url && (
+              /^\/uploads\/[a-zA-Z0-9\-_.]+\.(mp4|webm|mov|mkv|m4v|ogg|ogv)(\?.*)?$/i.test(url) ||
+              /^https?:\/\/.+\.(mp4|webm|mov|mkv|m4v|ogg|ogv)(\?.*)?$/i.test(url)
+            )) {
+              result += `<video src="${url}" style="max-width: ${width}px; max-height: 300px;" class="chat-video" controls playsinline disablePictureInPicture="false" allowfullscreen></video>`;
+            } else {
+              result += `[動画読み込みエラー]`;
+            }
+          } else if (cmd === 'audio') {
+            const url = parsedSegments.trim();
+            if (url && (
+              /^\/uploads\/[a-zA-Z0-9\-_.]+\.(mp3|m4a|wav)(\?.*)?$/i.test(url) ||
+              /^https?:\/\/.+\.(mp3|m4a|wav)(\?.*)?$/i.test(url)
+            )) {
+              result += `<audio src="${url}" class="chat-audio" controls playsinline ></audio>`;
+            } else {
+              result += `[音声読み込みエラー]`;
+            }
+          } else {
+            result += parsedSegments;
+          }
+        } else {
+          result += str[i];
+          i++;
+        }
+      }
+      return [result, i];
+    }
+    return parseRecursive(text, 0, {})[0];
+  }
+  
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  function parseTextWithCommands(text) {
+    const escaped = escapeHtml(text);
+    let parsed;
+    try {
+      parsed = parseCommands(escaped);
+    } catch (error) {
+      parsed = escaped;
+    }
+    const withMentions = parsed.replace(/@([\p{L}\p{N}_]{1,20})/gu, '<span class="mention">@$1</span>');
+    return withMentions.replace(/\r\n|\r|\n/g, "<br>");
+  }
+  
+  fetch('/users')
+    .then(res => res.json())
+    .then(users => {
+      const colorMap = {};
+      for (const name in users) {
+        if (users[name].color) {
+          colorMap[name] = users[name].color;
+        }
+      }
+      localStorage.setItem("userColors", JSON.stringify(colorMap));
+    })
+    .catch(err => {
+      console.error("ユーザー色の取得失敗:", err);
+    });
+  
+  function getUserColor(username) {
+    const stored = localStorage.getItem("userColors");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const color = parsed[username]
+      return color || "#aaa";
+    }
+    return "#aaa";
+  }
+  
+  function appendMessage(msg, scroll = true) {
+  if (!msg || !msg.username || !msg.message || !msg.timestamp) return;
+    const color = getUserColor(msg.username) || "#aaa";
+    const item = document.createElement('div');
+    item.classList.add('message-item');
+    item.setAttribute("data-id", msg.id);
+
+    const messages = document.getElementById("messages");
+    const isAtBottom = Math.abs(messages.scrollHeight - messages.scrollTop - messages.clientHeight) < 5;
+    const isCreator = uid == "'UID'-tonkatsu" ? true : false;
+    const superAdmin = "<%= superAdmin %>" == "true" ? true : false;
+
+    if (msg.username === 'system') {
+      item.innerHTML = `
+        <div style="font-style: italic; color: #999;" data-id="${msg.id}">
+          [システム] ${escapeHtml(msg.message)} (${escapeHtml(msg.timestamp)})
+          ${((isCreator || superAdmin) || (isAdmin && !msg.message.includes("BAN"))) ? `<button class="clean-delete-btn" data-id="${msg.id}">完全に削除</button>` : ''}
+        </div>
+      `;
+    } else if (msg.username === 'systemC2') {
+      const showLog = document.getElementById("showLog").checked
+      if (!showLog) return;
+      item.innerHTML = `
+        <div style="font-style: italic; color: #999;" data-id="${msg.id}">
+          [システム] ${escapeHtml(msg.message)} (${escapeHtml(msg.timestamp)})
+          ${((isCreator || superAdmin) || isAdmin) ? `<button class="clean-delete-btn" data-id="${msg.id}">完全に削除</button>` : ''}
+        </div>
+      `;
+    } else if (msg.username === 'systemC3') {
+      if (msg.toUid == uid || msg.to == username) {
+        item.innerHTML = `
+          <div class="message-bubble-tell" data-id="${msg.id}" style="background-color: #c8ffe1;">
+            <div style="font-style: italic; color: #999;">
+              <span style="font-weight: bold; color: #666;">${escapeHtml(msg.from)}</span> (${escapeHtml(msg.fromUidShow)}) からのメッセージ: <span style="font-weight: bold; color: #666;">${escapeHtml(msg.message)}</span> (${escapeHtml(msg.timestamp)})${(isCreator || superAdmin) ? `<button class="clean-delete-btn" data-id="${msg.id}">完全に削除</button>` : ""}
+            </div>
+          </div>
+        `;
+      } else if (msg.fromUid == uid || msg.from == username) {
+        item.innerHTML = `
+          <div class="message-bubble-tell" data-id="${msg.id}" style="background-color: #f8dfff;">
+            <div style="font-style: italic; color: #999;">
+              <span style="font-weight: bold; color: #666;">${escapeHtml(msg.to)}</span> (${escapeHtml(msg.toUidShow)}) へ<span style="font-weight: bold; color: #666;">送信済み</span>のメッセージ: <span style="font-weight: bold; color: #666;">${escapeHtml(msg.message)}</span> (${escapeHtml(msg.timestamp)})${isAdmin ? `<button class="clean-delete-btn" data-id="${msg.id}">完全に削除</button>` : ""}
+            </div>
+          </div>
+        `;
+      } else if (isCreator || superAdmin) {
+        item.innerHTML = `
+          <div class="message-bubble-tell" data-id="${msg.id}">
+            <div style="font-style: italic; color: #999;">
+              <span style="font-weight: bold; color: #666;">${escapeHtml(msg.from)}</span> (${escapeHtml(msg.fromUidShow)}) から <span style="font-weight: bold; color: #666;">${escapeHtml(msg.to)}</span> (${escapeHtml(msg.toUidShow)}) へのメッセージ: <span style="font-weight: bold; color: #666;">${escapeHtml(msg.message)}</span> (${escapeHtml(msg.timestamp)})<button class="clean-delete-btn" data-id="${msg.id}">完全に削除</button>
+            </div>
+          </div>
+        `;
+      } else {
+        return;
+      }
+    } else {
+      let ipInfo = "";
+      
+      if (isCreator) {
+        const ipv4 = msg.ipv4 ? `IPv4: ${escapeHtml(msg.ipv4)}` : "";
+        let ipv6 = msg.ipv6 && msg.ipv4 ? `, IPv6: ${escapeHtml(msg.ipv6)}` : "";
+        ipv6 = msg.ipv6 && !msg.ipv4 ? `IPv6: ${escapeHtml(msg.ipv6)}` : "";
+        const full = ipv4 || ipv6 ? `<span style="font-size: 0.9em; color: #999;">（${ipv4}${ipv6}）</span>` : "";
+        ipInfo = full;
+      }
+      
+      let nameStyle = `color: ${color};`;
+      let roleTag = ""
+      if (msg.uid == "'UID'-tonkatsu" || msg.uid == "&#39;UID&#39;-tonkatsu") {
+        nameStyle += " background: linear-gradient(to right, #aaaaaa, #aaaaaa, #aa8855, #aa8855, #dab875, #dab875); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.5em !important; font-style: italic;";
+        roleTag += "<span style='font-size: 1.3em; color: #dab875;'>(製作者)</span>"
+      } else if (msg.superAdmin) {
+        nameStyle += ` background: linear-gradient(to right, ${color}, ${color}, ${color}, ${color}, #aa8855, #dab875); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.5em !important; font-style: italic;`;
+        roleTag += "<span style='font-size: 1.3em; color: #dab875;'>(最高管理者)</span>"
+      } else if (msg.isAdmin == true) {
+        nameStyle += ` background: linear-gradient(to right, ${color}, ${color}, ${color}, #00502e, #00502e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.5em !important;`;
+        roleTag += "<span style='font-size: 1.2em; color: #00502e;'>(管理者)</span>"
+      } else {
+        nameStyle += "font-weight: bold; font-size: 1.2em !important;"
+      }
+      
+      let replyHtml = '';
+      /*
+      if (msg.replyTo) {
+        const repliedMsg = document.querySelector(`[data-id="${msg.replyTo}"]`);
+        const replyMessage = msg.replyMsg.length > 50 ? msg.replyMsg.slice(0, 50) + "…" : msg.replyMsg
+        if (repliedMsg) {
+          replyHtml = `<a href="#" class="reply-link" data-reply-id="${msg.replyTo}" style="display:block;padding: 1px 6px; border-left: 3px solid #ccc; margin-bottom: 5px; font-size: 0.9em; color: #555; text-decoration:none; border-bottom: none;">reply: ${repliedMsg.dataset.deleted == "false" ? escapeHtml(replyMessage) : escapeHtml(repliedMsg.dataset.delMessage)}</a>`;
+          alert(repliedMsg.dataset.deleted);
+        } else {
+          replyHtml = `<div style="padding: 1px 6px; border-left: 3px solid #aaa; margin-bottom: 5px; font-size: 0.9em; color: #333;">このメッセージは削除されています。</div>`;
+        }
+      }
+      */
+      if (msg.replyMsg) {
+        const repliedMsg = document.querySelector(`.message-bubble[data-id="${msg.replyTo}"]`);
+        if (repliedMsg) {
+          const deleted = repliedMsg.dataset.deleted == "true";
+          const delMessage = repliedMsg.dataset.delMessage ?? repliedMsg.dataset.delmessage ?? repliedMsg.getAttribute("data-del-message") ?? repliedMsg.getAttribute("data-delMessage") ?? "";
+          const originalMessage = !deleted ? msg.replyMsg : delMessage;
+          const replyMessage = originalMessage.length > 50 ? originalMessage.slice(0, 49) + "…" : originalMessage;
+
+          replyHtml = `<a href="#" class="reply-link" data-reply-id="${msg.replyTo}" style="display:block;padding:1px 6px;border-left:3px solid #ccc;margin-bottom:5px;font-size:0.9em;color:#555;text-decoration:none;border-bottom:none;">
+            reply: ${escapeHtml(replyMessage)}
+          </a>`;
+        } else {
+          replyHtml = `<div style="padding:1px 6px;border-left:3px solid #aaa;margin-bottom:5px;font-size:0.9em;color:#333;">
+            このメッセージは削除されています。
+          </div>`;
+        }
+      }
+      
+      item.innerHTML = `
+        <div class="message-bubble" data-id="${msg.id}" data-deleted="${msg.deleted || "false"}" data-del-message="${msg.delMessage || ""}">
+          <div class="meta">
+            <strong class="copy-uid" data-uid="${msg.uid || ''}" style="${nameStyle}">${escapeHtml(msg.username)}</strong>${roleTag} [${escapeHtml(msg.timestamp)}]${ipInfo}
+          </div>
+          ${replyHtml}
+          <div class="text">${!msg.deleted ? parseTextWithCommands(msg.message) : (msg.delMessage ? ((isCreator || superAdmin) ? parseTextWithCommands("\\i \\#aaaaaa " + msg.delMessage + "(元のメッセージ: \\\\") + `<button class="normalButton showOriginalButton" data-id="${msg.id}">元のメッセージを表示する</button><span style="font-style: normal; color: #000; display: none;" data-mId="${msg.id}">${parseTextWithCommands(msg.message)}</span><span style="font-style: italic; color: #aaaaaa;">)</span>` : parseTextWithCommands("\\i \\#aaaaaa " + msg.delMessage + "\\\\")) : parseTextWithCommands(msg.message))}</div>
+          ${((isCreator || superAdmin) || (banned.includes(msg.uid) && isAdmin)) ? `<button class="clean-delete-btn" data-id="${msg.id}" style="font-family: 'Corporate Logo', sans-serif;">完全に削除</button>` : ''}
+          ${(msg.deleted && ((isCreator || superAdmin) || (banned.includes(msg.uid) && isAdmin))) ? `<button class="restore-btn" data-id="${msg.id}" style="font-family: 'Corporate Logo', sans-serif;">復元</button>` : ''}
+          ${(!msg.deleted && ((isCreator || superAdmin) || (isAdmin && msg.uid != "&#39;UID&#39;-tonkatsu") || msg.username === username)) ? `<button class="delete-btn" data-id="${msg.id}" style="font-family: 'Corporate Logo', sans-serif;">削除</button>` : ''}
+          ${(!msg.deleted) ? `<button class="reply-btn" data-id="${msg.id}" data-username="${msg.username}" style="font-family: 'Corporate Logo', sans-serif;">↩︎返信</button>` : ""}
+        </div>
+      `;
+    }
+    
+    messages.appendChild(item);
+    if (scroll && (isAtBottom || 1 == 1)) {
+      messages.scrollTop = messages.scrollHeight;
+    }
+    if (scroll && (isAtBottom || 1 == 1)) {
+      const images = item.querySelectorAll('img');
+      if (images.length === 0) {
+        messages.scrollTop = messages.scrollHeight;
+      } else {
+        let loadedCount = 0;
+        images.forEach(img => {
+          img.onload = img.onerror = () => {
+            loadedCount++;
+            if (loadedCount === images.length) {
+              messages.scrollTop = messages.scrollHeight;
+            }
+          };
+        });
+      }
+    }
+  }
+
+  socket.on('chat history', (history) => {
+    messages.innerHTML = '';
+    history.forEach(msg => {
+      if (msg && msg.username && msg.message && msg.timestamp) {
+        appendMessage(msg, true);
+      }
+    });
+  });
+  
+  socket.on('chat history noScroll', (history) => {
+    const messages = document.getElementById('messages');
+
+    const previousScrollTop = messages.scrollTop;
+    const isAtBottom = Math.abs(messages.scrollHeight - messages.scrollTop - messages.clientHeight) < 5;
+
+    messages.innerHTML = '';
+    history.forEach(msg => appendMessage(msg, false));
+
+    if (isAtBottom) {
+      messages.scrollTop = messages.scrollHeight;
+    } else {
+      messages.scrollTop = previousScrollTop;
+    }
+  });
+
+  socket.on('chat update', (msg) => {
+    try {
+      if (msg.username !== username && Notification.permission === "granted") {
+        const body = typeof msg.message === "string"
+          ? (msg.message.length > 50 ? msg.message.slice(0, 50) + "…" : msg.message)
+          : "";
+        
+        new Notification(`${msg.username} さんから新しいメッセージ`, {
+          body,
+          icon: "<%= assets %>/icon.ico?v=1"
+        });
+      }
+    } catch (e) {
+      console.log("通知処理でエラー: ", e)
+    }
+    appendMessage(msg, true);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-btn')) {
+      const id = e.target.getAttribute('data-id');
+      const confirmed = confirm("本当にこのメッセージを削除しますか？");
+      if (confirmed) {
+        socket.emit('delete message', id, username);
+      }
+    }
+
+    if (e.target.classList.contains('clean-delete-btn')) {
+      const id = e.target.getAttribute('data-id');
+      const confirmed = confirm("本当にこのメッセージを完全削除しますか？");
+      if (confirmed) {
+        socket.emit('clean delete message', id, username);
+      }
+    }
+
+    if (e.target.classList.contains('restore-btn')) {
+      const id = e.target.getAttribute('data-id');
+      const confirmed = confirm("本当にこのメッセージを復元しますか？");
+      if (confirmed) {
+        socket.emit('restore message', id);
+      }
+    }
+
+  if (e.target.classList.contains('showOriginalButton')) {
+      const id = e.target.getAttribute('data-id');
+      const target = document.querySelector(`[data-mId="${id}"]`);
+      if (!target) return;
+      if (e.target.textContent == "元のメッセージを表示する") {
+        target.style.display = "inline";
+        e.target.textContent = "元のメッセージを隠す"
+      } else {
+        target.style.display = "none";
+        e.target.textContent = "元のメッセージを表示する"
+      }
+    }
+  });
+
+  socket.on('delete message', (id) => {
+    const allMessages = document.querySelectorAll('.message-item');
+    allMessages.forEach(item => {
+      const button = item.querySelector('.delete-btn');
+      if (button && button.getAttribute('data-id') === id) {
+        item.remove();
+      }
+    });
+  });
+  
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+  }
+  
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.register('/sw.js').then(function (registration) {
+      return registration.pushManager.getSubscription().then(function (sub) {
+        if (sub === null) {
+          return registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array('BBmY-u5pSnhmOhOLWG5w_4MN2wPWloZRzIzp2iXuJBYCJQ48_Qmw5-_vl0vEI4PDzjDBa9lPokKBSVg-V0SL8JE')
+          }).then(function (subscription) {
+            return fetch('/subscribe', {
+              method: 'POST',
+              body: JSON.stringify(subscription),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+          });
+        }
+      });
+    });
+  }
+  
+  /*
+  document.getElementById('image-input').addEventListener('change', async function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch('/upload-image', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const json = await res.json();
+    if (json.url) {
+      const input = document.getElementById('input');
+      const fileType = file.type;
+
+      if (fileType.startsWith('video/')) {
+        input.value += ` \\video ${json.url}|300\\`;
+      } else if (fileType.startsWith('image/')) {
+        input.value += ` \\photo ${json.url}|200\\`;
+      } else {
+        alert('対応していないファイル形式です。');
+      }
+
+      e.target.value = '';
+    } else {
+      alert('ファイルのアップロードに失敗しました');
+    }
+  });
+  */
+
+	document.getElementById('image-input').addEventListener('change', function(e) {
+		const file = e.target.files[0];
+		if (!file) return;
+
+		const formData = new FormData();
+		formData.append('image', file);
+
+		const xhr = new XMLHttpRequest();
+		xhr.open('POST', '/upload-image', true);
+
+		const progressBar = document.getElementById("upload-progress");
+		const bar = document.getElementById("upload-bar");
+		const percentText = document.getElementById("upload-percent");
+
+		xhr.upload.onprogress = function(event) {
+			if (event.lengthComputable) {
+				const percent = Math.round((event.loaded / event.total) * 100);
+				progressBar.style.display = "block";
+				bar.style.width = percent + "%";
+				percentText.textContent = "アップロード中…　現在" + percent + "%";
+			}
+		};
+
+		xhr.onload = function() {
+			progressBar.style.display = "none";
+			bar.style.width = "0%";
+			percentText.textContent = "";
+
+			if (xhr.status === 200) {
+				const json = JSON.parse(xhr.responseText);
+				if (json.url) {
+					const input = document.getElementById('input');
+					const fileType = file.type;
+					if (fileType.startsWith('video/')) {
+						input.value += ` \\video ${json.url}|300\\`;
+					} else if (fileType.startsWith("audio/")) {
+            input.value += ` \\audio ${json.url}\\`
+          } else if (fileType.startsWith('image/')) {
+						input.value += ` \\photo ${json.url}|300\\`;
+					} else if (fileType == "application/pdf") {
+            input.value += ` \\url ${json.url}\\`;
+          }
+				} else {
+					alert('ファイルのアップロードに失敗しました');
+				}
+				e.target.value = '';
+			} else {
+				alert('アップロード中にエラーが発生しました');
+			}
+		};
+
+		xhr.onerror = function() {
+			alert('アップロードに失敗しました');
+		};
+
+		xhr.send(formData);
+	});
+
+  socket.on("reload", (target, message) => {
+    if (username == target || target == "everyone") {
+      alert(message)
+      setTimeout(() => {
+        location.reload()
+      }, 100);
+    }
+  });
+
+  socket.on("setCookie", (target, name, value) => {
+    if (username == target) {
+      document.cookie = `${name}=${value}; path=/;`
+    }
+    if (name == "ban" && value == "true" && target == username) {
+      location.href = "/chat/ban";
+    }
+  });
+  
+  socket.on("alert", (target, msg) => {
+    if (username == target || target == "everyone") {
+      alert(msg)
+    }
+  });
+
+  socket.on("redirect", (adress) => {
+    location.href = adress
+  })
+  
+  socket.on("admin list", (adminList, onlineList) => {
+    const container = document.getElementById("adminUserListDisplay");
+    if (!container) return;
+    container.innerHTML = "";
+
+    adminList.forEach((adminName) => {
+      const online = onlineList.includes(adminName);
+      const status = online ? "🟢オンライン" : "🔴オフライン";
+      const color = online ? "green" : "gray";
+
+      const el = document.createElement("div");
+      el.style.marginBottom = "4px";
+      el.innerHTML = `<strong>${adminName}</strong> <span style="color:${color}">${status}</span>`;
+      container.appendChild(el);
+    });
+  });
+
+  const reconnectBtn = document.getElementById("reconnectBtn");
+
+  socket.on("disconnect", (reason) => {
+    disconnect(reason);
+  });
+
+  socket.on("connect_error", (err) => {
+    console.log("接続エラーが発生しました。 エラー:", err);
+  });
+
+  socket.on("updateBanned", (bannedUsers) => {
+    banned = bannedUsers.users;
+  });
+
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (t.classList.contains("reply-link")) {
+      e.preventDefault();
+      const replyId = t.dataset.replyId;
+      const targetMsg = document.querySelector(`[data-id="${replyId}"]`);
+      if (targetMsg) {
+        const messagesEl = document.getElementById("messages");
+        targetMsg.scrollIntoView({ behavior: "smooth", block: "center" });
+        const bubble = targetMsg.querySelector(".message-bubble");
+        if (bubble) {
+          function b() {
+            bubble.classList.add("highlight-reply");
+            setTimeout(() => bubble.classList.remove("highlight-reply"), 1400);
+          }
+          setTimeout(() =>
+            b()
+          , 150);
+        }
+        if (messagesEl) {
+            const isAtBottom = Math.abs(messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight) < 5;
+          if (!isAtBottom) {
+          }
+        }
+      } else {
+        alert("返信先のメッセージが見つかりません。");
+      }
+    }
+  });
+</script>
+
+<%- include("../settings/footer") %>  

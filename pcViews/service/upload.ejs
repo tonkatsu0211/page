@@ -1,0 +1,153 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<p>
+  画像、動画、音声、PDFをアップロードして、他のWebサイトやチャット・メッセージサービスに使うことができます。
+</p>
+
+<form id="image-upload-form" enctype="multipart/form-data">
+  <input type="file" name="image" id="image-input" accept="image/*, video/mp4, video/webm, video/mov, video/mkv, video/m4v, video/ogg, video/ogv, application/pdf, audio/mp3, audio/m4a, audio/wav" required>
+  <h2>
+    <input class="loginText" type="text" id="filename" name="filename" placeholder="ファイル名（拡張子不要、任意）">
+  </h2>
+  <button type="submit" class="blueButton30">アップロード</button>
+</form>
+<div id="upload-progress" style="width: 100%; background: #333; height: 6px; margin-top: 5px; display: none;">
+  <div id="upload-bar" style="height: 100%; width: 0%; background: #4caf50;"></div>
+</div>
+<div id="upload-percent"></div>
+
+<br>
+<br>
+
+<div id="upload-result">
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+
+  <% if (url) { %>
+    <p>アップロード成功！</p>
+    <p>画像URL: <a href="<%= url %>" target="_blank"><%= url %></a></p>
+    <img id="upload-preview" alt="アップロード画像" style="max-width:300px; display:block; margin-top:10px;">
+  <% } %>
+</div>
+
+<script>
+  /*
+  document.getElementById("image-upload-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById("image-input");
+    const filenameInput = document.getElementById("filename");
+  
+    if (!fileInput.files[0]) {
+      alert("画像または動画を選択してください。");
+      return;
+    }
+  
+    const filename = filenameInput.value.trim();
+    const invalidPattern = /[\\\/:*?"'<>|]/;
+    if (invalidPattern.test(filename)) {
+      alert("ファイル名に使用できない文字が含まれています。");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("filename", filename);
+    formData.append("image", fileInput.files[0]);
+    
+    fetch("/uploads", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      const resultDiv = document.getElementById("upload-result");
+      const url = `${location.origin}${data.url}`;
+      if (data.error) {
+        resultDiv.innerHTML = `<p style="color:red;">${data.error}</p>`;
+      } else {
+        resultDiv.innerHTML = `
+          <p>アップロード成功！</p>
+          <p>画像URL: <a href="${url}" target="_blank">${url}</a></p>
+          <img src="${data.url}" alt="アップロードされたファイル" style="max-width:300px; display:block; margin-top:10px;">
+        `;
+      };
+    })
+    .catch(err => {
+      console.error(err);
+      alert("アップロード中にエラーが発生しました。");
+    });
+  });
+  */
+
+	document.getElementById("image-upload-form").addEventListener("submit", function(e) {
+		e.preventDefault();
+		const fileInput = document.getElementById("image-input");
+		const filenameInput = document.getElementById("filename");
+		if (!fileInput.files[0]) {
+			alert("画像または動画を選択してください。");
+			return;
+		}
+		const filename = filenameInput.value.trim();
+		const invalidPattern = /[\\\/:*?"'<>|]/;
+		if (invalidPattern.test(filename)) {
+			alert("ファイル名に使用できない文字が含まれています。");
+			return;
+		}
+		const formData = new FormData();
+		formData.append("filename", filename);
+		formData.append("image", fileInput.files[0]);
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", "/uploads", true);
+		const progressBar = document.getElementById("upload-progress");
+		const bar = document.getElementById("upload-bar");
+		const percentText = document.getElementById("upload-percent");
+		const resultDiv = document.getElementById("upload-result");
+		xhr.upload.onprogress = function(event) {
+			if (event.lengthComputable) {
+				const percent = Math.round((event.loaded / event.total) * 100);
+				progressBar.style.display = "block";
+				bar.style.width = percent + "%";
+				percentText.textContent = "アップロード中…　現在" + percent + "%";
+			}
+		};
+		xhr.onload = function() {
+			progressBar.style.display = "none";
+			bar.style.width = "0%";
+			percentText.textContent = "";
+			if (xhr.status === 200) {
+				const data = JSON.parse(xhr.responseText);
+				if (data.error) {
+					resultDiv.innerHTML = `<p style="color:red;">${data.error}</p>`;
+				} else {
+					const url = `${location.origin}${data.url}`;
+          const fileType = fileInput.files[0].type;
+
+          let previewTag = "";
+
+          if (fileType.startsWith("video/")) {
+            previewTag = `<video src="${data.url}" controls style="max-width:500px; display:block; margin-top:10px;"></video>`;
+          } else if (fileType.startsWith("audio/")) {
+            previewTag = `<audio src="${data.url}" controls style="max-width:500px; display:block; margin-top:10px;"></audio>`;
+          } else if (fileType.startsWith("image")) {
+            previewTag = `<img src="${data.url}" alt="アップロードされたファイル" style="max-width:500px; display:block; margin-top:10px;">`;
+          } else if (fileType == "application/pdf") {
+            previewTag = `<p>PDFファイルのためプレビュー不可</p>`
+          }
+
+					resultDiv.innerHTML = `<p>アップロード成功！</p><p>画像URL: <a href="${url}" target="_blank">${url}</a></p>${previewTag}`;
+				}
+			} else {
+				alert("アップロード中にエラーが発生しました。");
+			}
+		};
+		xhr.onerror = function() {
+			alert("アップロードに失敗しました。");
+		};
+		xhr.send(formData);
+	});
+</script>  
+
+<%- include("../settings/footer") %>

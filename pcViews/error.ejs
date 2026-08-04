@@ -1,0 +1,65 @@
+<%- include("settings/header") %>
+<%- include("settings/nav") %>
+
+    <div class="main">
+      <img
+        src="<%= assets %>/NotFound.png"
+        width="1000"
+      />
+      <h1 id="text">このページはURLが変更されたか存在しません。</h1>
+      <h3 id="error"></h3>
+      <h3 id="hiddenErrorText">
+        あなた、意図的にこのサイトにアクセスしたかタブの404ボタンをクリックしましたね?ご褒美に履歴を404で埋め尽くしてあげます。
+      </h3>
+      <div style="padding-bottom: 5px;">
+        <a href='/' class="blueButton30">
+          トップページに戻る
+        </a>
+      </div>
+      <div style="padding-bottom: 5px;">
+        <a href="javascript:location.reload()" class="blueButton30" id="errorReload">
+          当該ページに再アクセス(404が再表示される可能性が高いです)
+        </a>
+      </div>
+  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const e = params.get("e");
+
+    if (e) {
+      const accessURL = `${location.origin}/${e}`;
+      document.getElementById("error").textContent = `アクセスしたURL: ${accessURL}`;
+      document.getElementById("hiddenErrorText").style.display = "none";
+    } else if ("<%= ec %>" !== "none"){
+      const accessURL = `${location.origin}/<%= ec %>`
+      document.getElementById("error").textContent = `アクセスしたURL: ${accessURL}`;
+      document.getElementById("hiddenErrorText").style.display = "none";
+      document.getElementById("errorReload").onclick = function () {
+        location.href = accessURL;
+      };
+    } else {
+      document.getElementById("error").style.display = "none";
+      document.getElementById("hiddenErrorText").style.display = "inline";
+      document.getElementById("errorReload").style.display = "none";
+      setInterval(changeUrl, 1000);
+    }
+
+    function changeUrl() {
+      const randomStr = Math.random().toString(36).substring(2, 8);
+      const newUrl =
+        window.location.origin +
+        window.location.pathname +
+        "?id=" +
+        randomStr;
+      window.history.pushState({}, "", newUrl);
+      updateUrlDisplay();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        changeUrl();
+      }
+    });
+  </script>
+
+<%- include("settings/footer") %>

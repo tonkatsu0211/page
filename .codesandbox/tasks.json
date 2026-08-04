@@ -1,0 +1,35 @@
+{
+  "setupTasks": [
+    {
+      "name": "install",
+      "command": "npm install"
+    }
+  ],
+
+  "tasks": {
+    "run": {
+      "name": "push and start",
+      "command": "git add . || true && git commit -m 'update' || true && git push && npm start"
+    },
+    "install": {
+      "name": "install",
+      "command": "rm -rf node_modules package-lock.json || true && npm install --loglevel=error"
+    },
+    "push": {
+      "name": "push",
+      "command": "git add . || true && git commit -m 'update' || true && git push"
+    },
+    "hard push": {
+      "name": "hard push",
+      "command": "git add . || true && git commit -m 'update' || true && git push -uf origin main"
+    },
+    "start": {
+      "name": "start",
+      "command": "npm start"
+    },
+    "node update": {
+      "name": "node update",
+      "command": "nvm install 24 || true && nvm alias default 24 || true && nvm use 24"
+    }
+  }
+}

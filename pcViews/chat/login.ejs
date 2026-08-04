@@ -1,0 +1,60 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+  
+  <% if (version == "1.6.0") { %>
+    <h3 id="loNew" style="color: #ff0000; display: none;">システムのアップデートのため、ログアウトしました。再度ログインしてください。</h3>
+  <% } %>
+  <h3 id="lo" style="color: #ff0000; display: none;">ログアウトしました。</h3>
+  <h3 id="f" style="color: #ff0000; display: none;">チャットを使用するにはログインが必要です。ログインしてください。<br>※上の｢tonkatsuチャット｣のボタンを押すとログイン情報が復元される場合があります。</h3>
+  <h3 id="e" style="color: #ff0000; display: none;"><%= err %></h3>
+  <br id="loBr" style="display: none;">
+  <form method="POST" action="/chat/login">
+  <h2>
+    <input class="loginText" type="text" name="username" placeholder="ユーザー名" required>
+  </h2>
+  <h2>
+    <input class="loginText" type="password" name="password" placeholder="パスワード" required>
+  </h2>
+    <label>
+      <input type="checkbox" name="save">ログインデータを保存する(推奨)</label>
+  <h2>
+    <button class="blueButton20" type="submit">ログイン</button>
+  </h2>
+  <br>
+  <a href="terms" style="color: #000000;">利用規約</a>
+  <br>
+  <br>
+  <p>
+    まだアカウントをお持ちでない方は<a href="signup" style="color: #000000; padding: 0; margin: 0;">こちら</a>
+  </p>
+</form>
+  <br>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const f = params.get("f");
+  
+  if ( "<%= err %>" !== "none" ){
+    document.getElementById("e").style.display = "block";
+    document.getElementById("loBr").style.display = "block";
+  }
+  if ( f == "chat" ){
+    document.getElementById("f").style.display = "block";
+    document.getElementById("loBr").style.display = "block";
+  }
+  if ( f == "logout" ){
+    document.getElementById("lo").style.display = "block";
+    document.getElementById("loBr").style.display = "block";
+  }
+</script>
+<% if (version == "1.6.0") { %>
+  <script>
+      if ( f == "logouted" ){
+    document.getElementById("loNew").style.display = "block";
+    document.getElementById("loBr").style.display = "block";
+  }
+  </script>
+<% } %>
+
+<%- include("../settings/footer") %>

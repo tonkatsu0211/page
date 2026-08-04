@@ -1,6 +1,21 @@
 </div>
 <script src="/eruda.js"></script>
 <script>
+  function getCookie(name) {
+    const cookies = document.cookie.split(';').map(c => c.trim());
+    for (const cookie of cookies) {
+      if (cookie.startsWith(name + '=')) {
+        return decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    }
+    return null;
+  }
+
+  function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+  }
+
   let useEruda = localStorage.getItem("eruda") || false;
   if (useEruda == "true") eruda.init();
   const isMac = /Mac|iPhone|iPad/.test(navigator.userAgent);

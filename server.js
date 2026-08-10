@@ -1103,7 +1103,7 @@ app.use((req, res) => {
     em: "false",
     version,
     last_update,
-    origin: "https://wf8xw3-3000.csb.app",
+    origin: "https://dnw22h-3000.csb.app",
     tag: "error",
     assets: "https://y3sjh2.csb.app",
   });

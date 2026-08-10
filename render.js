@@ -1,7 +1,7 @@
 const path = require('path');
 const packageJsonPath = path.join(__dirname, 'package.json');
 const { version, last_update } = require(packageJsonPath);
-const origin = "https://wf8xw3-3000.csb.app"
+const origin = "https://dnw22h-3000.csb.app"
 const assets = "https://y3sjh2.csb.app"
 
 function render(req, res, view, data = {},  tag = "", locate = "") {

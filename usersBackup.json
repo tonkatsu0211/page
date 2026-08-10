@@ -1388,6 +1388,36 @@
       "isAdmin": "false",
       "color": "#aaa",
       "uid": "'UID'-80b4bee1-d198-4136-bbec-9c6206b88802"
+    },
+    "ぶんまお": {
+      "passwordHash": "$2b$10$Oeh1ZfhtkqEid6qvYJynv.GnaRunjWkBHhwHgQHGEIwTXTQLLL5J.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-41805cf7-f429-419b-aa50-7b0c13aff6d9"
+    },
+    "Dream_so": {
+      "passwordHash": "$2b$10$dobG9vTsyNrsZDRzaqeJ1ujpPKHfTcPx3p6/Ulj55hfou5Jj6uGFe",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-ef73897f-fd5d-46dc-b4a4-a536e964e634"
+    },
+    "るいなんだよ": {
+      "passwordHash": "$2b$10$OHEXs/cENlx1vc02yAsqZOWG9cAMELbYOVR6iC.xS3WARxhD55eSC",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-0e3c60f9-9283-48d4-ae81-157fb59ade04"
+    },
+    "はくさい": {
+      "passwordHash": "$2b$10$YXM0wn9QJCmIsV6CmuJT.ufoYLHknTVhbazVbMea6jVJ/mglFqXn.",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-155d7fd1-734f-42f1-980e-155829de8de1"
+    },
+    "sironeko": {
+      "passwordHash": "$2b$10$RTihGLRfxQdff1rQCgMZVuUdDYCETJWa.NsyaPfDnMOXijHlZxyd6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5fcbf1d0-98e9-4e6d-b2e0-ce7f926b1ae4"
     }
   }
 }

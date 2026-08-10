@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
-const inv = ["https://qssx73-3000.csb.app"];
+const inv = ["https://qssx73-3000.csb.app", "https://qwn8gt-3000.csb.app"];
 const htmlPath = path.join(__dirname, "../public/temp.html");
 
 const user_agent = 
@@ -10,13 +10,13 @@ const user_agent =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
 
 async function getVideo(id) {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     try{
-      const r = await fetch(`${inv[0]}/api/v1/videos/${id}`);
-      res = await r.json();
-      fs.writeFileSync(htmlPath, JSON.stringify(r, null, 2));
+      const r = await fetch(`${inv[Math.floor(i / 2)]}/api/v1/videos/${id}`);
+      const re = await r.json();
+      fs.writeFileSync(htmlPath, JSON.stringify(re, null, 2));
       if (!res.formatStreams) throw new Error("formatStreams not found");
-      return res;
+      return re;
     } catch (e) {
       console.error(`error: ${e.message}`);
     }
@@ -37,7 +37,7 @@ function sanitize(name) {
 router.get("/yt/videos/:id", async (req, res) => {
   const videoId = req.params.id;
   try{
-    if (videoId.length != 11) throw new Error("videoId not vailed");
+    if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) throw new Error("videoId not vailed");
     const response = await getVideo(videoId);
     res.json(response);
   } catch (e) {

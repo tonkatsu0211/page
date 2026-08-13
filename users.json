@@ -1418,6 +1418,12 @@
       "isAdmin": "false",
       "color": "#aaa",
       "uid": "'UID'-5fcbf1d0-98e9-4e6d-b2e0-ce7f926b1ae4"
+    },
+    "ズッキーニ1009": {
+      "passwordHash": "$2b$10$OEqH4MUZmHTIwPKVK1SXueu9NaEb6ePDBfQeJjar3gPetqdGbiDA6",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-8dbed715-f796-47a0-b599-ab2d1c644818"
     }
   }
 }

@@ -5,6 +5,10 @@
       <p style="font-size: 20px; padding-bottom: 0; margin: 0;">
         ※このボタンを押すと各プロジェクトの場所に移動します。
       </p>
+        <a class="blueButton25" id="project6Button" href="#6" style="padding-top: 0; margin: 0; background: linear-gradient(to bottom, #d59eff, #8f00ff) !important; color: #fbff8d !important; font-weight: bold !important;">
+          ストリートファイターS V1.0
+        </a>
+        <br><br>
         <a class="blueButton25" id="project5Button" href="#5" style="padding-top: 0; margin: 0; background-color: #f22020 !important; color: #ffffe8 !important; font-weight: bold !important;">
           京急線シミュレーター v1.8.18a
         </a>
@@ -21,6 +25,95 @@
         <a class="blueButton25" id="project1Button" href="#1" style="padding-top: 0; margin: 0; background-color: #f22020 !important; color: #ffffe8 !important; font-weight: bold !important;">
           【京急】京急パタパタ再現 V1.0.1【拡散希望】
         </a>
+        <br>
+        <div class="project6" id="project6">
+          <br>
+          <h2 id="p6Title">ストリートファイターS V1.0</h2>
+          <p class="option-left10-underline">2026/8/13公開 2025/8/14掲載</p>
+          <br>
+          <p class="smallP">
+            サムネイルなし
+          </p>
+          <br>
+          <br>
+          <button
+            class="scratchButton"
+            id="p6PreviewButton"
+            onclick="p6preview()">
+            プレビュー
+          </button>
+          <iframe 
+            data-src="https://mirror.turbowarp.xyz/embed?interpolate&hqpen&offscreen&limitless&size=640x360#1368229523"
+            allowtransparency="true"
+            width="660"
+            height="420"
+            frameborder="0"
+            scrolling="no"
+            class="scPreview"
+            id="p6Preview"
+            allowfullscreen>
+          </iframe>
+          <div class="scPreTutorial" id="p6Tutorial">
+            <h3>
+              デフォルトの操作
+            </h3>
+            <p>
+              <strong>1P側</strong>
+              wasd...移動<br>
+              r...パンチ(P)<br>
+              t...キック(K)<br>
+              g...スラッシュ(S)<br>
+              <strong>2P側</strong><br>
+              矢印キー...移動<br>
+              m...パンチ(P)<br>
+              ,...キック(K)<br>
+              (.)...スラッシュ(S)<br>
+              <strong>コマンド</strong><br>
+              ↓↘︎→P...波動拳<br>
+              →↓↘︎P...昇竜拳<br>
+              ↓↘︎→↓↘︎→P...真空波動拳<br>
+              対戦中に(p)...メニュー<br>
+              パンチ・キックは前後下キーと同時押ししたり、ジャンプ中に押すと攻撃が変わります。
+              スラッシュはジャンプ中のみ発動します。
+            </p>
+          </div>
+          <br>
+          <br>
+          <p>
+            Scratchで最も知名度があるであろう格ゲーをリミックス!
+          </p><p>
+            入力システム・UI・演出などを本家に寄せ、さらに640x360の画面に対応し、楽しさを向上!
+          </p><p>
+            CPU対戦もオフライン2P対戦もある、本家ファンにこそぜひ遊んでいただきたい作品です!
+          </p>
+          <div style="padding-bottom: 5px;">
+            <a
+              class="scratchButton"
+              href='https://scratch.mit.edu/projects/1368229523'
+              target='_blank'
+            >
+              Scratchでプレイ
+            </a>
+          </div>
+          <div style="padding-bottom: 5px;">
+            <a
+              class="turbowarpButton"
+              href='https://turbowarp.org/1368229523?interpolate&hqpen&offscreen&clones=Infinity&limitless'
+              target='_blank'
+            >
+              Turbowarpでプレイ
+            </a>
+          </div>
+          <div style="padding-bottom: 5px;">
+            <a
+              class="turbowarpButton"
+              href='https://mirror.turbowarp.xyz/?interpolate&hqpen&offscreen&clones=Infinity&limitless#1368229523'
+              target='_blank'
+            >
+              ミラーTurbowarpでプレイ
+            </a>
+          </div>
+        </div>
         <br>
         <div class="project5" id="project5">
           <br>
@@ -429,6 +522,14 @@
   <script>
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    function p6preview() {
+      const p6Pv = document.getElementById("p6Preview");
+      p6Pv.src = p6Pv.dataset.src;
+      p6Pv.style.display = "inline";
+      document.getElementById("p6Tutorial").style.display = "inline";
+      document.getElementById("p6PreviewButton").style.display = "none";
+    }
 
     function p5preview() {
       const p5Pv = document.getElementById("p5Preview");

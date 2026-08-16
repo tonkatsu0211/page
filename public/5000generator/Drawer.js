@@ -186,11 +186,22 @@ class Drawer {
     }
 
     downloadImage(canvas) {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = `5000choyen_${Date.now()}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+      console.log('downloadImage start');
+  
+      const dataURL = canvas.toDataURL('image/png');
+  
+      console.log('dataURL generated:', dataURL.length);
+  
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = `5000choyen_${Date.now()}.png`;
+  
+      document.body.appendChild(link);
+  
+      console.log('before link.click()');
+      link.click();
+      console.log('after link.click()');
+  
+      document.body.removeChild(link);
+  }
 }

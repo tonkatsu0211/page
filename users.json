@@ -1424,6 +1424,18 @@
       "isAdmin": "false",
       "color": "#aaa",
       "uid": "'UID'-8dbed715-f796-47a0-b599-ab2d1c644818"
+    },
+    "るいなんだよねー": {
+      "passwordHash": "$2b$10$D8sygYujsgtGFhZwHecV2Ohg2OJhoArfAurX54EJZs9Tkj0qU7VxS",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-cf6ae9f6-e62e-4c82-9a62-0e4fcc93cd6b"
+    },
+    "re-remone4892": {
+      "passwordHash": "$2b$10$ssd3vMLfStAoJ.I3jYIL7.tqxjJ6PQQJy/2AGRXYFC98eKnO7vAuy",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-57cc9f53-aa22-485e-9ddf-02383471f465"
     }
   }
 }

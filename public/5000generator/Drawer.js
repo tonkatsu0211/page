@@ -185,28 +185,50 @@ class Drawer {
         }
     }
 
-  downloadImage(canvas) {
-    console.log('downloadImage start');
-
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        console.error('toBlob failed');
-        return;
+    downloadImage(canvas) {
+      console.log('downloadImage start');
+  
+      // ユーザー操作の直後に開く
+      const newWindow = window.open('', '_blank');
+  
+      if (!newWindow) {
+          console.error('Popup was blocked');
+          showToast('ポップアップがブロックされました', 'error');
+          return;
       }
-
-      console.log('blob:', blob.size, blob.type);
-
-      const url = URL.createObjectURL(blob);
-
-      console.log('blob URL:', url);
-
-      window.open(url, '_blank');
-
-      // すぐ revoke するとSafariで開けないことがあるので、
-      // しばらく残しておく
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-      }, 60000);
-    }, 'image/png');
+  
+      newWindow.document.write(`
+          <html>
+          <head>
+              <title>画像を生成中...</title>
+          </head>
+          <body style="margin:0; display:flex; justify-content:center; align-items:center;">
+              画像を生成中...
+          </body>
+          </html>
+      `);
+  
+      canvas.toBlob((blob) => {
+          if (!blob) {
+              console.error('toBlob failed');
+              newWindow.close();
+              return;
+          }
+  
+          console.log('blob:', blob.size, blob.type);
+  
+          const url = URL.createObjectURL(blob);
+          
+          console.log('blob URL:', url);
+  
+          // すでに開いているタブを画像へ移動
+          newWindow.location.href = url;
+  
+          // 画像を表示する時間を確保
+          setTimeout(() => {
+              URL.revokeObjectURL(url);
+          }, 60000);
+  
+      }, 'image/png');
   }
 }

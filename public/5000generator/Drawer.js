@@ -185,13 +185,28 @@ class Drawer {
         }
     }
 
-    downloadImage(canvas) {
-      console.log('downloadImage start');
-  
-      const dataURL = canvas.toDataURL('image/png');
-  
-      console.log('dataURL generated:', dataURL.length);
-  
-      window.open(dataURL, '_blank');
+  downloadImage(canvas) {
+    console.log('downloadImage start');
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        console.error('toBlob failed');
+        return;
+      }
+
+      console.log('blob:', blob.size, blob.type);
+
+      const url = URL.createObjectURL(blob);
+
+      console.log('blob URL:', url);
+
+      window.open(url, '_blank');
+
+      // すぐ revoke するとSafariで開けないことがあるので、
+      // しばらく残しておく
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 60000);
+    }, 'image/png');
   }
 }

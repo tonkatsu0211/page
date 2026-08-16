@@ -394,6 +394,7 @@ a.scratchButton {
   box-sizing: border-box;
 }
 .turbowarpButton {
+  font-family: "Corporate Logo", sans-serif;
   padding: 4px 6px;
   border: 2px solid #333333;
   background-color: #ff4c4d;

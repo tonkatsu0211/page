@@ -54,7 +54,20 @@ function onTextChange() {
 
 // グローバル関数（HTMLから呼び出されるため）
 function saveImage() {
-    if (drawer) {
-        drawer.saveImage();
-    }
+  console.log('saveImage() called');
+  console.log('drawer:', drawer);
+
+  if (drawer) {
+    console.log('calling drawer.saveImage()');
+
+    drawer.saveImage()
+      .then(() => {
+        console.log('drawer.saveImage() finished');
+      })
+      .catch((error) => {
+        console.error('drawer.saveImage() rejected:', error);
+      });
+  } else {
+    console.error('drawer is null');
+  }
 }

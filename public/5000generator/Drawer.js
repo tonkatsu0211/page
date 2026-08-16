@@ -128,6 +128,7 @@ class Drawer {
     }
 
     async saveImage() {
+      console.log('Drawer.saveImage() start');
         // レート制限チェック
         const now = Date.now();
         if (now - this.lastSaveTime < CONFIG.RATE_LIMIT_MESSAGE_DURATION) {

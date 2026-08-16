@@ -185,50 +185,38 @@ class Drawer {
         }
     }
 
-    downloadImage(canvas) {
-      console.log('downloadImage start');
-  
-      // ユーザー操作の直後に開く
-      const newWindow = window.open('', '_blank');
-  
-      if (!newWindow) {
-          console.error('Popup was blocked');
-          showToast('ポップアップがブロックされました', 'error');
-          return;
+  downloadImage(canvas) {
+    console.log('downloadImage start');
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        console.error('toBlob failed');
+        showToast('画像の生成に失敗しました', 'error');
+        return;
       }
-  
-      newWindow.document.write(`
-          <html>
-          <head>
-              <title>画像を生成中...</title>
-          </head>
-          <body style="margin:0; display:flex; justify-content:center; align-items:center;">
-              画像を生成中...
-          </body>
-          </html>
-      `);
-  
-      canvas.toBlob((blob) => {
-          if (!blob) {
-              console.error('toBlob failed');
-              newWindow.close();
-              return;
-          }
-  
-          console.log('blob:', blob.size, blob.type);
-  
-          const url = URL.createObjectURL(blob);
-          
-          console.log('blob URL:', url);
-  
-          // すでに開いているタブを画像へ移動
-          newWindow.location.href = url;
-  
-          // 画像を表示する時間を確保
-          setTimeout(() => {
-              URL.revokeObjectURL(url);
-          }, 60000);
-  
-      }, 'image/png');
+
+      console.log('blob:', blob.size, blob.type);
+
+      const url = URL.createObjectURL(blob);
+
+      console.log('blob URL:', url);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `5000choyen_${Date.now()}.png`;
+
+      document.body.appendChild(link);
+
+      console.log('before link.click()');
+      link.click();
+      console.log('after link.click()');
+
+      document.body.removeChild(link);
+
+      // ダウンロード開始後にURLを解放
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 60000);
+    }, 'image/png');
   }
 }

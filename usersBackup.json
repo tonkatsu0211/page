@@ -1436,6 +1436,12 @@
       "isAdmin": "false",
       "color": "#aaa",
       "uid": "'UID'-57cc9f53-aa22-485e-9ddf-02383471f465"
+    },
+    "進撃の母ちゃん": {
+      "passwordHash": "$2b$10$V8VD/JgHCCLvjREemNy0VOxe8j2eNsu4Yy6CEGH4JsorGvO590dpG",
+      "isAdmin": "false",
+      "color": "#aaa",
+      "uid": "'UID'-5a3835c1-5d39-4d82-bfb4-a807ad05ffc5"
     }
   }
 }

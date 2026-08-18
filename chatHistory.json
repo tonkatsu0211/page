@@ -7872,5 +7872,24 @@
     "superAdmin": false,
     "replyTo": null,
     "replyMsg": null
+  },
+  {
+    "id": "58cb4d9b-e63c-43d8-95a6-6b2a8e89cffe",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/08/18 14:28:53"
+  },
+  {
+    "id": "9b629eb0-3239-4ad2-ba8f-f06726e3863e",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "夜まで待って",
+    "timestamp": "2026/8/18 14:30:19",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": "b34df640-6cff-44ba-9c2f-a658670b0092",
+    "replyMsg": "\\photo /uploads/1787022934668-rlbne3x2eui.png|300\\ボバーン"
   }
 ]

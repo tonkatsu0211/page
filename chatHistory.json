@@ -7702,5 +7702,175 @@
     "superAdmin": false,
     "replyTo": "bca2fd1d-8f3d-4dcf-85fb-abb0c8167756",
     "replyMsg": "わいはドラゴンボール"
+  },
+  {
+    "id": "9b107c0f-c1d6-49d4-8bfa-b0be021db9fd",
+    "username": "systemC2",
+    "message": "_tonkatsu_が接続しました",
+    "timestamp": "2026/08/18 11:21:06"
+  },
+  {
+    "id": "bb3df4de-2225-48c1-aed5-7ff33775a4f6",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "同じ",
+    "timestamp": "2026/8/18 11:21:28",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": "b62daace-4729-4def-b890-d95aaae3bdfa",
+    "replyMsg": "URL isどこ"
+  },
+  {
+    "id": "b0ee7c3b-2ecb-4678-9e44-9eccd80e751b",
+    "username": "_tonkatsu_",
+    "uid": "'UID'-tonkatsu",
+    "message": "これ",
+    "timestamp": "2026/8/18 11:21:42",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": true,
+    "superAdmin": false,
+    "replyTo": "7423024f-7005-4f51-8fbe-bc3b3d4335f1",
+    "replyMsg": "一応Railway版もあるけど、クレジット切れで落ちる可能性がある\n\\url https://tonkatube.up.railway.app\\"
+  },
+  {
+    "id": "b4ac8490-9473-4ae9-a26f-7adcc015f1a9",
+    "username": "systemC2",
+    "message": "_tonkatsu_が切断しました",
+    "timestamp": "2026/08/18 11:21:46"
+  },
+  {
+    "id": "c9346117-4ee1-4870-aae6-70277ed5bb8b",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/08/18 12:15:06"
+  },
+  {
+    "id": "fa9fc9ab-201e-460f-bacb-2e533b81cab8",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/08/18 12:15:15"
+  },
+  {
+    "id": "fa40229b-fec4-40ce-9f06-ef9652d95cec",
+    "username": "systemC2",
+    "message": "medamayakiが再接続しました",
+    "timestamp": "2026/08/18 12:15:20"
+  },
+  {
+    "id": "b34df640-6cff-44ba-9c2f-a658670b0092",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "\\photo /uploads/1787022934668-rlbne3x2eui.png|300\\ボバーン",
+    "timestamp": "2026/8/18 12:15:44",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "11036ce0-3f7e-4cb2-a77b-27bc0f5983ac",
+    "username": "medamayaki",
+    "uid": "'UID'-c19db983-21b1-42ae-b61b-9c689a6ee383",
+    "message": "ワタシは50m13秒",
+    "timestamp": "2026/8/18 12:17:07",
+    "ipv4": "10.42.1.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "bed306d0-0caa-4105-be8b-d774a81d560c",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/08/18 12:17:10"
+  },
+  {
+    "id": "c5aad294-5af8-4043-8334-20645922632b",
+    "username": "systemC2",
+    "message": "medamayakiが接続しました",
+    "timestamp": "2026/08/18 12:46:19"
+  },
+  {
+    "id": "77b80fbd-b175-4afb-ad1c-2be61870d0fe",
+    "username": "systemC2",
+    "message": "medamayakiが切断しました",
+    "timestamp": "2026/08/18 12:46:25"
+  },
+  {
+    "id": "645a6f80-cb49-4b78-a294-fcef78aaad58",
+    "username": "systemC2",
+    "message": "ズッキーニ1009が接続しました",
+    "timestamp": "2026/08/18 13:05:25"
+  },
+  {
+    "id": "bfea4e03-ce1b-4355-9056-c8555072979a",
+    "username": "systemC2",
+    "message": "ズッキーニ1009が切断しました",
+    "timestamp": "2026/08/18 13:10:33"
+  },
+  {
+    "id": "aa72718b-60ab-4dc9-aa6c-1f87b61edb00",
+    "username": "systemC2",
+    "message": "ズッキーニ1009が接続しました",
+    "timestamp": "2026/08/18 13:10:40"
+  },
+  {
+    "id": "edf7b116-a157-46a2-b5a0-d59625602311",
+    "username": "ズッキーニ1009",
+    "uid": "'UID'-8dbed715-f796-47a0-b599-ab2d1c644818",
+    "message": "？？？",
+    "timestamp": "2026/8/18 13:10:54",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": "11036ce0-3f7e-4cb2-a77b-27bc0f5983ac",
+    "replyMsg": "ワタシは50m13秒"
+  },
+  {
+    "id": "9761a2d6-982b-4140-9c5b-561c79051efc",
+    "username": "ズッキーニ1009",
+    "uid": "'UID'-8dbed715-f796-47a0-b599-ab2d1c644818",
+    "message": "ワタシは50m7秒",
+    "timestamp": "2026/8/18 13:11:22",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "32afb174-92fa-43d2-9049-a292839453d2",
+    "username": "ズッキーニ1009",
+    "uid": "'UID'-8dbed715-f796-47a0-b599-ab2d1c644818",
+    "message": "嘘",
+    "timestamp": "2026/8/18 13:11:29",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
+  },
+  {
+    "id": "72ba4292-ce30-4b57-ae12-c452648bb4b3",
+    "username": "ズッキーニ1009",
+    "uid": "'UID'-8dbed715-f796-47a0-b599-ab2d1c644818",
+    "message": "7.9",
+    "timestamp": "2026/8/18 13:11:35",
+    "ipv4": "10.42.0.0",
+    "ipv6": "",
+    "isAdmin": false,
+    "superAdmin": false,
+    "replyTo": null,
+    "replyMsg": null
   }
 ]

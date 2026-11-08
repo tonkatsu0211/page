@@ -27,7 +27,8 @@
     "sqlite3": "^5.0.2",
     "uuid": "^9.0.0",
     "wav-decoder": "latest",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "pg": "^8.13.0"
   },
   "license": "CC-BY-NC-SA 4.0",
   "author": "_tonkatsu_ / tonkatsu0211"

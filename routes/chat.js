@@ -2,12 +2,8 @@ const express = require("express");
 const app = express();
 const router = express.Router();
 const path = require("path");
-const fs = require("fs");
 const session = require("express-session")
-const usersPath = path.join(__dirname, "..", "users.json");
-let usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
-const votedPath = path.join(__dirname, "..", "vote.json");
-let votedData = JSON.parse(fs.readFileSync(votedPath, "utf-8"));
+const db = require("../db");
 const bcrypt = require("bcrypt");
 const http = require("http").createServer(app);
 const { v4: uuidv4 } = require("uuid");
@@ -34,34 +30,18 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-function getUsernameByUid(uid) {
-  const usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
-  for (const [username, info] of Object.entries(usersData.users)) {
-    if (info.uid === uid) return username;
-  }
-  return null;
-}
+// async ハンドラ内の例外を Express のエラー処理へ渡す
+const ah = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
-const bannedUsersPath = path.join(__dirname, "..", "bannedUsers.json");
-
-let bannedUsers;
-
-function loadBannedUsers() {
+io.on("connection", async (socket) => {
   try {
-    const data = fs.readFileSync(bannedUsersPath, "utf8");
-    bannedUsers = Array.from(JSON.parse(data).users);
-  } catch (e) {
-    console.error(`loadBannedUsers error: ${e.message}`);
-  }
-}
-
-loadBannedUsers();
-
-io.on("connection", (socket) => {
-  const username = socket.handshake.auth.username;
-  if (bannedUsers.includes(username)) {
-    socket.emit("redirect", "/chat/ban");
-    socket.disconnect(true);
+    const username = socket.handshake.auth.username;
+    if (await db.isBanned(username)) {
+      socket.emit("redirect", "/chat/ban");
+      socket.disconnect(true);
+    }
+  } catch (err) {
+    console.error(`socket ban check error: ${err.message}`);
   }
 });
 
@@ -73,12 +53,14 @@ io.on("connection", (socket) => {
   }
 });*/
 
-router.post("/login", async (req, res) => {
+router.post("/login", ah(async (req, res) => {
   const { username, password, save} = req.body;
-  const usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
-  const users = usersData.users;
 
-  if (!users[username]) {
+  // DBに存在せず users.json にだけ存在するユーザーは、DBへデータを移してからログイン処理を続ける
+  // (uid が未発行のユーザーには、ここで uid も発行される)
+  const user = await db.findUserOrMigrate(username);
+
+  if (!user) {
     return render(
       req,
       res,
@@ -94,22 +76,21 @@ router.post("/login", async (req, res) => {
     );
   }
 
-  const match = await bcrypt.compare(password, users[username].passwordHash);
-
-  loadBannedUsers();
+  const match = await bcrypt.compare(password, user.passwordHash);
 
   if (match) {
-    if (bannedUsers.includes(username)) {
+    // 元のコードと同じくユーザー名で判定(BANはuidで保存されているため、実際のBAN判定は下のミドルウェアがuidで行う)
+    if (await db.isBanned(username)) {
       res.cookie("ban", "true", { httpOnly: false, path: "/" });
       return res.redirect("/chat/ban");
     }
 
     if (save) {
       res.cookie("user", username, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
-      res.cookie("uid", usersData.users[username].uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
+      res.cookie("uid", user.uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
       res.cookie(
         "isAdmin",
-        usersData.users[username].isAdmin === "true" ? "true" : "false",
+        user.isAdmin ? "true" : "false",
         { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 }
       );
       res.cookie("ban", "false", { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
@@ -117,14 +98,14 @@ router.post("/login", async (req, res) => {
         "Login:",
         username,
         "isAdmin:",
-        usersData.users[username].isAdmin
+        user.isAdmin
       );
     } else {
       res.cookie("user", username, { httpOnly: false, path: "/", maxAge: 2000 });
-      res.cookie("uid", usersData.users[username].uid, { httpOnly: false, path: "/", maxAge: 2000 });
+      res.cookie("uid", user.uid, { httpOnly: false, path: "/", maxAge: 2000 });
       res.cookie(
         "isAdmin",
-        usersData.users[username].isAdmin === "true" ? "true" : "false",
+        user.isAdmin ? "true" : "false",
         { httpOnly: false, path: "/", maxAge: 2000 }
       );
       res.cookie("ban", "false", { httpOnly: false, path: "/", maxAge: 2000 });
@@ -132,7 +113,7 @@ router.post("/login", async (req, res) => {
         "Login:",
         username,
         "isAdmin:",
-        usersData.users[username].isAdmin
+        user.isAdmin
       );
     }
     console.log("login success");
@@ -159,24 +140,14 @@ router.post("/login", async (req, res) => {
       "chat"
     );
   }
-});
+}));
 
-router.post("/signup", async (req, res) => {
-  const usersFilePath = path.join(__dirname, "..", "users.json");
-  let allUsers;
-
-  try {
-    allUsers = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
-  } catch (err) {
-    console.error("users.json 読み込み失敗:", err);
-    return res.status(500).send("ユーザーデータの読み込みに失敗しました。");
-  }
-
-  const users = allUsers.users;
+router.post("/signup", ah(async (req, res) => {
   const { username, password, save } = req.body;
   const invalidName = /["' 　]/g;
 
-  if (users[username]) {
+  // users.json にだけ存在する(未移行の)ユーザー名も「既に存在する」として扱う
+  if (await db.findUserOrMigrate(username)) {
     return render(
       req,
       res,
@@ -213,7 +184,6 @@ router.post("/signup", async (req, res) => {
   };
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const isAdmin = "false";
   const uid = "'UID'-" + uuidv4();
   /*const cryptoData = await generateCryptoData(password);
   publicKey = cryptoData.publicKey;
@@ -221,15 +191,31 @@ router.post("/signup", async (req, res) => {
   salt = cryptoData.salt;
   iv = cryptoData.iv;
   users[username] = { passwordHash, isAdmin, color: "#aaa", uid, publicKey, privateKey, salt, iv };*/
-  users[username] = { passwordHash, isAdmin, color: "#aaa", uid };
 
   try {
-    fs.writeFileSync(usersFilePath, JSON.stringify({ users }, null, 2));
-    fs.writeFileSync(
-      path.join(__dirname, "..", "usersBackup.json"),
-      JSON.stringify({ users }, null, 2)
-    );
-    console.log("ユーザー登録＆バックアップ成功:", users[username]);
+    const created = await db.createUser({
+      username,
+      passwordHash,
+      uid,
+      isAdmin: false,
+      color: "#aaa",
+    });
+    if (!created) {
+      return render(
+        req,
+        res,
+        "signup",
+        {
+          title: "サインアップ",
+          page: "signup",
+          top: "サインアップ",
+          err: "既に存在するユーザー名です",
+        },
+        tag,
+        "chat"
+      );
+    }
+    console.log("ユーザー登録成功:", { username, uid });
   } catch (err) {
     console.error("ユーザーデータ保存失敗:", err);
     return res.status(500).send("ユーザーデータの保存に失敗しました。");
@@ -248,61 +234,51 @@ router.post("/signup", async (req, res) => {
     //res.cookie("privateKey", rawPrivateKey, { httpOnly: false, path: "/", maxAge: 2000 });
   }
   res.redirect("/chat/main");
-});
+}));
 
-router.use((req, res, next) => {
+router.use(ah(async (req, res, next) => {
   const skipPaths = ["/rules", "/terms", "/ban"];
   if (skipPaths.some((p) => req.path.startsWith(p))) return next();
 
   let ban = req.cookies.ban;
   const username = req.cookies.user != "system:logouted" ? req.cookies.user : "noUser";
 
-  const usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
-
-  if (usersData.users[username] && !usersData.users[username].uid) {
-    usersData.users[username].uid = "'UID'-" + uuidv4();
-    fs.writeFileSync(usersPath, JSON.stringify(usersData, null, 2));
-    res.cookie("uid", usersData.users[username].uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 })
-    console.log(`UIDを発行: ${username} => ${usersData.users[username].uid}`);
+  // DBに無く users.json にだけ存在するユーザーはここでDBへ移す。
+  // uid が未発行のユーザーには、移行時に uid を発行する(従来のuid付与処理と同じ)。
+  const user = username != "noUser" ? await db.findUserOrMigrate(username) : null;
+  if (user) {
+    res.cookie("uid", user.uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 })
   }
 
-  let uid;
-  if (username != "noUser" && usersData.users[username]) {
-    uid = usersData.users[username].uid;
-    res.cookie("uid", uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 })
-  }
-
-  loadBannedUsers();
+  const isBanned = await db.isBanned(req.cookies.uid);
 
   if (!ban) {
     res.cookie("ban", "false", { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000});
     ban = "false";
-  } else if (bannedUsers.includes(req.cookies.uid)) {
+  } else if (isBanned) {
     res.cookie("ban", "true", { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000});
   } else {
     res.cookie("ban", "false", { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000});
     ban = "false";
   }
-  console.log("uid:", req.cookies.uid, ", username:", req.cookies.user, ", ban:", req.cookies.ban, ", ban:", bannedUsers.includes(req.cookies.uid));
-  if (bannedUsers.includes(req.cookies.uid)) {
+  console.log("uid:", req.cookies.uid, ", username:", req.cookies.user, ", ban:", req.cookies.ban, ", ban:", isBanned);
+  if (isBanned) {
     res.cookie("ban", "true", { httpOnly: false, path: "/" });
     return res.status(403).redirect("/chat/ban");
   } else {
     res.cookie("ban", "false", { httpOnly: false, path: "/" });
     next();
   }
-});
+}));
 
 
 
-router.get("/", (req, res) => {
-  const usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
+router.get("/", ah(async (req, res) => {
   const from = req.query.f || "";
   console.log("req.query.f: ", req.query.f);
   console.log("from: ", from);
-  loadBannedUsers();
   if (req.cookies.uid && req.cookies.uid != "'logouted'" && req.cookies.uid.includes("'UID'")) {
-    if (bannedUsers.includes(req.cookies.uid)) {
+    if (await db.isBanned(req.cookies.uid)) {
       res.cookie("ban", "true", { httpOnly: false, path: "/" });
       return res.status(403).redirect("/chat/ban");
     } else {
@@ -315,12 +291,16 @@ router.get("/", (req, res) => {
     }
   } else if (req.cookies.user) {
     if (req.cookies.user == "system:logouted") {
-      res.redirect("/chat/login?f=logouted")
+      return res.redirect("/chat/login?f=logouted")
     }
-    console.log("usersData.users[req.cookies.user].uid:", usersData.users[req.cookies.user].uid)
-    res.cookie("uid", usersData.users[req.cookies.user].uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
+    const user = await db.findUserOrMigrate(req.cookies.user);
+    if (!user) {
+      return res.redirect("/chat/login?f=chat");
+    }
+    console.log("user.uid:", user.uid)
+    res.cookie("uid", user.uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
     
-    if (bannedUsers.includes(req.cookies.uid)) {
+    if (await db.isBanned(user.uid)) {
       res.cookie("ban", "true", { httpOnly: false, path: "/" });
       return res.status(403).redirect("/chat/ban");
     } else {
@@ -346,18 +326,20 @@ router.get("/", (req, res) => {
       "chat"
     );
   }
-});
+}));
 
-router.get(["/main", "/main.html"], (req, res) => {
-  let usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
+router.get(["/main", "/main.html"], ah(async (req, res) => {
   if (!req.cookies.uid || !req.cookies.uid.includes("'UID'")) {
     if (req.cookies.user) {
-      console.log("main: usersData.users[req.cookies.user].uid:", usersData.users[req.cookies.user].uid)
-      res.cookie("uid", usersData.users[req.cookies.user].uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
-      console.log("uid cookie updated:", req.cookies.uid);
+      const user = await db.findUserOrMigrate(req.cookies.user);
+      if (!user) {
+        return res.redirect("/chat/login?f=chat");
+      }
+      console.log("main: user.uid:", user.uid)
+      res.cookie("uid", user.uid, { httpOnly: false, path: "/", maxAge: 365 * 24 * 60 * 60 * 1000 });
+      console.log("uid cookie updated:", user.uid);
 
-      loadBannedUsers();
-      if (bannedUsers.includes(req.cookies.uid)) {
+      if (await db.isBanned(user.uid)) {
         res.cookie("ban", "true", { httpOnly: false, path: "/" });
         return res.status(403).redirect("/chat/ban");
       } else {
@@ -368,7 +350,7 @@ router.get(["/main", "/main.html"], (req, res) => {
       return res.redirect("/chat/login?f=chat");
     }
   } else {
-    if (bannedUsers.includes(req.cookies.uid)) {
+    if (await db.isBanned(req.cookies.uid)) {
       res.cookie("ban", "true", { httpOnly: false, path: "/" });
       return res.status(403).redirect("/chat/ban");
     } else {
@@ -379,16 +361,15 @@ router.get(["/main", "/main.html"], (req, res) => {
   console.log("req.query.f: ", req.query.f);
   console.log("from: ", from);
   const username = req.cookies.user;
-  usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
-  const userInfo = usersData.users[username];
-  const isAdminValue = userInfo ? userInfo.isAdmin == "true" : "false";
+  const userInfo = await db.findUserOrMigrate(username);
+  const isAdminValue = userInfo ? userInfo.isAdmin : "false";
   const uid = req.cookies.uid;
   res.cookie("uid", uid, { httpOnly: false, path: "/" })
   res.cookie("isAdmin", isAdminValue, { httpOnly: false, path: "/" });
   res.cookie("color", userInfo ? userInfo.color : "#aaa", { httpOnly: false, path: "/" });
   res.cookie("ban", "false", { httpOnly: false, path: "/" });
-  loadBannedUsers();
-  const superAdmin = (usersData.users[username]?.superAdmin || false ? true : false) || false;
+  const banned = await db.getBannedUids();
+  const superAdmin = !!userInfo?.superAdmin;
   render(
     req,
     res,
@@ -401,13 +382,13 @@ router.get(["/main", "/main.html"], (req, res) => {
       isAdmin: isAdminValue,
       uid: uid,
       from,
-      banned: bannedUsers,
+      banned,
       superAdmin
     },
     tag,
     "chat"
   );
-});
+}));
 
 router.get(["/login", "/login.html"], (req, res) => {
   render(
@@ -481,16 +462,17 @@ router.get(["/newterms", "/newterms.html"], (req, res) => {
 });
 */
 
-router.get(["/ban", "/ban.html"], (req, res) => {
+router.get(["/ban", "/ban.html"], ah(async (req, res) => {
   const username = req.cookies.user;
   let uid = "unknown";
 
-  if (username && usersData.users[username]) {
-    uid = usersData.users[username].uid;
+  const user = username ? await db.findUserOrMigrate(username) : null;
+  if (user) {
+    uid = user.uid;
   }
   const text = req.query.text || "null";
 
-  if (bannedUsers.includes(uid)) {
+  if (await db.isBanned(uid)) {
     res.cookie("ban", "true", { httpOnly: false, path: "/" });
     render(
       req,
@@ -508,16 +490,16 @@ router.get(["/ban", "/ban.html"], (req, res) => {
     res.cookie("ban", "false", { httpOnly: false, path: "/" });
     res.redirect("/chat/main");
   }
-});
+}));
 
-router.get(["/vote", "/vote.html"], (req, res) => {
+router.get(["/vote", "/vote.html"], ah(async (req, res) => {
   const username = req.cookies.user;
   let uid;
-  if (username && usersData.users[username]) {
-    uid = usersData.users[username].uid || "unknown";
+  if (username) {
+    const user = await db.findUserOrMigrate(username);
+    if (user) uid = user.uid || "unknown";
   }
-  loadBannedUsers();
-  if (bannedUsers.includes(uid)) {
+  if (await db.isBanned(uid)) {
     res.cookie("ban", "true", { httpOnly: false, path: "/" });
     res.status(403).redirect("/chat/ban");
   } else {
@@ -540,9 +522,9 @@ router.get(["/vote", "/vote.html"], (req, res) => {
       "chat"
     );
   }
-});
+}));
 
-router.post("/vote", express.urlencoded({ extended: true }), (req, res) => {
+router.post("/vote", express.urlencoded({ extended: true }), ah(async (req, res) => {
   const target = req.body.target;
   const rawDate = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
   const firstSpace = rawDate.indexOf(" ");
@@ -554,8 +536,9 @@ router.post("/vote", express.urlencoded({ extended: true }), (req, res) => {
   const username = req.cookies.user;
   let uid = "unknown";
 
-  if (username && usersData.users[username]) {
-    uid = usersData.users[username].uid;
+  if (username) {
+    const user = await db.findUserOrMigrate(username);
+    if (user) uid = user.uid;
   }
 
   if (!voteDates.includes(date)) return res.json({ error: "投票期間ではありません。" });
@@ -566,14 +549,16 @@ router.post("/vote", express.urlencoded({ extended: true }), (req, res) => {
   res.cookie("voted", true, { httpOnly: false, path: "/", maxAge: 7 * 24 * 60 * 60 * 1000 });
 
   try {
-    votedData[target] = votedData[target] + 1;
-    fs.writeFileSync(votedPath, JSON.stringify(votedData, null, 2));
+    const count = await db.incrementVote(target);
+    if (count === null) {
+      return res.json({ error: "投票対象が不正です。" });
+    }
     console.log(`投票: ${target}`);
     res.json({ voted: true });
   } catch (err) {
     console.error(`投票処理失敗: ${err.message}`);
     res.json({ error: "サーバーエラー" });
   }
-});
+}));
 
 module.exports = router;

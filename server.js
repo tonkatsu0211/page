@@ -8,11 +8,9 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const { Server } = require("socket.io");
 const io = new Server(http);
-const historyPath = path.join(__dirname, "chatHistory.json");
 const { v4: uuidv4 } = require("uuid");
+const db = require("./db");
 const adminUsers = new Set();
-const usersPath = path.join(__dirname, "users.json");
-const usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
 const uploadPath = path.join(__dirname, "public", "uploads");
 const { version, last_update } = require(path.join(
   __dirname,
@@ -23,7 +21,6 @@ const multer = require("multer");
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
-const bannedUsersPath = path.join(__dirname, "bannedUsers.json");
 global.render = require("./render");
 global.arrayBufferToBase64 = require("./render");
 global.base64ToArrayBuffer = require("./render");
@@ -31,31 +28,20 @@ global.generateCryptoData = require("./render");
 global.unlockPrivateKey = require("./render");
 global.reEncryptPrivateKey = require("./render");
 
-function loadBannedUsers() {
+io.use(async (socket, next) => {
   try {
-    const data = fs.readFileSync(bannedUsersPath, "utf8");
-    return new Set(JSON.parse(data).users);
-  } catch (e) {
-    return new Set();
+    const uid = socket.handshake.auth.uid;
+    if (await db.isBanned(uid)) {
+      return next(new Error("あなたはBANされています"));
+    }
+    // JSONにしか存在しない管理者でも管理者判定が効くよう、接続時にDBへ移行しておく
+    const user = await db.findUserOrMigrate(socket.handshake.auth.username);
+    if (user?.isAdmin) adminUsers.add(user.username);
+    next();
+  } catch (err) {
+    console.error("socket auth error:", err);
+    next(err);
   }
-}
-
-function getUsernameByUid(uid) {
-  const usersData = JSON.parse(fs.readFileSync(usersPath, "utf-8"));
-  for (const [username, info] of Object.entries(usersData.users)) {
-    if (info.uid === uid) return username;
-  }
-  return null;
-}
-
-let bannedUsers = loadBannedUsers();
-
-io.use((socket, next) => {
-  const uid = socket.handshake.auth.uid;
-  if (bannedUsers.has(uid)) {
-    return next(new Error("あなたはBANされています"));
-  }
-  next();
 });
 
 setInterval(() => {
@@ -81,22 +67,13 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-for (const [username, info] of Object.entries(usersData.users)) {
-  if (info.isAdmin === "true") {
-    adminUsers.add(username);
-  }
-}
 
 const users = {};
 const uids = {};
 
-let chatHistory = [];
 
 const webPush = require("web-push");
 
-function saveBannedUsers(set) {
-  fs.writeFileSync(bannedUsersPath, JSON.stringify({ ips: [...set] }, null, 2));
-}
 
 function base64urlToBase64(str) {
   return str
@@ -113,7 +90,8 @@ webPush.setVapidDetails("mailto:example@example.com", publicKey, privateKey);
 
 const subscriptions = [];
 
-const chatMaxLength = 300;
+// 接続時に送る履歴の最大件数。環境変数 CHAT_HISTORY_LIMIT で指定(未指定なら全件)
+const HISTORY_LIMIT = Number(process.env.CHAT_HISTORY_LIMIT) || null;
 
 app.set("trust proxy", true);
 
@@ -130,12 +108,6 @@ function sendPushNotification(title, body) {
   });
 }
 
-try {
-  const data = fs.readFileSync(historyPath, "utf-8");
-  chatHistory = JSON.parse(data);
-} catch (err) {
-  console.error("チャット履歴の読み込みに失敗しました:", err);
-}
 
 const lastPing = {};
 
@@ -149,6 +121,49 @@ function updateAdminList() {
   io.emit("admin list", Array.from(adminUsers), Array.from(onlineUsers));
 }
 
+const jaTimestamp = () =>
+  new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+
+// system メッセージを DB に保存して全員に配信
+async function sendSystemMessage(text) {
+  const sysMsg = {
+    id: uuidv4(),
+    username: "system",
+    message: text,
+    timestamp: jaTimestamp(),
+  };
+  await db.insertMessage(sysMsg);
+  io.emit("chat update", sysMsg);
+  return sysMsg;
+}
+
+// そのユーザーに見せる履歴を DB から取得(他人の /tell は除外される)
+function getHistoryFor(uid) {
+  return db.getHistory(uid, { limit: HISTORY_LIMIT });
+}
+
+// 履歴をスクロール維持で再配信する。
+// 接続ごとに絞り込んだ履歴を送るので、他人宛ての /tell が全員に流れることはない。
+async function emitHistoryNoScroll() {
+  const cache = new Map();
+  for (const s of io.sockets.sockets.values()) {
+    const key = s.data.uid ?? "";
+    if (!cache.has(key)) cache.set(key, getHistoryFor(key));
+    try {
+      s.emit("chat history noScroll", await cache.get(key));
+    } catch (err) {
+      console.error("履歴の再配信に失敗:", err);
+    }
+  }
+}
+
+// "'UID'-xxxx" ならUIDで、そうでなければユーザー名で検索(JSONにしか無ければDBへ移行)
+function resolveUser(idOrName) {
+  return idOrName.startsWith("'UID'-")
+    ? db.findUserByUidOrMigrate(idOrName)
+    : db.findUserOrMigrate(idOrName);
+}
+
 io.on("connection", (socket) => {
   const username = socket.handshake.auth.username;
   const uid = socket.handshake.auth.uid;
@@ -160,6 +175,9 @@ io.on("connection", (socket) => {
 
   const now = Date.now();
   const lastDisc = lastDisconnectTime[username] || 0;
+
+  // 接続メッセージの保存が終わってから履歴を送る(履歴に接続メッセージを含めるため)
+  let connectSaved = Promise.resolve();
 
   if (
     !lastConnectTime[username] ||
@@ -189,7 +207,9 @@ io.on("connection", (socket) => {
     };
 
     io.emit("chat update", connectMsg);
-    chatHistory.push(connectMsg);
+    connectSaved = db
+      .insertMessage(connectMsg)
+      .catch((err) => console.error("接続メッセージの保存に失敗:", err));
 
     lastConnectTime[username] = now;
   }
@@ -229,7 +249,9 @@ io.on("connection", (socket) => {
     };
 
     io.emit("chat update", disconnectMsg);
-    chatHistory.push(disconnectMsg);
+    db.insertMessage(disconnectMsg).catch((err) =>
+      console.error("切断メッセージの保存に失敗:", err)
+    );
     updateAdminList();
   });
 
@@ -243,544 +265,389 @@ io.on("connection", (socket) => {
   io.emit("user count", Object.keys(users).length);
   io.emit("user list", Object.values(users));
 
-  function getFilteredHistory () {
-    return chatHistory.filter(msg => {
-      if (msg.username === "systemC3") {
-        return msg.toUid === uid || msg.fromUid === uid || uid.replace(/&#39;/g, "'") === "'UID'-tonkatsu";
-      }
-      return true;
-    });
-  }
+  connectSaved
+    .then(() => getHistoryFor(uid))
+    .then((history) => socket.emit("chat history", history))
+    .catch((err) => console.error("チャット履歴の取得に失敗:", err));
 
-  socket.emit("chat history", getFilteredHistory());
-
-  socket.on("requestHistory", () => {
-    socket.emit("chat history", getFilteredHistory());
+  socket.on("requestHistory", async () => {
+    try {
+      socket.emit("chat history", await getHistoryFor(uid));
+    } catch (err) {
+      console.error("チャット履歴の取得に失敗:", err);
+    }
   });
 
-  socket.on("chat message", (data) => {
-    const { message, replyTo = null } = data;
-    const user = socket.data.username;
-    const uid = socket.data.uid.replace(/&#39;/g, "'");
+  socket.on("chat message", async (data) => {
+    try {
+      const { message, replyTo = null } = data;
+      const user = socket.data.username;
+      const uid = socket.data.uid.replace(/&#39;/g, "'");
 
-    if (message.trim() === "/delete" && socket.data.isAdmin) {
-      chatHistory = [];
-      io.emit("chat history", chatHistory);
-      fs.writeFileSync(historyPath, JSON.stringify(chatHistory, null, 2));
-      return;
-    }
+      // 自分のユーザー情報(最高管理者かどうか)
+      const me = await db.getUserByName(user);
+      const isSuperAdmin = !!me?.superAdmin;
 
-    if (message.startsWith("/ban ")) {
-      if (!socket.data.isAdmin) {
-        socket.emit("chat update", "その操作を行う権限がありません");
+      if (message.trim() === "/delete" && socket.data.isAdmin) {
+        await db.clearMessages();
+        io.emit("chat history", []);
         return;
       }
-      let target = message.slice(5).trim();
-      if (!target) return;
-      let targetUid;
-      if (target.startsWith("'UID'-")) {
-        targetUid = target;
-        target = getUsernameByUid(targetUid);
-      } else {
-        targetUid = usersData.users[target].uid;
+
+      if (message.startsWith("/ban ")) {
+        if (!socket.data.isAdmin) {
+          socket.emit("chat update", "その操作を行う権限がありません");
+          return;
+        }
+        let target = message.slice(5).trim();
+        if (!target) return;
+        const targetUser = await resolveUser(target);
+        if (!targetUser) {
+          socket.emit("chat update", "指定したユーザーが見つかりません");
+          return;
+        }
+        target = targetUser.username;
+        const targetUid = targetUser.uid;
+        if (
+          (targetUid === "'UID'-tonkatsu" && targetUid != uid) ||
+          (isSuperAdmin && targetUid != uid)
+        ) {
+          await db.addBan(uid);
+          let targetMsg;
+          if (uid == "'UID'-tonkatsu") {
+            targetMsg = "製作者";
+          } else if (isSuperAdmin) {
+            targetMsg = "最高管理者";
+          } else {
+            targetMsg = "[エラー]";
+          }
+          await sendSystemMessage(
+            `${user} が${targetMsg}のBANを試みたため、BANされました`
+          );
+          io.emit("reload", user, "あなたはBANされました");
+          io.emit("updateBanned", await db.getBannedUids());
+          updateAdminList();
+          return;
+        } else if (targetUid == uid) {
+          await sendSystemMessage(`${user} が自己のBANを試みました`);
+          return;
+        } else if (targetUser.isAdmin && user != "_tonkatsu_") {
+          await sendSystemMessage(
+            `${user} が管理者 ${target} のBANを試みました(管理者は製作者のみBANできます)`
+          );
+          return;
+        }
+        await db.addBan(targetUid);
+        await sendSystemMessage(`${user}が${target}をBANしました`);
+        io.emit("reload", target, "あなたはBANされました");
+        io.emit("updateBanned", await db.getBannedUids());
+        updateAdminList();
+        return;
       }
-      if (
-        (targetUid === "'UID'-tonkatsu" && targetUid != uid) ||
-        ((usersData.users[socket.data.username]?.superAdmin || false) && targetUid != uid)
-      ) {
-        bannedUsers.add(uid);
+
+      if (message.startsWith("/unban ")) {
+        if (!socket.data.isAdmin) {
+          socket.emit("chat update", "その操作を行う権限がありません");
+          return;
+        }
+        let target = message.slice(7).trim();
+        const targetUser = await resolveUser(target);
+        if (!targetUser) {
+          socket.emit("chat update", "指定したユーザーが見つかりません");
+          return;
+        }
+        target = targetUser.username;
+        await db.removeBan(targetUser.uid);
+        await sendSystemMessage(`${user} が ${target} のBANを解除しました`);
+        io.emit("reload", target, "BANが解除されました");
+        io.emit("updateBanned", await db.getBannedUids());
+        updateAdminList();
+        return;
+      }
+
+      if (message.startsWith("/admin ")) {
+        if (!socket.data.isAdmin) {
+          socket.emit("chat update", "その操作を行う権限がありません");
+          return;
+        }
+        let target = message.slice(7).trim();
+        if (!target) return;
+        const targetUser = await resolveUser(target);
+        if (!targetUser) {
+          socket.emit("chat update", "指定したユーザーが見つかりません");
+          return;
+        }
+        target = targetUser.username;
+        await db.setAdmin(target, true);
+        adminUsers.add(target);
+        await sendSystemMessage(`${user} が ${target} に管理者権限を付与しました`);
+        updateAdminList();
+        io.emit(
+          "reload",
+          target,
+          "管理者権限が付与されました。再読み込みします。"
+        );
+        return;
+      }
+
+      if (message.startsWith("/reload ")) {
+        console.log(`uid: ${uid}`);
+        if (uid != "'UID'-tonkatsu" && !isSuperAdmin) {
+          socket.emit("chat update", "その操作を行う権限がありません");
+          return;
+        }
+        let target = message.slice(8).trim();
+        if (!target) {
+          target = await db.getUsernameByUid(uid);
+        } else if (target.startsWith("'UID'-")) {
+          target = await db.getUsernameByUid(target);
+        }
         let targetMsg;
         if (uid == "'UID'-tonkatsu") {
           targetMsg = "製作者";
-        } else if (usersData.users[socket.data.username]?.superAdmin || false) {
+        } else if (isSuperAdmin) {
           targetMsg = "最高管理者";
         } else {
           targetMsg = "[エラー]";
         }
-        const sysMsg = {
-          id: uuidv4(),
-          username: "system",
-          message: `${user} が${targetMsg}のBANを試みたため、BANされました`,
-          timestamp: new Date().toLocaleString("ja-JP", {
-            timeZone: "Asia/Tokyo",
-          }),
-        };
-        chatHistory.push(sysMsg);
-        if (chatHistory.length > chatMaxLength) chatHistory.shift();
-        io.emit("chat update", sysMsg);
-        io.emit("reload", user, "あなたはBANされました");
-        io.emit("updateBanned", bannedUsers);
-        updateAdminList();
-        fs.writeFileSync(
-          bannedUsersPath,
-          JSON.stringify({ users: [...bannedUsers] }, null, 2)
-        );
-        return;
-      } else if (targetUid == uid) {
-        const sysMsg = {
-          id: uuidv4(),
-          username: "system",
-          message: `${user} が自己のBANを試みました`,
-          timestamp: new Date().toLocaleString("ja-JP", {
-            timeZone: "Asia/Tokyo",
-          }),
-        };
-        chatHistory.push(sysMsg);
-        if (chatHistory.length > chatMaxLength) chatHistory.shift();
-        io.emit("chat update", sysMsg);
-        return;
-      } else if (
-        usersData.users[target].isAdmin == "true" &&
-        user != "_tonkatsu_"
-      ) {
-        const sysMsg = {
-          id: uuidv4(),
-          username: "system",
-          message: `${user} が管理者 ${target} のBANを試みました(管理者は製作者のみBANできます)`,
-          timestamp: new Date().toLocaleString("ja-JP", {
-            timeZone: "Asia/Tokyo",
-          }),
-        };
-        chatHistory.push(sysMsg);
-        if (chatHistory.length > chatMaxLength) chatHistory.shift();
-        io.emit("chat update", sysMsg);
+        io.emit("reload", target, `${targetMsg}により再読み込みが行われます。`);
         return;
       }
-      bannedUsers.add(targetUid);
-      const sysMsg = {
-        id: uuidv4(),
-        username: "system",
-        message: `${user}が${target}をBANしました`,
-        timestamp: new Date().toLocaleString("ja-JP", {
-          timeZone: "Asia/Tokyo",
-        }),
-      };
-      chatHistory.push(sysMsg);
-      if (chatHistory.length > chatMaxLength) chatHistory.shift();
-      io.emit("chat update", sysMsg);
-      io.emit("reload", target, "あなたはBANされました");
-      io.emit("updateBanned", bannedUsers);
-      updateAdminList();
-      fs.writeFileSync(
-        bannedUsersPath,
-        JSON.stringify({ users: [...bannedUsers] }, null, 2)
-      );
-      return;
-    }
 
-    if (message.startsWith("/unban ")) {
-      if (!socket.data.isAdmin) {
-        socket.emit("chat update", "その操作を行う権限がありません");
+      if (message.startsWith("/alert ")) {
+        if (uid != "'UID'-tonkatsu" && !isSuperAdmin) {
+          socket.emit("chat update", "その操作を行う権限がありません");
+          return;
+        }
+        const payload = message.slice(7).trim();
+        const firstSpace = payload.indexOf(" ");
+        if (firstSpace === -1) {
+          socket.emit("chat update", "文法ミス");
+          return;
+        }
+        let target = payload.slice(0, firstSpace).trim();
+        const msgText = payload.slice(firstSpace + 1).trim();
+        if (!msgText) {
+          socket.emit("chat update", "文法ミス");
+          return;
+        }
+        if (!target) return;
+        if (target.startsWith("'UID'-")) {
+          // 元のコードは未定義の変数 targetUid を参照していたので target を渡す
+          target = await db.getUsernameByUid(target);
+        }
+        io.emit("alert", target, msgText);
         return;
       }
-      let target = message.slice(7).trim();
-      let targetUid;
-      if (target.startsWith("'UID'-")) {
-        targetUid = target;
-        target = getUsernameByUid(targetUid);
-      } else {
-        targetUid = usersData.users[target].uid;
-      }
-      bannedUsers.delete(targetUid);
-      const sysMsg = {
-        id: uuidv4(),
-        username: "system",
-        message: `${user} が ${target} のBANを解除しました`,
-        timestamp: new Date().toLocaleString("ja-JP", {
-          timeZone: "Asia/Tokyo",
-        }),
-      };
-      chatHistory.push(sysMsg);
-      if (chatHistory.length > chatMaxLength) chatHistory.shift();
-      io.emit("chat update", sysMsg);
-      io.emit("reload", target, "BANが解除されました");
-      io.emit("updateBanned", bannedUsers);
-      updateAdminList();
-      fs.writeFileSync(
-        bannedUsersPath,
-        JSON.stringify({ users: [...bannedUsers] }, null, 2)
-      );
-      return;
-    }
 
-    if (message.startsWith("/admin ")) {
-      if (!socket.data.isAdmin) {
-        socket.emit("chat update", "その操作を行う権限がありません");
-        return;
-      }
-      let target = message.slice(7).trim();
-      if (!target) return;
-      let targetUid;
-      if (target.startsWith("'UID'-")) {
-        targetUid = target;
-        target = getUsernameByUid(targetUid);
-      } else {
-        targetUid = usersData.users[target].uid;
-      }
-      adminUsers.add(target);
-      if (!usersData.users[target]) {
-        usersData.users[target] = {};
-      }
-      usersData.users[target].isAdmin = "true";
-
-      fs.writeFileSync(usersPath, JSON.stringify(usersData, null, 2));
-      const sysMsg = {
-        id: uuidv4(),
-        username: "system",
-        message: `${user} が ${target} に管理者権限を付与しました`,
-        timestamp: new Date().toLocaleString("ja-JP", {
-          timeZone: "Asia/Tokyo",
-        }),
-      };
-      chatHistory.push(sysMsg);
-      if (chatHistory.length > chatMaxLength) chatHistory.shift();
-      updateAdminList();
-      io.emit("chat update", sysMsg);
-      io.emit(
-        "reload",
-        target,
-        "管理者権限が付与されました。再読み込みします。"
-      );
-      return;
-    }
-
-    if (message.startsWith("/reload ")) {
-      console.log(`uid: ${uid}`);
-      if (
-        uid != "'UID'-tonkatsu" &&
-        !(usersData.users[socket.data.username]?.superAdmin || false)
-      ) {
-        socket.emit("chat update", "その操作を行う権限がありません");
-        return;
-      }
-      let target = message.slice(8).trim();
-      if (!target) {
-        target = getUsernameByUid(uid);
-      } else if (target.startsWith("'UID'-")) {
-        const targetUid = target;
-        target = getUsernameByUid(targetUid);
-      }
-      let targetMsg;
-      if (uid == "'UID'-tonkatsu") {
-        targetMsg = "製作者";
-      } else if (usersData.users[socket.data.username]?.superAdmin || false) {
-        targetMsg = "最高管理者";
-      } else {
-        targetMsg = "[エラー]";
-      }
-      io.emit("reload", target, `${targetMsg}により再読み込みが行われます。`);
-      return;
-    }
-
-    if (message.startsWith("/alert ")) {
-      if (
-        uid != "'UID'-tonkatsu" &&
-        !(usersData.users[socket.data.username]?.superAdmin || false)
-      ) {
-        socket.emit("chat update", "その操作を行う権限がありません");
-        return;
-      }
-      const payload = message.slice(7).trim();
-      const firstSpace = payload.indexOf(" ");
-      if (firstSpace === -1) {
-        socket.emit("chat update", "文法ミス");
-        return;
-      }
-      let target = payload.slice(0, firstSpace).trim();
-      const msgText = payload.slice(firstSpace + 1).trim();
-      if (!msgText) {
-        socket.emit("chat update", "文法ミス");
-        return;
-      }
-      if (!target) return;
-      if (target.startsWith("'UID'-")) {
-        target = getUsernameByUid(targetUid);
-      }
-      io.emit("alert", target, msgText);
-      return;
-    }
-    /*
-    if (message.startsWith("/admin ")) {
-      return;
-    }*/
-
-    if (message.startsWith("/password ")) {
-      const newPassword = message.slice(10).trim();
-      const usersBackupPath = path.join(__dirname, "usersBackup.json");
-      const usersBackup = JSON.parse(fs.readFileSync(usersBackupPath, "utf-8"));
-      bcrypt
-        .hash(newPassword, 10)
-        .then((hash) => {
-          usersData.users[user].passwordHash = hash;
-          usersBackup.users[user].passwordHash = hash;
-          fs.writeFileSync(usersPath, JSON.stringify(usersData, null, 2));
-          fs.writeFileSync(
-            usersBackupPath,
-            JSON.stringify(usersBackup, null, 2)
-          );
+      if (message.startsWith("/password ")) {
+        const newPassword = message.slice(10).trim();
+        try {
+          const hash = await bcrypt.hash(newPassword, 10);
+          await db.setPasswordHash(user, hash);
           socket.emit("password changed", user);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error("パスワード変更失敗:", err);
           socket.emit("password change failed", user);
-        });
-      return;
-    }
-    
-    if (message.startsWith("/color ")) {
-      const color = message.slice(7).trim();
-      if (
-        (!/^#[0-9a-fA-F]{3}$/.test(color) &&
-        !/^#[0-9a-fA-F]{6}$/.test(color)) ||
-        !color
-      ) {
-        socket.emit("chat update", "無効なカラーコードです");
-        return;
-      }
-      usersData.users[user].color = color;
-      fs.writeFileSync(usersPath, JSON.stringify(usersData, null, 2));
-      const sysMsg = {
-        id: uuidv4(),
-        username: "system",
-        message: `${user} が名前の色を ${color} に変更しました`,
-        timestamp: new Date().toLocaleString("ja-JP", {
-          timeZone: "Asia/Tokyo",
-        }),
-      };
-      chatHistory.push(sysMsg);
-      if (chatHistory.length > chatMaxLength) chatHistory.shift();
-      io.emit("chat update", sysMsg);
-      return;
-    }
-
-    if (message.startsWith("/name ")) {
-      const newName = message.slice(6).trim();
-      if (!newName || usersData.users[newName]) {
-        socket.emit("chat update", "その名前は使用できません");
-        return;
-      }
-      if (newName.includes("ケッチ")) {
-        bannedUsers.add(uid);
-        chatHistory.push(sysMsg);
-        io.emit("reload", user, "あなたはBANされました");
-        fs.writeFileSync(
-          bannedUsersPath,
-          JSON.stringify({ users: [...bannedUsers] }, null, 2)
-        );
-      }
-      const newUsers = {};
-      for (const key of Object.keys(usersData.users)) {
-        if (key === user) {
-          newUsers[newName] = usersData.users[key];
-        } else {
-          newUsers[key] = usersData.users[key];
         }
-      }
-      usersData.users = newUsers;
-      fs.writeFileSync(usersPath, JSON.stringify(usersData, null, 2));
-      socket.data.username = newName;
-      users[socket.id] = newName;
-      const sysMsg = {
-        id: uuidv4(),
-        username: "system",
-        message: `${user} が ${newName} に名前を変更しました`,
-        timestamp: new Date().toLocaleString("ja-JP", {
-          timeZone: "Asia/Tokyo",
-        }),
-      };
-      chatHistory.push(sysMsg);
-      if (chatHistory.length > chatMaxLength) chatHistory.shift();
-      io.emit("chat update", sysMsg);
-      return;
-    }
-
-    if (message.startsWith("/tell ")) {
-      const payload = message.slice(6).trim();
-      const firstSpace = payload.indexOf(" ");
-      if (firstSpace === -1) {
-        socket.emit("chat update", "使用法: /tell ユーザー メッセージ");
-        return;
-      }
-      const targetIdOrName = payload.slice(0, firstSpace).trim();
-      const msgText = payload.slice(firstSpace + 1).trim();
-      if (!msgText) {
-        socket.emit("chat update", "空のメッセージは送信できません");
         return;
       }
 
-      let targetUsername = targetIdOrName;
-      let targetUid;
-      let targetUid2;
-      let uid2;
-      if (targetIdOrName.startsWith("'UID'-")) {
-        targetUid = targetIdOrName;
-        targetUsername = getUsernameByUid(targetUid);
-        if (!targetUsername) {
-          socket.emit("chat update", "指定したUIDのユーザーが見つかりません");
+      if (message.startsWith("/color ")) {
+        const color = message.slice(7).trim();
+        if (
+          (!/^#[0-9a-fA-F]{3}$/.test(color) &&
+            !/^#[0-9a-fA-F]{6}$/.test(color)) ||
+          !color
+        ) {
+          socket.emit("chat update", "無効なカラーコードです");
           return;
         }
-        targetUid2 = targetUid.slice(5).trim();
-        targetUid2 = "&#39;UID&#39;" + targetUid2;
-      } else {
-        if (!usersData.users[targetUsername]) {
-          socket.emit("chat update", "指定したユーザーが見つかりません");
+        await db.setColor(user, color);
+        await sendSystemMessage(`${user} が名前の色を ${color} に変更しました`);
+        return;
+      }
+
+      if (message.startsWith("/name ")) {
+        const newName = message.slice(6).trim();
+        // JSONにしか無い未移行ユーザーの名前も「使用済み」として扱う
+        if (!newName || (await db.findUserOrMigrate(newName))) {
+          socket.emit("chat update", "その名前は使用できません");
           return;
         }
-        targetUid = usersData.users[targetUsername].uid;
-        targetUid2 = targetUid.slice(5).trim();
+        if (newName.includes("ケッチ")) {
+          await db.addBan(uid);
+          io.emit("reload", user, "あなたはBANされました");
+          return;
+        }
+        const renamed = await db.renameUser(user, newName);
+        if (!renamed) {
+          socket.emit("chat update", "その名前は使用できません");
+          return;
+        }
+        if (adminUsers.delete(user)) adminUsers.add(newName);
+        socket.data.username = newName;
+        users[socket.id] = newName;
+        await sendSystemMessage(`${user} が ${newName} に名前を変更しました`);
+        return;
+      }
+
+      if (message.startsWith("/tell ")) {
+        const payload = message.slice(6).trim();
+        const firstSpace = payload.indexOf(" ");
+        if (firstSpace === -1) {
+          socket.emit("chat update", "使用法: /tell ユーザー メッセージ");
+          return;
+        }
+        const targetIdOrName = payload.slice(0, firstSpace).trim();
+        const msgText = payload.slice(firstSpace + 1).trim();
+        if (!msgText) {
+          socket.emit("chat update", "空のメッセージは送信できません");
+          return;
+        }
+
+        const targetUser = await resolveUser(targetIdOrName);
+        if (!targetUser) {
+          socket.emit(
+            "chat update",
+            targetIdOrName.startsWith("'UID'-")
+              ? "指定したUIDのユーザーが見つかりません"
+              : "指定したユーザーが見つかりません"
+          );
+          return;
+        }
+        const targetUsername = targetUser.username;
+        const targetUid = targetUser.uid;
+        let targetUid2 = targetUid.slice(5).trim();
         targetUid2 = "&#39;UID&#39;" + targetUid2;
+
+        let uid2 = uid.startsWith("&#39;")
+          ? uid.slice(13).trim()
+          : uid.slice(5).trim();
+        uid2 = "'UID'" + uid2;
+
+        const sysMsg = {
+          id: uuidv4(),
+          username: "systemC3",
+          from: user,
+          fromUid: uid,
+          fromUidShow: uid2,
+          to: targetUsername,
+          toUid: targetUid2,
+          toUidShow: targetUid,
+          message: msgText,
+          timestamp: jaTimestamp(),
+        };
+
+        await db.insertMessage(sysMsg);
+        io.emit("chat update", sysMsg);
+        console.log("tell:", sysMsg);
+        return;
       }
 
-      uid2 = uid.startsWith("&#39;") ? uid.slice(13).trim() : uid.slice(5).trim();
-      uid2 = "'UID'" + uid2;
+      const forwarded = socket.request.headers["x-forwarded-for"];
+      const rawIP = forwarded
+        ? forwarded.split(",")[0].trim()
+        : socket.handshake.address;
 
-      const sysMsg = {
+      const ipRaw =
+        socket.handshake.headers["x-forwarded-for"] ||
+        socket.handshake.address ||
+        "";
+      const ipList = ipRaw.split(",").map((ip) => ip.trim());
+
+      let ipv4 =
+        ipList.find((ip) => /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(ip)) || "";
+      let ipv6 =
+        ipList.find((ip) => /^[a-fA-F0-9:]+$/.test(ip) && !ip.includes(".")) ||
+        "";
+
+      if (rawIP.startsWith("::ffff:")) {
+        ipv4 = rawIP.replace("::ffff:", "");
+        ipv6 = "";
+      } else if (rawIP === "::1") {
+        ipv4 = "127.0.0.1";
+        ipv6 = "::1";
+      }
+
+      socket.ipv4 = ipv4;
+      socket.ipv6 = ipv6;
+
+      const replyMsg = replyTo ? await db.getMessageText(replyTo) : null;
+
+      const messageData = {
         id: uuidv4(),
-        username: "systemC3",
-        from: user,
-        fromUid: uid,
-        fromUidShow: uid2,
-        to: targetUsername,
-        toUid: targetUid2,
-        toUidShow: targetUid,
-        message: msgText,
-        timestamp: new Date().toLocaleString("ja-JP", {
-          timeZone: "Asia/Tokyo",
-        }),
+        username: user,
+        uid: uid,
+        message: message,
+        timestamp: jaTimestamp(),
+        ipv4: socket.ipv4,
+        ipv6: socket.ipv6,
+        isAdmin: socket.data.isAdmin,
+        superAdmin: isSuperAdmin,
+        replyTo: replyTo || null,
+        replyMsg,
       };
 
-      chatHistory.push(sysMsg);
-      io.emit("chat update", sysMsg);
-      console.log("tell:", sysMsg);
-      return;
+      updateAdminList();
+
+      await db.insertMessage(messageData);
+
+      io.emit("chat update", messageData);
+      sendPushNotification(messageData.username, messageData.message);
+    } catch (err) {
+      console.error("chat message error:", err);
+      socket.emit("chat update", "サーバーエラーが発生しました");
     }
-
-    const forwarded = socket.request.headers["x-forwarded-for"];
-    const rawIP = forwarded
-      ? forwarded.split(",")[0].trim()
-      : socket.handshake.address;
-
-    const ipRaw =
-      socket.handshake.headers["x-forwarded-for"] ||
-      socket.handshake.address ||
-      "";
-    const ipList = ipRaw.split(",").map((ip) => ip.trim());
-
-    let ipv4 =
-      ipList.find((ip) => /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(ip)) || "";
-    let ipv6 =
-      ipList.find((ip) => /^[a-fA-F0-9:]+$/.test(ip) && !ip.includes(".")) ||
-      "";
-
-    if (rawIP.startsWith("::ffff:")) {
-      ipv4 = rawIP.replace("::ffff:", "");
-      ipv6 = "";
-    } else if (rawIP === "::1") {
-      ipv4 = "127.0.0.1";
-      ipv6 = "::1";
-    }
-
-    socket.ipv4 = ipv4;
-    socket.ipv6 = ipv6;
-
-    const replyMsg = replyTo
-      ? chatHistory.find((m) => m.id === replyTo)?.message || null
-      : null;
-
-    const superAdmin = (usersData.users[user]?.superAdmin || false ? true : false) || false;
-
-    const messageData = {
-      id: uuidv4(),
-      username: user,
-      uid: uid,
-      message: message,
-      timestamp: new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }),
-      ipv4: socket.ipv4,
-      ipv6: socket.ipv6,
-      isAdmin: socket.data.isAdmin,
-      superAdmin,
-      replyTo: replyTo || null,
-      replyMsg,
-    };
-
-    updateAdminList();
-
-    console.log(`chatHistory.length: ${chatHistory.length}`)
-    const chatLength = chatHistory.filter(msg => {
-      if (msg.username.includes("system")) {
-        return false;
-      }
-      return true;
-    });
-    chatHistory.push(messageData);
-    if (chatLength > chatMaxLength) {
-      while (chatLength > chatMaxLength) {
-        chatHistory.shift();
-      };
-    };
-
-    fs.writeFile(historyPath, JSON.stringify(chatHistory, null, 2), (err) => {
-      if (err) console.error("チャット履歴の保存に失敗:", err);
-    });
-
-    io.emit("chat update", messageData);
-    sendPushNotification(messageData.username, messageData.message);
   });
 
-  socket.on("delete message", (id) => {
-    const index = chatHistory.findIndex((msg) => msg.id === id);
-    const message = chatHistory[index];
-    console.log("delete:", message);
-    if (index !== -1) {
+  socket.on("delete message", async (id) => {
+    try {
+      const message = await db.getMessageById(id);
+      console.log("delete:", message);
+      if (!message) return;
       if (message.username == socket.data.username || socket.data.isAdmin) {
+        let delMessage;
         if (message.username == socket.data.username) {
-          message.delMessage = "このメッセージは投稿者によって削除されました";
+          delMessage = "このメッセージは投稿者によって削除されました";
         } else if (socket.data.username == "_tonkatsu_") {
-          message.delMessage = "このメッセージは製作者によって削除されました";
-        } else if (usersData.users[socket.data.username]?.superAdmin || false) {
-          message.delMessage =
-            "このメッセージは最高管理者によって削除されました";
+          delMessage = "このメッセージは製作者によって削除されました";
+        } else if ((await db.getUserByName(socket.data.username))?.superAdmin) {
+          delMessage = "このメッセージは最高管理者によって削除されました";
         } else {
-          message.delMessage = "このメッセージは管理者によって削除されました";
+          delMessage = "このメッセージは管理者によって削除されました";
         }
-        if (message.replyTo != null) {
-          message.replyMsg = null;
-        }
-        message.deleted = true;
-        fs.writeFileSync(historyPath, JSON.stringify(chatHistory, null, 2));
-        io.emit("chat history noScroll", chatHistory);
+        await db.markMessageDeleted(id, delMessage);
+        await emitHistoryNoScroll();
       }
+    } catch (err) {
+      console.error("delete message error:", err);
     }
   });
 
-  socket.on("clean delete message", (id) => {
-    const index = chatHistory.findIndex((msg) => msg.id === id);
-    console.log("clean delete:", chatHistory[index]);
-    if (index !== -1) {
-      const message = chatHistory[index];
+  socket.on("clean delete message", async (id) => {
+    try {
+      const message = await db.getMessageById(id);
+      console.log("clean delete:", message);
+      if (!message) return;
       if (message.username === socket.data.username || socket.data.isAdmin) {
-        chatHistory.splice(index, 1);
-        fs.writeFileSync(historyPath, JSON.stringify(chatHistory, null, 2));
-        io.emit("chat history noScroll", chatHistory);
+        await db.deleteMessage(id);
+        await emitHistoryNoScroll();
       }
+    } catch (err) {
+      console.error("clean delete message error:", err);
     }
   });
 
-  socket.on("restore message", (id) => {
-    const index = chatHistory.findIndex((msg) => msg.id === id);
-    const message = chatHistory[index];
-    console.log("restore:", message);
-    if (index !== -1) {
-      delete message.delMessage;
-      if (message.replyTo != null) {
-        const replyMsg = replyTo
-          ? chatHistory.find((m) => m.id === message.replyTo)?.message || null
-          : null;
-        message.replyMsg = replyMsg;
-      }
-      delete message.deleted;
-      fs.writeFileSync(historyPath, JSON.stringify(chatHistory, null, 2));
-      io.emit("chat history noScroll", chatHistory);
+  socket.on("restore message", async (id) => {
+    try {
+      const message = await db.getMessageById(id);
+      console.log("restore:", message);
+      if (!message) return;
+      await db.restoreMessage(id);
+      await emitHistoryNoScroll();
+    } catch (err) {
+      console.error("restore message error:", err);
     }
   });
 });
@@ -854,24 +721,14 @@ app.use(
   })
 );
 
-app.get("/users", (req, res) => {
-  fs.readFile(usersPath, "utf8", (err, data) => {
-    if (err) {
-      console.error("users.json 読み込みエラー:", err);
-      return res.status(500).json({ error: "サーバーエラー" });
-    }
-
-    try {
-      const json = JSON.parse(data);
-      if (!json.users) {
-        return res.status(500).json({ error: "usersフィールドが存在しません" });
-      }
-      res.json(json.users);
-    } catch (parseErr) {
-      console.error("users.json パースエラー:", parseErr);
-      res.status(500).json({ error: "JSONパースエラー" });
-    }
-  });
+app.get("/users", async (req, res) => {
+  try {
+    // パスワードハッシュは返さない
+    res.json(await db.getAllUsersPublic());
+  } catch (err) {
+    console.error("ユーザー一覧の取得エラー:", err);
+    res.status(500).json({ error: "サーバーエラー" });
+  }
 });
 
 app.use("/fonts", express.static("public/fonts", {
@@ -1110,9 +967,19 @@ app.use((req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-http.listen(port, "0.0.0.0", () => {
-  console.log("App listening on port", port, ", pid", process.pid);
-});
+
+(async () => {
+  try {
+    await db.init(); // テーブル作成 + JSON(履歴・BAN・投票)の一回限りの移行
+    for (const name of await db.getAdminUsernames()) adminUsers.add(name);
+  } catch (err) {
+    console.error("DBの初期化に失敗しました:", err);
+    process.exit(1);
+  }
+  http.listen(port, "0.0.0.0", () => {
+    console.log("App listening on port", port, ", pid", process.pid);
+  });
+})();
 
 
 const { spawn } = require("child_process");

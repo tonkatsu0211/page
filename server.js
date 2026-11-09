@@ -11,16 +11,14 @@ const io = new Server(http);
 const { v4: uuidv4 } = require("uuid");
 const db = require("./db");
 const adminUsers = new Set();
-const uploadPath = path.join(__dirname, "public", "uploads");
 const { version, last_update } = require(path.join(
   __dirname,
   ".",
   "package.json"
 ));
 const multer = require("multer");
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
+const { safeExt, MAX_UPLOAD_BYTES } = require("./fileServe");
+const storage = require("./storage");
 global.render = require("./render");
 global.arrayBufferToBase64 = require("./render");
 global.base64ToArrayBuffer = require("./render");
@@ -56,17 +54,11 @@ setInterval(() => {
   }
 }, 500);
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadPath),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const filename =
-      Date.now() + "-" + Math.random().toString(36).substring(2) + ext;
-    cb(null, filename);
-  },
+// 画像は一旦メモリで受け取り、そのまま Neon Object Storage へ保存する
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_UPLOAD_BYTES },
 });
-
-const upload = multer({ storage });
 
 const users = {};
 const uids = {};
@@ -703,15 +695,42 @@ bbsIO.on("connection", (socket) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.post("/upload-image", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res
-      .status(400)
-      .json({ error: "ファイルがアップロードされていません" });
+app.post(
+  "/upload-image",
+  (req, res, next) => {
+    upload.single("image")(req, res, (err) => {
+      if (err) {
+        const error =
+          err.code === "LIMIT_FILE_SIZE"
+            ? `ファイルサイズが大きすぎます(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)`
+            : "アップロードに失敗しました";
+        return res.status(400).json({ error });
+      }
+      next();
+    });
+  },
+  async (req, res) => {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ error: "ファイルがアップロードされていません" });
+    }
+    try {
+      const baseName =
+        Date.now() + "-" + Math.random().toString(36).substring(2);
+      const filename = await storage.saveFile({
+        bucket: "uploads",
+        baseName,
+        ext: safeExt(req.file.originalname),
+        data: req.file.buffer,
+      });
+      res.json({ url: `/uploads/${filename}` });
+    } catch (err) {
+      console.error("画像の保存に失敗:", err);
+      res.status(500).json({ error: "アップロードに失敗しました" });
+    }
   }
-  const imageUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: imageUrl });
-});
+);
 
 app.use(
   session({
@@ -778,6 +797,7 @@ app.use("/chat", require("./routes/chat"));
 app.use("/bbs", require("./routes/bbs"));
 app.use("/service", require("./routes/service"));
 app.use("/uploads", require("./routes/uploads"));
+app.use("/pubAssets", require("./routes/pubAssets"));
 app.use("/proc", require("./routes/proc"));
 app.use("/api", require("./routes/api"));
 
@@ -976,6 +996,7 @@ const port = process.env.PORT || 3000;
     console.error("DBの初期化に失敗しました:", err);
     process.exit(1);
   }
+  storage.check(); // Object Storage への接続確認(失敗してもログだけ)
   http.listen(port, "0.0.0.0", () => {
     console.log("App listening on port", port, ", pid", process.pid);
   });

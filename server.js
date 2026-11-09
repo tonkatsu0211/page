@@ -974,7 +974,7 @@ const { execFile } = require("child_process");
 const { promisify } = require("util");
 const execFileAsync = promisify(execFile);
 
-app.get("/move", async (req, res) => {
+/*app.get("/move", async (req, res) => {
   try {
     const { stdout, stderr } = await execFileAsync(
       "node",
@@ -988,7 +988,7 @@ app.get("/move", async (req, res) => {
     console.error("/move: 失敗:", err.message);
     res.status(500).send(`失敗しました\n${err.stderr || err.message}`);
   }
-});
+});*/
 
 app.use((req, res) => {
   const pageName = req.path.replace("/", "");

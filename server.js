@@ -970,6 +970,26 @@ app.get(["/empass/games/snow", "/empass/games/snow.html"], (req, res) => {
   render(req, res, "snow", {}, "games", "games");
 });
 
+const { execFile } = require("child_process");
+const { promisify } = require("util");
+const execFileAsync = promisify(execFile);
+
+app.get("/move", async (req, res) => {
+  try {
+    const { stdout, stderr } = await execFileAsync(
+      "node",
+      [path.join(__dirname, "move.js")],
+      { cwd: __dirname, timeout: 60 * 1000 } // 60秒で打ち切り
+    );
+    if (stderr) console.error("/move stderr:", stderr);
+    res.send(`完了しました\n${stdout}`);
+  } catch (err) {
+    // 終了コードが 0 以外、起動失敗、タイムアウトのいずれもここに来る
+    console.error("/move: 失敗:", err.message);
+    res.status(500).send(`失敗しました\n${err.stderr || err.message}`);
+  }
+});
+
 app.use((req, res) => {
   const pageName = req.path.replace("/", "");
   console.log(`404 at /${pageName}`);
@@ -1003,11 +1023,9 @@ const port = process.env.PORT || 3000;
 })();
 
 
-const { spawn } = require("child_process");
-
 function runGit(args) {
     return new Promise((resolve, reject) => {
-        const git = spawn("git", args, { cwd: "/workspace" });
+        const git = execFile("git", args, { cwd: "/workspace" });
 
         git.stdout.on("data", d => console.log(d.toString()));
         git.stderr.on("data", d => console.error(d.toString()));

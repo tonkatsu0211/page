@@ -13,17 +13,27 @@ const {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
-  HeadBucketCommand,
+  ListObjectsV2Command,
 } = require("@aws-sdk/client-s3");
 const db = require("./db");
 
-const endpoint = process.env.S3_ENDPOINT || process.env.AWS_ENDPOINT_URL_S3;
-const accessKeyId = process.env.S3_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY;
-const BUCKET = process.env.S3_BUCKET;
+// 環境変数の前後の空白・改行・引用符(Neon の .env 表示のまま貼り付けた場合)を取り除く
+const env = (...names) => {
+  for (const n of names) {
+    const v = (process.env[n] || "").trim().replace(/^["']|["']$/g, "").trim();
+    if (v) return v;
+  }
+  return undefined;
+};
+
+const endpoint = env("S3_ENDPOINT", "AWS_ENDPOINT_URL_S3")?.replace(/\/+$/, "");
+const accessKeyId = env("S3_ACCESS_KEY_ID", "AWS_ACCESS_KEY_ID");
+const secretAccessKey = env("S3_SECRET_ACCESS_KEY", "AWS_SECRET_ACCESS_KEY");
+const BUCKET = env("S3_BUCKET");
+const REGION = env("S3_REGION", "AWS_REGION") || "us-east-2";
 
 const s3 = new S3Client({
-  region: process.env.S3_REGION || process.env.AWS_REGION || "us-east-2",
+  region: REGION,
   endpoint,
   forcePathStyle: true, // Neon Object Storage はパススタイルのみ対応
   credentials: accessKeyId && secretAccessKey ? { accessKeyId, secretAccessKey } : undefined,
@@ -42,14 +52,26 @@ function requireConfigured() {
   }
 }
 
-// 起動時の接続確認(失敗してもサーバーは止めず、ログだけ出す)
+// 起動時の接続確認(失敗してもサーバーは止めず、原因が分かるログだけ出す)
 async function check() {
   try {
     requireConfigured();
-    await s3.send(new HeadBucketCommand({ Bucket: BUCKET }));
+    await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, MaxKeys: 1 }));
     console.log(`[storage] Object Storage に接続できました (bucket: ${BUCKET})`);
   } catch (err) {
-    console.error("[storage] Object Storage に接続できません:", err.message);
+    const status = err.$metadata?.httpStatusCode;
+    let host = endpoint;
+    try { host = new URL(endpoint).host; } catch {}
+    console.error(
+      `[storage] Object Storage に接続できません: ${err.name}: ${err.message}` +
+        ` (HTTP ${status ?? "-"}, bucket: "${BUCKET}", endpoint: ${host}, region: ${REGION},` +
+        ` accessKeyId: ${accessKeyId ? accessKeyId.slice(0, 8) + "..." : "未設定"})`
+    );
+    if (status === 404 || err.name === "NoSuchBucket") {
+      console.error("[storage] → バケットが存在しません。S3_BUCKET の名前と、Neon でバケットを作成済みか確認してください");
+    } else if (status === 403 || err.name === "AccessDenied") {
+      console.error("[storage] → 認証に失敗しました。Access Key ID / Secret が正しいか、別のブランチのキーではないか確認してください");
+    }
   }
 }
 

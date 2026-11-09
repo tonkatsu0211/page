@@ -17,7 +17,7 @@ const { version, last_update } = require(path.join(
   "package.json"
 ));
 const multer = require("multer");
-const { safeExt, MAX_UPLOAD_BYTES } = require("./fileserve");
+const { safeExt, MAX_UPLOAD_BYTES } = require("./fileServe");
 const storage = require("./storage");
 global.render = require("./render");
 global.arrayBufferToBase64 = require("./render");

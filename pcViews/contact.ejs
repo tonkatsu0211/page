@@ -27,28 +27,33 @@
       </p>
 
 <script>
-function sendMail() {
-  const email = "contact@tonkatsu.f5.si";
-  const subject = "ホームページ「お問い合わせ」より";
-
-  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+  function sendMail() {
+    const email = "contact@tonkatsu.f5.si";
+    const subject = "ホームページ「お問い合わせ」より";
   
-  //const webFallback = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}`;
-  const webFallback = `https://outlook.office.com/mail/0/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}`;
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+    const webFallback = `https://outlook.office.com/mail/0/deeplink/compose?to=${encodeURIComponent(email)}&subject=${encodeURIComponent(subject)}`;
   
-  let clicked = false;
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = mailtoLink;
-  document.body.appendChild(iframe);
-
-  setTimeout(() => {
-    if (!clicked) {
-      window.open(webFallback, "_blank");
-    }
-    document.body.removeChild(iframe);
-  }, 2000);
-}
+    let switched = false;
+  
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        switched = true;
+      }
+    };
+  
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+  
+    window.location.href = mailtoLink;
+  
+    setTimeout(() => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  
+      if (!switched) {
+        window.open(webFallback, "_blank", "noopener");
+      }
+    }, 2000);
+  }
 </script>
 
   

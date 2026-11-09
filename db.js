@@ -74,6 +74,25 @@ CREATE TABLE IF NOT EXISTS votes (
   target     TEXT PRIMARY KEY,
   vote_count INTEGER NOT NULL DEFAULT 0
 );
+
+-- アップロードされたファイルの台帳(本体は Neon Object Storage の S3 バケットに保存)
+--   bucket: "uploads" = チャット画像, "pubAssets" = 公開アセット (S3 上のキーは "<bucket>/<name>")
+CREATE TABLE IF NOT EXISTS files (
+  bucket     TEXT NOT NULL,
+  name       TEXT NOT NULL,
+  size       INTEGER NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (bucket, name)
+);
+
+-- 以前の BYTEA 版で作られたテーブルが残っていても INSERT が通るようにする
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns
+             WHERE table_name = 'files' AND column_name = 'data') THEN
+    ALTER TABLE files ALTER COLUMN data DROP NOT NULL;
+  END IF;
+END $$;
 `;
 
 /* ------------------------------------------------------------------ */
@@ -497,6 +516,42 @@ async function incrementVote(target) {
 }
 
 /* ------------------------------------------------------------------ */
+/* アップロードファイル                                                */
+/* ------------------------------------------------------------------ */
+
+// ファイル名を予約する。同名があれば baseName-1.ext, baseName-2.ext ... と連番を付け、
+// 確定した名前を返す。INSERT ... ON CONFLICT で判定するので、同時アップロードでも衝突しない。
+async function reserveFile({ bucket, baseName, ext = "", size }) {
+  for (let counter = 0; counter < 1000; counter++) {
+    const name = (counter === 0 ? baseName + ext : `${baseName}-${counter}${ext}`)
+      .replace(/[ 　]/g, "_");
+    const { rows } = await pool.query(
+      `INSERT INTO files (bucket, name, size) VALUES ($1, $2, $3)
+       ON CONFLICT (bucket, name) DO NOTHING
+       RETURNING name`,
+      [bucket, name, size]
+    );
+    if (rows[0]) return rows[0].name;
+  }
+  throw new Error("ファイル名を確定できませんでした");
+}
+
+// 名前をそのまま登録(既存ファイルの移行用)。新規に登録できたら true、既にあれば false
+async function registerFile(bucket, name, size) {
+  const r = await pool.query(
+    `INSERT INTO files (bucket, name, size) VALUES ($1, $2, $3)
+     ON CONFLICT (bucket, name) DO NOTHING`,
+    [bucket, name, size]
+  );
+  return r.rowCount > 0;
+}
+
+// S3 への保存に失敗したときに予約を取り消す
+async function releaseFile(bucket, name) {
+  await pool.query("DELETE FROM files WHERE bucket = $1 AND name = $2", [bucket, name]);
+}
+
+/* ------------------------------------------------------------------ */
 /* 初期化 / JSON からの一括移行                                        */
 /* ------------------------------------------------------------------ */
 
@@ -611,4 +666,8 @@ module.exports = {
   clearMessages,
   // votes
   incrementVote,
+  // files(台帳)
+  reserveFile,
+  registerFile,
+  releaseFile,
 };

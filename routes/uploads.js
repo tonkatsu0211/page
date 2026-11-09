@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const storage = require("../storage");
-const { serve, safeExt, MAX_UPLOAD_BYTES } = require("../fileserve");
+const { serve, safeExt, MAX_UPLOAD_BYTES } = require("../fileServe");
 
 function sanitizeFilename(name) {
   if (!name || !name.trim()) return null

@@ -9,7 +9,7 @@
 //   S3_BUCKET_PUBASSETS   公開アセットのバケット名   (省略時 "pubassets")
 //
 // バケットは Neon コンソールで作成しておく(アクセスレベルは Private のままでOK)。
-// ファイルは各バケットの直下に、ファイル名そのままのキーで保存します。
+// ファイルは各バケットの直下に保存します(キーの変換規則は keyOf を参照)。
 
 const {
   S3Client,
@@ -31,6 +31,15 @@ const env = (...names) => {
 const endpoint = env("S3_ENDPOINT", "AWS_ENDPOINT_URL_S3")?.replace(/\/+$/, "");
 const accessKeyId = env("S3_ACCESS_KEY_ID", "AWS_ACCESS_KEY_ID");
 const secretAccessKey = env("S3_SECRET_ACCESS_KEY", "AWS_SECRET_ACCESS_KEY");
+// S3 に渡すキー(オブジェクト名)。
+// Neon Object Storage(ベータ)は日本語などの非ASCIIキーを正しく扱えないため、
+// 英数字と . _ - だけの名前はそのまま、それ以外は "u-" + base64url(UTF-8) に変換する。
+// ("u-" で始まる名前も変換するので、異なるファイル名が同じキーになることはない)
+const keyOf = (name) =>
+  /^[A-Za-z0-9._-]+$/.test(name) && !name.startsWith("u-")
+    ? name
+    : "u-" + Buffer.from(name, "utf8").toString("base64url");
+
 // 論理名(コード内で使う名前) → 実際のバケット名
 const BUCKETS = {
   uploads: env("S3_BUCKET_UPLOADS") || "uploads",
@@ -96,7 +105,7 @@ async function saveFile({ bucket, baseName, ext = "", data }) {
     await s3.send(
       new PutObjectCommand({
         Bucket: bucketOf(bucket),
-        Key: name,
+        Key: keyOf(name),
         Body: data,
         ContentLength: data.length,
       })
@@ -116,7 +125,7 @@ async function putFile(bucket, name, data) {
     await s3.send(
       new PutObjectCommand({
         Bucket: bucketOf(bucket),
-        Key: name,
+        Key: keyOf(name),
         Body: data,
         ContentLength: data.length,
       })
@@ -135,7 +144,7 @@ async function getObject(bucket, name, range) {
     const out = await s3.send(
       new GetObjectCommand({
         Bucket: bucketOf(bucket),
-        Key: name,
+        Key: keyOf(name),
         ...(range ? { Range: range } : {}),
       })
     );
@@ -151,4 +160,4 @@ async function getObject(bucket, name, range) {
   }
 }
 
-module.exports = { check, saveFile, putFile, getObject };
+module.exports = { check, saveFile, putFile, getObject, keyOf };

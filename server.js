@@ -978,7 +978,7 @@ app.get("/move", async (req, res) => {
   try {
     const { stdout, stderr } = await execFileAsync(
       "node",
-      [path.join(__dirname, "move.js")],
+      [path.join(__dirname, "temp.js")],
       { cwd: __dirname, timeout: 60 * 1000 } // 60秒で打ち切り
     );
     if (stderr) console.error("/move stderr:", stderr);

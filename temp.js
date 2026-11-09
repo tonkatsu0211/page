@@ -14,6 +14,7 @@ const targets = [
 (async () => {
   await db.init(); // files(台帳)テーブルが無ければ作る
   let added = 0, skipped = 0;
+  const failed = [];
   for (const { bucket, dir } of targets) {
     if (!fs.existsSync(dir)) {
       console.log(`${dir} が無いのでスキップ`);
@@ -21,16 +22,26 @@ const targets = [
     }
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isFile()) continue;
-      const data = fs.readFileSync(path.join(dir, entry.name));
-      if (await storage.putFile(bucket, entry.name, data)) {
-        added++;
-        console.log(`移行: ${bucket}/${entry.name} (${data.length} bytes)`);
-      } else {
-        skipped++;
+      try {
+        const data = fs.readFileSync(path.join(dir, entry.name));
+        if (await storage.putFile(bucket, entry.name, data)) {
+          added++;
+          console.log(`移行: ${bucket}/${entry.name} (${data.length} bytes)`);
+        } else {
+          skipped++;
+        }
+      } catch (err) {
+        // 1ファイルの失敗で全体を止めず、最後にまとめて報告する
+        failed.push(`${bucket}/${entry.name}: ${err.name}: ${err.message}`);
+        console.error(`失敗: ${bucket}/${entry.name}: ${err.name}: ${err.message}`);
       }
     }
   }
-  console.log(`完了: 追加 ${added} 件 / 既にあるためスキップ ${skipped} 件`);
+  console.log(`完了: 追加 ${added} 件 / 既にあるためスキップ ${skipped} 件 / 失敗 ${failed.length} 件`);
+  if (failed.length) {
+    console.log("失敗したファイル:\n" + failed.join("\n"));
+    process.exitCode = 1;
+  }
   await db.pool.end();
 })().catch((err) => {
   console.error("移行に失敗:", err);

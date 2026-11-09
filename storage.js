@@ -4,10 +4,12 @@
 //   S3_ENDPOINT           ブランチのエンドポイント URL (AWS_ENDPOINT_URL_S3 でも可)
 //   S3_ACCESS_KEY_ID      認証情報の Access Key ID     (AWS_ACCESS_KEY_ID でも可)
 //   S3_SECRET_ACCESS_KEY  認証情報の Secret Access Key (AWS_SECRET_ACCESS_KEY でも可)
-//   S3_BUCKET             バケット名 (コンソールで作成。アクセスレベルは private のままでOK)
 //   S3_REGION             省略時は us-east-2
+//   S3_BUCKET_UPLOADS     チャット画像のバケット名   (省略時 "uploads")
+//   S3_BUCKET_PUBASSETS   公開アセットのバケット名   (省略時 "pubassets")
 //
-// 1つのバケットの中に "uploads/<name>" と "pubAssets/<name>" というキーで保存します。
+// バケットは Neon コンソールで作成しておく(アクセスレベルは Private のままでOK)。
+// ファイルは各バケットの直下に、ファイル名そのままのキーで保存します。
 
 const {
   S3Client,
@@ -29,7 +31,16 @@ const env = (...names) => {
 const endpoint = env("S3_ENDPOINT", "AWS_ENDPOINT_URL_S3")?.replace(/\/+$/, "");
 const accessKeyId = env("S3_ACCESS_KEY_ID", "AWS_ACCESS_KEY_ID");
 const secretAccessKey = env("S3_SECRET_ACCESS_KEY", "AWS_SECRET_ACCESS_KEY");
-const BUCKET = env("S3_BUCKET");
+// 論理名(コード内で使う名前) → 実際のバケット名
+const BUCKETS = {
+  uploads: env("S3_BUCKET_UPLOADS") || "uploads",
+  pubAssets: env("S3_BUCKET_PUBASSETS") || "pubassets",
+};
+const bucketOf = (bucket) => {
+  const b = BUCKETS[bucket];
+  if (!b) throw new Error(`不明なバケット: ${bucket}`);
+  return b;
+};
 const REGION = env("S3_REGION", "AWS_REGION") || "us-east-2";
 
 const s3 = new S3Client({
@@ -42,35 +53,36 @@ const s3 = new S3Client({
   responseChecksumValidation: "WHEN_REQUIRED",
 });
 
-const keyOf = (bucket, name) => `${bucket}/${name}`;
-
 function requireConfigured() {
-  if (!BUCKET || !endpoint) {
+  if (!endpoint) {
     throw new Error(
-      "Object Storage の設定がありません。環境変数 S3_ENDPOINT / S3_BUCKET / S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY を設定してください"
+      "Object Storage の設定がありません。環境変数 S3_ENDPOINT / S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY を設定してください"
     );
   }
 }
 
 // 起動時の接続確認(失敗してもサーバーは止めず、原因が分かるログだけ出す)
 async function check() {
-  try {
-    requireConfigured();
-    await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, MaxKeys: 1 }));
-    console.log(`[storage] Object Storage に接続できました (bucket: ${BUCKET})`);
-  } catch (err) {
-    const status = err.$metadata?.httpStatusCode;
-    let host = endpoint;
-    try { host = new URL(endpoint).host; } catch {}
-    console.error(
-      `[storage] Object Storage に接続できません: ${err.name}: ${err.message}` +
-        ` (HTTP ${status ?? "-"}, bucket: "${BUCKET}", endpoint: ${host}, region: ${REGION},` +
-        ` accessKeyId: ${accessKeyId ? accessKeyId.slice(0, 8) + "..." : "未設定"})`
-    );
-    if (status === 404 || err.name === "NoSuchBucket") {
-      console.error("[storage] → バケットが存在しません。S3_BUCKET の名前と、Neon でバケットを作成済みか確認してください");
-    } else if (status === 403 || err.name === "AccessDenied") {
-      console.error("[storage] → 認証に失敗しました。Access Key ID / Secret が正しいか、別のブランチのキーではないか確認してください");
+  let host = endpoint;
+  try { host = new URL(endpoint).host; } catch {}
+  for (const logical of Object.keys(BUCKETS)) {
+    const bucket = BUCKETS[logical];
+    try {
+      requireConfigured();
+      await s3.send(new ListObjectsV2Command({ Bucket: bucket, MaxKeys: 1 }));
+      console.log(`[storage] 接続OK (bucket: ${bucket})`);
+    } catch (err) {
+      const status = err.$metadata?.httpStatusCode;
+      console.error(
+        `[storage] bucket "${bucket}" に接続できません: ${err.name}: ${err.message}` +
+          ` (HTTP ${status ?? "-"}, endpoint: ${host}, region: ${REGION},` +
+          ` accessKeyId: ${accessKeyId ? accessKeyId.slice(0, 8) + "..." : "未設定"})`
+      );
+      if (status === 404 || err.name === "NoSuchBucket") {
+        console.error(`[storage] → バケット "${bucket}" が存在しません。Neon のコンソールで作成済みか、名前が一致しているか確認してください`);
+      } else if (status === 403 || err.name === "AccessDenied") {
+        console.error("[storage] → 認証に失敗しました。Access Key ID / Secret が正しいか確認してください");
+      }
     }
   }
 }
@@ -83,8 +95,8 @@ async function saveFile({ bucket, baseName, ext = "", data }) {
   try {
     await s3.send(
       new PutObjectCommand({
-        Bucket: BUCKET,
-        Key: keyOf(bucket, name),
+        Bucket: bucketOf(bucket),
+        Key: name,
         Body: data,
         ContentLength: data.length,
       })
@@ -103,8 +115,8 @@ async function putFile(bucket, name, data) {
   try {
     await s3.send(
       new PutObjectCommand({
-        Bucket: BUCKET,
-        Key: keyOf(bucket, name),
+        Bucket: bucketOf(bucket),
+        Key: name,
         Body: data,
         ContentLength: data.length,
       })
@@ -122,8 +134,8 @@ async function getObject(bucket, name, range) {
   try {
     const out = await s3.send(
       new GetObjectCommand({
-        Bucket: BUCKET,
-        Key: keyOf(bucket, name),
+        Bucket: bucketOf(bucket),
+        Key: name,
         ...(range ? { Range: range } : {}),
       })
     );

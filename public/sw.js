@@ -12,8 +12,8 @@ self.addEventListener('push', function(event) {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: 'https://cdn.glitch.global/76a1f4d2-2815-4fbf-afcd-888d6db7e806/icon.ico?v=1749512639750',
-      badge: 'https://cdn.glitch.global/76a1f4d2-2815-4fbf-afcd-888d6db7e806/icon.ico?v=1749512639750',
+      icon: 'https://y3sjh2.csb.app/fabicon.png?v=1',
+      badge: 'https://y3sjh2.csb.app/fabicon.png?v=1',
       // 必要なら追加オプションもここに
       // vibrate: [200, 100, 200],
       // tag: 'chat-message',

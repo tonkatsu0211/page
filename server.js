@@ -702,7 +702,7 @@ app.post(
       if (err) {
         const error =
           err.code === "LIMIT_FILE_SIZE"
-            ? `ファイルサイズが大きすぎます(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)`
+            ? `ファイルサイズ制限を超えています(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)`
             : "アップロードに失敗しました";
         return res.status(400).json({ error });
       }

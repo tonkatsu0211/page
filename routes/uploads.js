@@ -26,8 +26,8 @@ router.post(
       if (err) {
         const error =
           err.code === "LIMIT_FILE_SIZE"
-            ? `アップロード失敗：ファイルサイズが大きすぎます(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)。`
-            : `アップロード失敗：${err.message}`;
+            ? `アップロード失敗: ファイルサイズ制限を超えています(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)。`
+            : `アップロード失敗: ${err.message}`;
         return res.json({ error, url: null });
       }
       next();

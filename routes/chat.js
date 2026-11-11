@@ -9,6 +9,7 @@ const http = require("http").createServer(app);
 const { v4: uuidv4 } = require("uuid");
 const { Server } = require("socket.io");
 const io = new Server(http);
+const maxFileSize = Number(process.env.MAX_UPLOAD_MB) || 10;
 const tag = "chat"
 const { version } = require(path.join(
   __dirname,
@@ -383,7 +384,8 @@ router.get(["/main", "/main.html"], ah(async (req, res) => {
       uid: uid,
       from,
       banned,
-      superAdmin
+      superAdmin,
+      maxFileSize
     },
     tag,
     "chat"

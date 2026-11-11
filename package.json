@@ -1,7 +1,7 @@
 {
   "name": "tonkatsu-page",
-  "version": "1.7.0.1",
-  "last_update": "2026/11/9",
+  "version": "1.7.0.2",
+  "last_update": "2026/11/11",
   "description": "_tonkatsu_ / tonkatsu0211's homepage",
   "main": "server.js",
   "scripts": {

@@ -8,7 +8,8 @@
 
 <form id="image-upload-form" enctype="multipart/form-data">
   <input type="file" name="image" id="image-input" accept="image/*, video/mp4, video/webm, video/mov, video/mkv, video/m4v, video/ogg, video/ogv, application/pdf, audio/mp3, audio/m4a, audio/wav" required>
-  <h2>
+  <p>最大ファイルサイズ: <%= maxFileSize %>MB</p>
+	<h2>
     <input class="loginText" type="text" id="filename" name="filename" placeholder="ファイル名（拡張子不要、任意）">
   </h2>
   <button type="submit" class="blueButton30">アップロード</button>

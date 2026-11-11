@@ -4,6 +4,7 @@ const path = require("path");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const maxFileSize = Number(process.env.MAX_UPLOAD_MB) || 10;
 const serviceIds = ["upload", "android", "clock", "youtube", "srev", "kyoshin", "5000generator", "scratch-message-count", "zeller", "htmlget"];
 const serviceNames = ["ファイルアップロードサービス", "Androidエミュレーター", "デジタル時計", "YouTube簡易プレーヤー", "リアルタイム地震ビューアー", "リアルタイム震度(強震モニタ)", "5000兆円ジェネレーター", "Scratch通知数取得", "日付から曜日を求める", "HTMLビューアー"];
 
@@ -33,7 +34,8 @@ router.get(["/:id", "/:id.html"], (req, res) => {
     page: `service/${serviceId}`,
     top: serviceName,
     error: null,
-    url: null
+    url: null,
+    maxFileSize
   }, "service", "service");
 });
 

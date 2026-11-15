@@ -1,0 +1,978 @@
+<%- include("../settings/header") %>
+<%- include("../settings/nav") %>
+<%- include("../settings/top") %>
+
+<style>
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+  min-height: 420px;
+}
+#messages {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fafafa;
+}
+.mention {
+  color: #1976d2;
+  font-weight: bold;
+}
+#cancelReply {
+  font-size: 0.7em;
+  color: red;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.message-bubble {
+  background-color: #e1faff;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  width: fit-content;
+  border: 1px solid #000;
+  max-width: 90%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.message-bubble.mine {
+  background-color: #dcf8c6;
+}
+.message-item {
+  margin-bottom: 15px;
+}
+.message-item.mine-item {
+  display: flex;
+  justify-content: flex-end;
+}
+.meta {
+  font-size: 0.75em;
+  color: #999;
+  margin-bottom: 5px;
+}
+.delete-btn {
+  font-size: 0.7em;
+  color: red;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.clean-delete-btn {
+  font-size: 0.7em;
+  color: purple;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.restore-btn {
+  font-size: 0.7em;
+  color: #5a5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.reply-btn {
+  font-size: 0.7em;
+  color: #0966c2;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.text {
+  word-break: break-word;
+  font-size: 1em;
+}
+.send {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#input {
+  flex: 1;
+  padding: 10px;
+  font-size: 1em;
+  width: 1000px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+#sendButton {
+  padding: 0 !important;
+  font-size: 30px !important;
+  width: 130px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tooltip {
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 9999;
+  white-space: nowrap;
+}
+.tooltip.show {
+  opacity: 1;
+}
+.tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+.message-bubble.highlight-reply {
+  animation: bubbleHighlight 1.2s ease-out;
+}
+@keyframes bubbleHighlight {
+  0% { background-color: rgba(255, 255, 200, 0.6); }
+  100% { background-color: #e1faff; }
+}
+/* DM 専用 */
+.conv-btn {
+  display: inline-block;
+  margin: 3px 6px 3px 0;
+  padding: 6px 12px;
+  border: 1px solid #999;
+  border-radius: 16px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+.conv-btn.active {
+  background: #e1faff;
+  border-color: #1976d2;
+}
+#pickerBox {
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+}
+#pickerFilter {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+#pickerList {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+.picker-item {
+  padding: 6px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+.picker-item:hover {
+  background: #f0f8ff;
+}
+#dmNotice {
+  display: none;
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: #fef3c7;
+  color: #92400e;
+}
+</style>
+
+  <br>
+  <h2 style="margin: 0;">DM</h2>
+  <div style="margin: 6px 0;">
+    <a href="/chat/main">← チャットに戻る</a>
+  </div>
+  <div id="dmNotice"></div>
+  <div id="convBar"></div>
+  <button class="normalButton" id="newDmBtn" type="button">＋ 新しいDM</button>
+  <div id="pickerBox" style="display: none;">
+    <input id="pickerFilter" type="search" placeholder="ユーザー名で検索" autocomplete="off">
+    <div id="pickerList"></div>
+  </div>
+  <div style="margin: 12px 0 6px; font-weight: bold;">
+    会話相手：<span id="partnerName">（未選択）</span>
+  </div>
+
+<div id="chat-container">
+<div id="messages"></div>
+  <div id="replyToDisplay" style="margin: 5px; font-size: 0.9em; color: #444;"></div>
+  <h2><textarea class="chatText" id="input" maxlength="300" autocomplete="off" placeholder="" disabled></textarea></h2>
+  <div class="send">
+    <button class="blueButton30" id="sendButton" onclick="sendChat()" disabled>送信</button>
+    <label style="font-size: 16px; font-weight: bold; padding-left: 10px;">
+      <input type="checkbox" id="enterToggle">Enterで送信</label>
+		<form id="image-upload-form" enctype="multipart/form-data">
+			<input type="file" id="image-input" accept="image/*,video/mp4,video/webm,video/quicktime,video/x-matroska,video/x-m4v,video/ogg,application/pdf,audio/mpeg,audio/mp4,audio/wav,.mov,.mkv,.m4v,.ogv,.mp3,.m4a,.wav" disabled>
+			<p>最大ファイルサイズ: <%= maxFileSize %>MB</p>
+		</form>
+  </div>
+  <div id="upload-progress" style="width: 100%; background: #333; height: 6px; margin-top: 5px; display: none;">
+    <div id="upload-bar" style="height: 100%; width: 0%; background: #4caf50;"></div>
+  </div>
+  <div id="upload-percent"></div>
+  </div>
+<br>
+<h3 style="padding-top: 0;">
+  使用できるコマンド一覧
+</h3>
+<p>
+  \b 文字\ → 太字表示
+</p>
+<p>
+  \i 文字\ → イタリック(斜体)表示
+</p>
+<p>
+  \d 文字\ → 取り消し線表示
+</p>
+<p>
+  \#rrggbbもしくは#rgb 文字\ → 文字色変更
+</p>
+<p>
+  \サイズ 文字\ → 文字サイズ指定(5〜40px)
+</p>
+<p>
+  \url リンク\ → リンクを生成し、クリック時に別タブで開く(\url リンク|表示名\とすると、リンクの表示名を変更できます)
+</p>
+<p>
+  \url! リンク\ → リンクを生成し、クリック時に同タブで開く(\url! リンク|表示名\とすると、リンクの表示名を変更できます)
+</p>
+<p>
+  \photo リンク|大きさ(横幅、10〜1000px)\ → リンクの画像を埋め込み(例: \photo https://img.example.com|300\)
+</p>
+<p>
+  \video リンク|大きさ(横幅、10〜1000px)\ → リンクの動画を埋め込み(例: \video https://video.example.com|300\)
+</p>
+<p>
+  \audio リンク\ → リンクの音声を埋め込み(例: \audio https://music.example.com\)
+</p>
+<p>
+  ※ すべて「\」で閉じてください
+</p>
+<p>
+  \はMacやiPadならOption+¥、Windowsは分からないのでコピペ推奨
+</p>
+<br>
+<p>
+  ※ユーザー名部分クリックでUIDをコピー可能
+</p>
+<p>
+  ※DMは会話の当事者2人だけに表示されます。削除・復元は送信者本人のみ可能です(管理者でも他人のDMは操作できません)
+</p>
+<div id="imageModal" class="modal">
+  <span id="closeModal" class="close">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+<br>
+<div style="padding-bottom: 5px;">
+  <a href='/chat/terms' class="blueButton30">利用規約</a>
+</div>
+  <br>
+  <br>
+  <form action="/chat/logout" method="POST">
+    <button class="blueButton30" style="width: 180px; padding-left: 0 !important; padding-right: 0 !important; background-color: #fe3030; font-family: 'Corporate Logo', sans-serif;">ログアウト</button>
+  </form>
+  <br>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  // Enterで送信の設定は main と共通の cookie(enterToSend)を使う
+  function dmGetCookie(name) {
+    const m = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  function dmSetCookie(name, value, days) {
+    const exp = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${exp}; path=/`;
+  }
+
+  // 認証はサーバーが発行した署名付きトークン(httpOnly cookie)で行う。ユーザー名・UIDは接続後にサーバーから受け取る。
+  const socket = io("/dm");
+  let me = null;        // {uid, username}
+  let partner = null;   // {uid, username, color}
+  let dmMessages = [];  // 表示中の会話
+  let replyToId = null;
+  let convList = [];
+  let allUsers = null;
+  let listTimer = null;
+
+  function showNotice(text) {
+    const n = document.getElementById("dmNotice");
+    n.textContent = text || "";
+    n.style.display = text ? "block" : "none";
+  }
+
+  socket.on("connect_error", (err) => {
+    if (err && err.message === "banned") {
+      location.href = "/chat/ban";
+    } else if (err && err.message === "unauthorized") {
+      socket.disconnect();
+      location.href = "/chat/login?f=dm";
+    } else {
+      showNotice("接続できません。再接続を試みています…");
+    }
+  });
+  socket.on("disconnect", () => showNotice("接続が切れました。再接続を試みています…"));
+
+  socket.on("connect", () => {
+    showNotice("");
+    socket.emit("dm list");
+    const want = partner ? partner.uid : new URLSearchParams(location.search).get("to");
+    if (want) socket.emit("dm open", want);
+  });
+  socket.on("dm me", (v) => { me = v; });
+  socket.on("dm error", (t) => showNotice(t));
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    const enterToggle = document.getElementById('enterToggle');
+    const inputEl = document.getElementById('input');
+    const placeholder = "最大300文字、送信は2秒毎、改行は10回まで"
+
+    const saved = dmGetCookie("enterToSend");
+    if (saved === "true") {
+      enterToggle.checked = true;
+      inputEl.placeholder = placeholder + "、Enterで送信、Shift+Enterで改行";
+    } else {
+      inputEl.placeholder = placeholder + "、Shift+Enterで送信、Enterで改行";
+    }
+
+    enterToggle.addEventListener("change", () => {
+      const isChecked = enterToggle.checked;
+      dmSetCookie("enterToSend", isChecked ? "true" : "false", 365);
+      inputEl.placeholder = isChecked
+        ? placeholder + "、Enterで送信、Shift+Enterで改行"
+        : placeholder + "、Shift+Enterで送信、Enterで改行";
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("reply-btn")) {
+        const id = e.target.getAttribute("data-id");
+        const targetUser = e.target.getAttribute("data-username");
+        replyToId = id;
+        const box = document.getElementById("replyToDisplay");
+        box.textContent = `返信対象: @${targetUser} `;
+        const cancel = document.createElement("button");
+        cancel.id = "cancelReply";
+        cancel.style.cssText = "margin-left: 10px; font-size: 0.8em;";
+        cancel.textContent = "キャンセル";
+        box.appendChild(cancel);
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.id === "cancelReply") {
+        replyToId = null;
+        document.getElementById("replyToDisplay").innerText = "";
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.tagName === "IMG" && e.target.classList.contains("chat-image")) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modal.style.display = "block";
+        modalImg.src = e.target.src;
+      }
+    });
+
+    document.getElementById("closeModal").addEventListener("click", function () {
+      document.getElementById("imageModal").style.display = "none";
+    });
+
+    document.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("copy-uid")) {
+        const tUid = e.target.dataset.uid;
+        if (!tUid) return;
+
+        try {
+          await navigator.clipboard.writeText(tUid);
+
+          const oldTooltip = document.querySelector(".tooltip");
+          if (oldTooltip) oldTooltip.remove();
+
+          const tooltip = document.createElement('div');
+          tooltip.className = 'tooltip';
+          tooltip.textContent = 'UID Copied!';
+          document.body.appendChild(tooltip);
+
+          const rect = e.target.getBoundingClientRect();
+          tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+          tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 8}px`;
+
+          requestAnimationFrame(() => tooltip.classList.add('show'));
+
+          setTimeout(() => {
+            tooltip.classList.remove('show');
+            setTimeout(() => tooltip.remove(), 300);
+          }, 2000);
+
+        } catch (err) {
+          console.error("クリップボードコピー失敗:", err);
+        }
+      }
+    });
+
+    inputEl.addEventListener("keydown", function (e) {
+      const isEnter = e.key === "Enter";
+      const toggle = enterToggle.checked;
+      // 日本語入力の変換確定のEnterでは送信しない
+      if (e.isComposing || e.keyCode === 229) return;
+
+      if (isEnter) {
+        if (!toggle && e.shiftKey) {
+          e.preventDefault();
+          sendChat();
+        } else if (toggle && !e.shiftKey) {
+          e.preventDefault();
+          sendChat();
+        }
+      }
+    });
+
+    // 新しいDM(ユーザー選択)
+    document.getElementById("newDmBtn").addEventListener("click", () => {
+      const box = document.getElementById("pickerBox");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+      if (box.style.display === "block") {
+        document.getElementById("pickerFilter").value = "";
+        renderPicker();
+        document.getElementById("pickerFilter").focus();
+      }
+    });
+    document.getElementById("pickerFilter").addEventListener("input", renderPicker);
+  });
+
+  let canSend = true;
+
+  function sendChat() {
+    if (!partner) return;
+    if (!canSend) {
+      alert("送信頻度が高すぎます。");
+      return;
+    }
+
+    const inputEl = document.getElementById("input");
+    let message = inputEl.value.trim();
+    if (message.length === 0) return;
+
+    const newlineCount = (message.match(/\n/g) || []).length;
+    if (newlineCount > 10) {
+      alert("改行は最大10回までにしてください。");
+      return;
+    }
+
+    canSend = false;
+    setTimeout(() => {
+      canSend = true;
+    }, 2000);
+
+    socket.emit('dm message', {
+      to: partner.uid,
+      message,
+      replyTo: replyToId || null
+    });
+
+    replyToId = null;
+    document.getElementById("replyToDisplay").innerText = "";
+
+    inputEl.value = '';
+
+    const imageInput = document.getElementById('image-input');
+    if (imageInput) {
+      imageInput.value = '';
+    }
+  }
+
+  // ---- 会話一覧 / 相手の選択 ----
+  function renderConvBar() {
+    const bar = document.getElementById("convBar");
+    bar.replaceChildren();
+    if (!convList.length) {
+      const p = document.createElement("div");
+      p.style.cssText = "color:#888; margin: 6px 0;";
+      p.textContent = "まだDMはありません。「＋ 新しいDM」から始めましょう。";
+      bar.appendChild(p);
+      return;
+    }
+    for (const c of convList) {
+      const b = document.createElement("span");
+      b.className = "conv-btn" + (partner && partner.uid === c.uid ? " active" : "");
+      b.title = (c.mine ? "あなた: " : "") + c.last;
+      b.style.color = c.color;
+      b.textContent = c.username;
+      b.addEventListener("click", () => socket.emit("dm open", c.uid));
+      bar.appendChild(b);
+    }
+  }
+  socket.on("dm list", (list) => { convList = list; renderConvBar(); });
+  function refreshListSoon() {
+    clearTimeout(listTimer);
+    listTimer = setTimeout(() => socket.emit("dm list"), 150);
+  }
+
+  async function loadUsers() {
+    if (allUsers) return allUsers;
+    const res = await fetch("/users", { cache: "no-store" });
+    const obj = await res.json();
+    allUsers = Object.entries(obj)
+      .map(([name, info]) => ({ name, uid: info.uid, color: info.color || "#aaa" }))
+      .filter((u) => u.uid && (!me || u.uid !== me.uid))
+      .sort((a, b) => a.name.localeCompare(b.name, "ja"));
+    return allUsers;
+  }
+  async function renderPicker() {
+    const q = document.getElementById("pickerFilter").value.trim().toLowerCase();
+    const list = document.getElementById("pickerList");
+    list.replaceChildren();
+    try {
+      const users = (await loadUsers()).filter((u) => u.name.toLowerCase().includes(q)).slice(0, 100);
+      if (!users.length) {
+        const p = document.createElement("div");
+        p.style.color = "#888";
+        p.textContent = "該当するユーザーがいません";
+        list.appendChild(p);
+      }
+      for (const u of users) {
+        const d = document.createElement("div");
+        d.className = "picker-item";
+        d.style.color = u.color;
+        d.style.fontWeight = "bold";
+        d.textContent = u.name;
+        d.addEventListener("click", () => {
+          document.getElementById("pickerBox").style.display = "none";
+          socket.emit("dm open", u.uid);
+        });
+        list.appendChild(d);
+      }
+    } catch (e) {
+      list.textContent = "ユーザー一覧を取得できませんでした";
+    }
+  }
+
+  // ---- 本文のコマンド解析(main と同じ) ----
+  function parseCommands(text) {
+    function parseRecursive(str, start = 0, inheritedStyle = {}) {
+      let result = '';
+      let i = start;
+
+      while (i < str.length) {
+        if (str[i] === '\\') {
+          const cmdMatch = str.slice(i).match(/^\\(b|i|d|\d{1,2}|0\.01|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|url!?|photo|video|audio)\s/);
+          if (!cmdMatch) {
+            result += '\\';
+            i++;
+            continue;
+          }
+
+          const cmd = cmdMatch[1];
+          const cmdLen = cmdMatch[0].length;
+          i += cmdLen;
+
+          let segments = [];
+          let segment = '';
+          let depth = 1;
+
+          while (i < str.length) {
+            if (str[i] === '\\') {
+              const nextCmd = str.slice(i).match(/^\\(b|i|d|\d{1,2}|0\.01|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|url!?|photo|video|audio)\s/);
+
+              if (nextCmd) {
+                segment += str.slice(i, i + nextCmd[0].length);
+                i += nextCmd[0].length;
+                depth++;
+                continue;
+              } else if (str[i + 1] !== undefined && str[i + 1] !== ' ') {
+                depth--;
+                i++;
+
+                if (depth === 0) {
+                  segments.push(segment);
+                  break;
+                }
+                segment += '\\';
+              } else {
+                segments.push(segment);
+                segment = '';
+                i++;
+              }
+            } else {
+              segment += str[i];
+              i++;
+            }
+          }
+
+          let currentStyle = { ...inheritedStyle };
+          const parsedSegments = segments.map(seg => parseRecursive(seg.trim(), 0, currentStyle)[0]).join('');
+
+          if (cmd === 'b') {
+            result += `<strong>${parsedSegments}</strong>`;
+          } else if (cmd === 'i') {
+            result += `<em>${parsedSegments}</em>`;
+          } else if (cmd === 'd') {
+            result += `<del>${parsedSegments}</del>`;
+          } else if (/^\d+$/.test(cmd) || cmd === '0.01') {
+            const size = parseInt(cmd, 10);
+            if ((size >= 5 && size <= 40) || cmd == '0.01') {
+              result += `<span style="font-size:${size || cmd}px">${parsedSegments}</span>`;
+            } else {
+              result += parsedSegments;
+            }
+          } else if (/^#[0-9a-fA-F]{6}$/.test(cmd) || /^#[0-9a-fA-F]{3}$/.test(cmd)) {
+            currentStyle.color = cmd;
+            result += `<span style="color:${cmd}">${parsedSegments}</span>`;
+          } else if (cmd === 'url' || cmd === 'url!') {
+            const parts = parsedSegments.split('|');
+            const url = parts[0]?.trim();
+            const label = parts[1]?.trim() || url;
+            if (url && /^https?:\/\/[^\s<>"']+$/.test(url)) {
+              const target = cmd === 'url!' ? '_self' : '_blank';
+              const styleAttr = currentStyle.color
+                ? ` style="color:${currentStyle.color}; text-decoration:none; border-bottom:1px solid ${currentStyle.color}"`
+                : '';
+              result += `<a href="${url}" target="${target}" rel="noopener noreferrer"${styleAttr}>${label}</a>`;
+            } else {
+              result += parsedSegments;
+            }
+          } else if (cmd === 'photo') {
+            const parts = parsedSegments.split('|');
+            const url = parts[0]?.trim();
+            const width = Math.max(10, Math.min(parseInt(parts[1], 10) || 10, 1000));
+            if (url && (
+              /^\/uploads\/[a-zA-Z0-9\-_.]+\.(png|jpg|jpeg|gif|webp)(\?.*)?$/i.test(url) ||
+              /^https?:\/\/.+\.(png|jpg|jpeg|gif|webp)(\?.*)?$/i.test(url)
+            )) {
+              result += `<img src="${url}" style="max-width: ${width}px; max-height: 300px;" class="chat-image">`;
+            } else {
+              result += `[画像読み込みエラー]`;
+            }
+          } else if (cmd === 'video') {
+            const parts = parsedSegments.split('|');
+            const url = parts[0]?.trim();
+            const width = Math.max(10, Math.min(parseInt(parts[1], 10) || 10, 1000));
+            if (url && (
+              /^\/uploads\/[a-zA-Z0-9\-_.]+\.(mp4|webm|mov|mkv|m4v|ogg|ogv)(\?.*)?$/i.test(url) ||
+              /^https?:\/\/.+\.(mp4|webm|mov|mkv|m4v|ogg|ogv)(\?.*)?$/i.test(url)
+            )) {
+              result += `<video src="${url}" style="max-width: ${width}px; max-height: 300px;" class="chat-video" controls playsinline disablePictureInPicture="false" allowfullscreen></video>`;
+            } else {
+              result += `[動画読み込みエラー]`;
+            }
+          } else if (cmd === 'audio') {
+            const url = parsedSegments.trim();
+            if (url && (
+              /^\/uploads\/[a-zA-Z0-9\-_.]+\.(mp3|m4a|wav)(\?.*)?$/i.test(url) ||
+              /^https?:\/\/.+\.(mp3|m4a|wav)(\?.*)?$/i.test(url)
+            )) {
+              result += `<audio src="${url}" class="chat-audio" controls playsinline ></audio>`;
+            } else {
+              result += `[音声読み込みエラー]`;
+            }
+          } else {
+            result += parsedSegments;
+          }
+        } else {
+          result += str[i];
+          i++;
+        }
+      }
+      return [result, i];
+    }
+    return parseRecursive(text, 0, {})[0];
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function parseTextWithCommands(text) {
+    const escaped = escapeHtml(text);
+    let parsed;
+    try {
+      parsed = parseCommands(escaped);
+    } catch (error) {
+      parsed = escaped;
+    }
+    const withMentions = parsed.replace(/@([\p{L}\p{N}_]{1,20})/gu, '<span class="mention">@$1</span>');
+    return withMentions.replace(/\r\n|\r|\n/g, "<br>");
+  }
+
+  // ---- メッセージ表示 ----
+  function appendMessage(msg, scroll = true) {
+    if (!msg || !msg.username || !msg.timestamp) return;
+    const color = msg.color || "#aaa";
+    const mine = !!me && msg.fromUid === me.uid;
+    const messagesEl = document.getElementById("messages");
+    const item = document.createElement('div');
+    item.classList.add('message-item');
+    if (mine) item.classList.add('mine-item');
+    item.setAttribute("data-id", msg.id);
+
+    let nameStyle = `color: ${color};`;
+    let roleTag = "";
+    if (msg.fromUid == "'UID'-tonkatsu") {
+      nameStyle += " background: linear-gradient(to right, #aaaaaa, #aaaaaa, #aa8855, #aa8855, #dab875, #dab875); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.5em !important; font-style: italic;";
+      roleTag += "<span style='font-size: 1.3em; color: #dab875;'>(製作者)</span>";
+    } else if (msg.superAdmin) {
+      nameStyle += ` background: linear-gradient(to right, ${color}, ${color}, ${color}, ${color}, #aa8855, #dab875); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.5em !important; font-style: italic;`;
+      roleTag += "<span style='font-size: 1.3em; color: #dab875;'>(最高管理者)</span>";
+    } else if (msg.isAdmin == true) {
+      nameStyle += ` background: linear-gradient(to right, ${color}, ${color}, ${color}, #00502e, #00502e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.5em !important;`;
+      roleTag += "<span style='font-size: 1.2em; color: #00502e;'>(管理者)</span>";
+    } else {
+      nameStyle += "font-weight: bold; font-size: 1.2em !important;";
+    }
+
+    let replyHtml = '';
+    if (msg.replyTo) {
+      if (msg.replyMsg) {
+        const replyMessage = msg.replyMsg.length > 50 ? msg.replyMsg.slice(0, 49) + "…" : msg.replyMsg;
+        replyHtml = `<a href="#" class="reply-link" data-reply-id="${escapeHtml(msg.replyTo)}" style="display:block;padding:1px 6px;border-left:3px solid #ccc;margin-bottom:5px;font-size:0.9em;color:#555;text-decoration:none;border-bottom:none;">
+          reply: ${escapeHtml(replyMessage)}
+        </a>`;
+      } else {
+        replyHtml = `<div style="padding:1px 6px;border-left:3px solid #aaa;margin-bottom:5px;font-size:0.9em;color:#333;">
+          このメッセージは削除されています。
+        </div>`;
+      }
+    }
+
+    const id = escapeHtml(msg.id);
+    const bodyHtml = msg.deleted
+      ? parseTextWithCommands("\\i \\#aaaaaa " + (msg.delMessage || "このメッセージは削除されました") + "\\\\")
+      : parseTextWithCommands(msg.message);
+
+    item.innerHTML = `
+      <div class="message-bubble${mine ? " mine" : ""}" data-id="${id}">
+        <div class="meta">
+          <strong class="copy-uid" data-uid="${escapeHtml(msg.fromUid)}" style="${nameStyle}">${escapeHtml(msg.username)}</strong>${roleTag} [${escapeHtml(msg.timestamp)}]
+        </div>
+        ${replyHtml}
+        <div class="text">${bodyHtml}</div>
+        ${(mine && msg.deleted) ? `<button class="restore-btn" data-id="${id}" style="font-family: 'Corporate Logo', sans-serif;">復元</button>` : ''}
+        ${(mine && !msg.deleted) ? `<button class="delete-btn" data-id="${id}" style="font-family: 'Corporate Logo', sans-serif;">削除</button>` : ''}
+        ${mine ? `<button class="clean-delete-btn" data-id="${id}" style="font-family: 'Corporate Logo', sans-serif;">完全に削除</button>` : ''}
+        ${(!msg.deleted) ? `<button class="reply-btn" data-id="${id}" data-username="${escapeHtml(msg.username)}" style="font-family: 'Corporate Logo', sans-serif;">↩︎返信</button>` : ""}
+      </div>
+    `;
+
+    messagesEl.appendChild(item);
+    if (scroll) {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      const images = item.querySelectorAll('img');
+      let loadedCount = 0;
+      images.forEach(img => {
+        img.onload = img.onerror = () => {
+          loadedCount++;
+          if (loadedCount === images.length) {
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          }
+        };
+      });
+    }
+  }
+
+  function renderAll(scroll) {
+    const messagesEl = document.getElementById("messages");
+    const prev = messagesEl.scrollTop;
+    const atBottom = Math.abs(messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight) < 5;
+    messagesEl.innerHTML = '';
+    dmMessages.forEach((m) => appendMessage(m, false));
+    if (scroll || atBottom) {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    } else {
+      messagesEl.scrollTop = prev;
+    }
+  }
+
+  socket.on("dm history", ({ partner: p, messages: list }) => {
+    showNotice("");
+    partner = p;
+    dmMessages = list;
+    const nameEl = document.getElementById("partnerName");
+    nameEl.textContent = p.username;
+    nameEl.style.color = p.color;
+    nameEl.style.fontWeight = "bold";
+    document.getElementById("input").disabled = false;
+    document.getElementById("sendButton").disabled = false;
+    document.getElementById("image-input").disabled = false;
+    replyToId = null;
+    document.getElementById("replyToDisplay").innerText = "";
+    renderAll(true);
+    renderConvBar();
+    socket.emit("dm list");
+  });
+
+  socket.on("dm update", (msg) => {
+    if (!partner || (msg.fromUid !== partner.uid && msg.toUid !== partner.uid)) {
+      refreshListSoon();
+      return;
+    }
+    const i = dmMessages.findIndex((x) => x.id === msg.id);
+    const isNew = i === -1;
+    if (isNew) dmMessages.push(msg); else dmMessages[i] = msg;
+
+    try {
+      if (isNew && me && msg.fromUid !== me.uid && Notification.permission === "granted") {
+        const body = typeof msg.message === "string"
+          ? (msg.message.length > 50 ? msg.message.slice(0, 50) + "…" : msg.message)
+          : "";
+        new Notification(`${msg.username} さんからDM`, {
+          body,
+          icon: "<%= typeof assets !== 'undefined' ? assets : '' %>/icon.ico?v=1"
+        });
+      }
+    } catch (e) {
+      console.log("通知処理でエラー: ", e);
+    }
+
+    renderAll(isNew && !!me && msg.fromUid === me.uid);
+    if (isNew) {
+      const messagesEl = document.getElementById("messages");
+      const atBottom = Math.abs(messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight) < 120;
+      if (atBottom) messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    refreshListSoon();
+  });
+
+  socket.on("dm removed", ({ id }) => {
+    const i = dmMessages.findIndex((x) => x.id === id);
+    if (i !== -1) {
+      dmMessages.splice(i, 1);
+      renderAll(false);
+    }
+    refreshListSoon();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-btn')) {
+      const id = e.target.getAttribute('data-id');
+      if (confirm("本当にこのメッセージを削除しますか？")) {
+        socket.emit('dm delete', id);
+      }
+    }
+
+    if (e.target.classList.contains('clean-delete-btn')) {
+      const id = e.target.getAttribute('data-id');
+      if (confirm("本当にこのメッセージを完全削除しますか？(元に戻せません)")) {
+        socket.emit('dm clean delete', id);
+      }
+    }
+
+    if (e.target.classList.contains('restore-btn')) {
+      const id = e.target.getAttribute('data-id');
+      if (confirm("本当にこのメッセージを復元しますか？")) {
+        socket.emit('dm restore', id);
+      }
+    }
+  });
+
+  // ---- ファイルのアップロード(main と同じ。完了すると入力欄に \photo などが挿入される) ----
+	document.getElementById('image-input').addEventListener('change', function(e) {
+		const file = e.target.files[0];
+		if (!file) return;
+
+		const formData = new FormData();
+		formData.append('image', file);
+
+		const xhr = new XMLHttpRequest();
+		xhr.open('POST', '/upload-image', true);
+
+		const progressBar = document.getElementById("upload-progress");
+		const bar = document.getElementById("upload-bar");
+		const percentText = document.getElementById("upload-percent");
+
+		xhr.upload.onprogress = function(event) {
+			if (event.lengthComputable) {
+				const percent = Math.round((event.loaded / event.total) * 100);
+				progressBar.style.display = "block";
+				bar.style.width = percent + "%";
+				percentText.textContent = "アップロード中…　現在" + percent + "%";
+			}
+		};
+
+		xhr.onload = function() {
+			progressBar.style.display = "none";
+			bar.style.width = "0%";
+			percentText.textContent = "";
+
+			let json = {};
+			try { json = JSON.parse(xhr.responseText); } catch (err) {}
+
+			if (xhr.status === 200 && json.url) {
+				const input = document.getElementById('input');
+				const fileType = file.type;
+				if (fileType.startsWith('video/')) {
+					input.value += ` \\video ${json.url}|300\\`;
+				} else if (fileType.startsWith("audio/")) {
+					input.value += ` \\audio ${json.url}\\`
+				} else if (fileType.startsWith('image/')) {
+					input.value += ` \\photo ${json.url}|300\\`;
+				} else if (fileType == "application/pdf") {
+					input.value += ` \\url ${json.url}\\`;
+				}
+				e.target.value = '';
+			} else {
+				// サーバーのエラー(ファイルサイズ超過など)があればそのメッセージを表示
+				alert(json.error || 'アップロード中にエラーが発生しました');
+				e.target.value = '';
+			}
+		};
+
+		xhr.onerror = function() {
+			alert('アップロードに失敗しました');
+		};
+
+		xhr.send(formData);
+	});
+
+  // 返信元へジャンプ
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (t.classList.contains("reply-link")) {
+      e.preventDefault();
+      const replyId = t.dataset.replyId;
+      const targetMsg = document.querySelector(`.message-item[data-id="${CSS.escape(replyId)}"]`);
+      if (targetMsg) {
+        targetMsg.scrollIntoView({ behavior: "smooth", block: "center" });
+        const bubble = targetMsg.querySelector(".message-bubble");
+        if (bubble) {
+          setTimeout(() => {
+            bubble.classList.add("highlight-reply");
+            setTimeout(() => bubble.classList.remove("highlight-reply"), 1400);
+          }, 150);
+        }
+      } else {
+        alert("返信先のメッセージが見つかりません。");
+      }
+    }
+  });
+</script>
+
+<%- include("../settings/footer") %>

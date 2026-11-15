@@ -10,6 +10,7 @@ const { Server } = require("socket.io");
 const io = new Server(http);
 const { v4: uuidv4 } = require("uuid");
 const db = require("./db");
+require("./dm")(io); // DM(名前空間 /dm)
 const adminUsers = new Set();
 const { version, last_update } = require(path.join(
   __dirname,
@@ -17,7 +18,7 @@ const { version, last_update } = require(path.join(
   "package.json"
 ));
 const multer = require("multer");
-const { safeExt, MAX_UPLOAD_BYTES } = require("./fileServe");
+const { safeExt, MAX_BYTES, formatLimit } = require("./fileServe");
 const storage = require("./storage");
 global.render = require("./render");
 global.arrayBufferToBase64 = require("./render");
@@ -57,7 +58,7 @@ setInterval(() => {
 // 画像は一旦メモリで受け取り、そのまま Neon Object Storage へ保存する
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_UPLOAD_BYTES },
+  limits: { fileSize: MAX_BYTES.uploads },
 });
 
 const users = {};
@@ -702,8 +703,8 @@ app.post(
       if (err) {
         const error =
           err.code === "LIMIT_FILE_SIZE"
-            ? `アップロード失敗: ファイルサイズ制限を超えています(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)`
-            : `アップロード失敗: ${err.message}`;
+            ? `ファイルサイズが大きすぎます(最大${formatLimit(MAX_BYTES.uploads)})`
+            : "アップロードに失敗しました";
         return res.status(400).json({ error });
       }
       next();
@@ -757,7 +758,7 @@ app.use("/fonts", express.static("public/fonts", {
 
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "pcViews"));
@@ -970,26 +971,6 @@ app.get(["/empass/games/snow", "/empass/games/snow.html"], (req, res) => {
   render(req, res, "snow", {}, "games", "games");
 });
 
-const { execFile } = require("child_process");
-const { promisify } = require("util");
-const execFileAsync = promisify(execFile);
-
-/*app.get("/move", async (req, res) => {
-  try {
-    const { stdout, stderr } = await execFileAsync(
-      "node",
-      [path.join(__dirname, "temp.js")],
-      { cwd: __dirname, timeout: 60 * 1000 } // 60秒で打ち切り
-    );
-    if (stderr) console.error("/move stderr:", stderr);
-    res.send(`完了しました\n${stdout}`);
-  } catch (err) {
-    // 終了コードが 0 以外、起動失敗、タイムアウトのいずれもここに来る
-    console.error("/move: 失敗:", err.message);
-    res.status(500).send(`失敗しました\n${err.stderr || err.message}`);
-  }
-});*/
-
 app.use((req, res) => {
   const pageName = req.path.replace("/", "");
   console.log(`404 at /${pageName}`);
@@ -1023,9 +1004,11 @@ const port = process.env.PORT || 3000;
 })();
 
 
+const { spawn } = require("child_process");
+
 function runGit(args) {
     return new Promise((resolve, reject) => {
-        const git = execFile("git", args, { cwd: "/workspace" });
+        const git = spawn("git", args, { cwd: "/workspace" });
 
         git.stdout.on("data", d => console.log(d.toString()));
         git.stderr.on("data", d => console.error(d.toString()));

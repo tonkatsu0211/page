@@ -735,7 +735,7 @@ app.post(
 
 app.use(
   session({
-    secret: "tonkatsu-0211",
+    secret: process.env.NODE_ENV || "tonkatsu_0211",
     resave: false,
     saveUninitialized: false,
   })

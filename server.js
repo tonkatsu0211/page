@@ -26,10 +26,6 @@ global.generateCryptoData = require("./render");
 global.unlockPrivateKey = require("./render");
 global.reEncryptPrivateKey = require("./render");
 
-app.get("/favicon.ico", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "favicon.ico"));
-});
-
 io.use(async (socket, next) => {
   try {
     const uid = socket.handshake.auth.uid;
@@ -761,7 +757,7 @@ app.use("/fonts", express.static("public/fonts", {
 
 app.use(cookieParser());
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "pcViews"));

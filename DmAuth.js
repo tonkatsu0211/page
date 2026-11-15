@@ -15,6 +15,7 @@ const DAY = 24 * 60 * 60 * 1000;
 let SECRET = process.env.DM_SECRET;
 if (!SECRET) {
   SECRET = crypto.randomBytes(32).toString("hex");
+  console.log(`DM_SECRET: ${SECRET}`);
   console.warn("[dm] DM_SECRET が未設定です。再起動のたびに DM のログインが無効になります。");
 }
 

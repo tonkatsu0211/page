@@ -26,8 +26,6 @@ global.generateCryptoData = require("./render");
 global.unlockPrivateKey = require("./render");
 global.reEncryptPrivateKey = require("./render");
 
-const path = require("node:path");
-
 app.get("/favicon.ico", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "favicon.ico"));
 });

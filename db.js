@@ -75,6 +75,26 @@ CREATE TABLE IF NOT EXISTS votes (
   vote_count INTEGER NOT NULL DEFAULT 0
 );
 
+-- DM(1対1の会話)。ユーザーは uid で識別するので、名前を変更しても会話は途切れない
+--   conv_key: 2人の uid を辞書順に並べて連結したもの(どちらが送っても同じ会話になる)
+CREATE TABLE IF NOT EXISTS dm_messages (
+  seq         BIGSERIAL PRIMARY KEY,
+  id          TEXT NOT NULL UNIQUE,
+  conv_key    TEXT NOT NULL,
+  from_uid    TEXT NOT NULL,
+  to_uid      TEXT NOT NULL,
+  from_user   TEXT NOT NULL,
+  message     TEXT NOT NULL,
+  posted_at   TEXT NOT NULL,
+  reply_to    TEXT,
+  reply_msg   TEXT,
+  deleted     BOOLEAN NOT NULL DEFAULT FALSE,
+  del_message TEXT
+);
+CREATE INDEX IF NOT EXISTS dm_messages_conv_idx ON dm_messages (conv_key, seq);
+CREATE INDEX IF NOT EXISTS dm_messages_from_idx ON dm_messages (from_uid, seq);
+CREATE INDEX IF NOT EXISTS dm_messages_to_idx   ON dm_messages (to_uid, seq);
+
 -- アップロードされたファイルの台帳(本体は Neon Object Storage の S3 バケットに保存)
 --   bucket: "uploads" = チャット画像, "pubAssets" = 公開アセット (S3 上のキーは "<bucket>/<name>")
 CREATE TABLE IF NOT EXISTS files (
@@ -516,6 +536,146 @@ async function incrementVote(target) {
 }
 
 /* ------------------------------------------------------------------ */
+/* DM                                                                  */
+/* ------------------------------------------------------------------ */
+
+const dmKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+
+// 送信者の「現在の」名前と色を users から引く(名前を変更しても追従する)
+const DM_SELECT = `
+  SELECT d.*, u.username AS cur_name, u.color AS cur_color
+    FROM dm_messages d
+    LEFT JOIN users u ON u.uid = d.from_uid`;
+
+// 削除済みメッセージには本文(message)を含めない
+function rowToDm(r) {
+  if (!r) return null;
+  const m = {
+    id: r.id,
+    fromUid: r.from_uid,
+    toUid: r.to_uid,
+    username: r.cur_name || r.from_user,
+    color: r.cur_color || "#aaa",
+    timestamp: r.posted_at,
+    replyTo: r.reply_to,
+    replyMsg: r.reply_msg,
+  };
+  if (r.deleted) {
+    m.deleted = true;
+    m.delMessage = r.del_message;
+  } else {
+    m.message = r.message;
+  }
+  return m;
+}
+
+async function insertDm({ id, fromUid, toUid, fromUser, message, timestamp, replyTo = null, replyMsg = null }) {
+  await pool.query(
+    `INSERT INTO dm_messages
+       (id, conv_key, from_uid, to_uid, from_user, message, posted_at, reply_to, reply_msg)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+    [
+      id, dmKey(fromUid, toUid), fromUid, toUid, fromUser,
+      toText(message) ?? "", timestamp, replyTo, replyMsg,
+    ]
+  );
+}
+
+async function getDmMessageById(id) {
+  const { rows } = await pool.query(`${DM_SELECT} WHERE d.id = $1`, [String(id)]);
+  return rowToDm(rows[0]);
+}
+
+// 2人の会話(新しい方から limit 件を、古い順に返す)
+async function getDmHistory(uidA, uidB, { limit = 500 } = {}) {
+  const { rows } = await pool.query(
+    `SELECT * FROM (
+       ${DM_SELECT}
+       WHERE d.conv_key = $1
+       ORDER BY d.seq DESC
+       LIMIT $2::int
+     ) t
+     ORDER BY t.seq ASC`,
+    [dmKey(uidA, uidB), limit]
+  );
+  return rows.map(rowToDm);
+}
+
+// 返信元の本文。同じ会話の、削除されていないメッセージだけ(他人の会話の本文を引けないように)
+async function getDmReplyText(id, uidA, uidB) {
+  const { rows } = await pool.query(
+    "SELECT message FROM dm_messages WHERE id = $1 AND conv_key = $2 AND deleted = FALSE",
+    [String(id), dmKey(uidA, uidB)]
+  );
+  return rows[0]?.message || null;
+}
+
+async function markDmDeleted(id, delMessage) {
+  await pool.query(
+    `UPDATE dm_messages
+        SET deleted = TRUE, del_message = $2,
+            reply_msg = CASE WHEN reply_to IS NOT NULL THEN NULL ELSE reply_msg END
+      WHERE id = $1`,
+    [String(id), delMessage]
+  );
+}
+
+async function restoreDm(id) {
+  await pool.query(
+    `UPDATE dm_messages c
+        SET deleted = FALSE, del_message = NULL,
+            reply_msg = CASE
+              WHEN c.reply_to IS NOT NULL
+              THEN (SELECT p.message FROM dm_messages p WHERE p.id = c.reply_to AND p.deleted = FALSE)
+              ELSE c.reply_msg
+            END
+      WHERE c.id = $1`,
+    [String(id)]
+  );
+}
+
+async function deleteDm(id) {
+  await pool.query("DELETE FROM dm_messages WHERE id = $1", [String(id)]);
+}
+
+// 自分の会話一覧(相手ごとの最新メッセージ。新しい順)
+async function listDmConversations(uid) {
+  const { rows } = await pool.query(
+    `SELECT * FROM (
+       SELECT DISTINCT ON (conv_key)
+              conv_key, from_uid, to_uid, message, deleted, posted_at, seq
+         FROM dm_messages
+        WHERE from_uid = $1 OR to_uid = $1
+        ORDER BY conv_key, seq DESC
+     ) t
+     ORDER BY t.seq DESC`,
+    [uid]
+  );
+  const partnerOf = (r) => (r.from_uid === uid ? r.to_uid : r.from_uid);
+  const partnerUids = [...new Set(rows.map(partnerOf))];
+  const names = new Map();
+  if (partnerUids.length) {
+    const u = await pool.query(
+      "SELECT uid, username, color FROM users WHERE uid = ANY($1::text[])",
+      [partnerUids]
+    );
+    for (const r of u.rows) names.set(r.uid, r);
+  }
+  return rows.map((r) => {
+    const pu = partnerOf(r);
+    const info = names.get(pu);
+    return {
+      uid: pu,
+      username: info?.username ?? "(不明なユーザー)",
+      color: info?.color ?? "#aaa",
+      last: r.deleted ? "(削除されました)" : r.message.slice(0, 80),
+      timestamp: r.posted_at,
+      mine: r.from_uid === uid,
+    };
+  });
+}
+
+/* ------------------------------------------------------------------ */
 /* アップロードファイル                                                */
 /* ------------------------------------------------------------------ */
 
@@ -666,6 +826,15 @@ module.exports = {
   clearMessages,
   // votes
   incrementVote,
+  // DM
+  insertDm,
+  getDmMessageById,
+  getDmHistory,
+  getDmReplyText,
+  markDmDeleted,
+  restoreDm,
+  deleteDm,
+  listDmConversations,
   // files(台帳)
   reserveFile,
   registerFile,

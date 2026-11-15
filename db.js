@@ -543,7 +543,8 @@ const dmKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 
 // 送信者の「現在の」名前と色を users から引く(名前を変更しても追従する)
 const DM_SELECT = `
-  SELECT d.*, u.username AS cur_name, u.color AS cur_color
+  SELECT d.*, u.username AS cur_name, u.color AS cur_color,
+         u.is_admin AS cur_admin, u.super_admin AS cur_super
     FROM dm_messages d
     LEFT JOIN users u ON u.uid = d.from_uid`;
 
@@ -556,6 +557,8 @@ function rowToDm(r) {
     toUid: r.to_uid,
     username: r.cur_name || r.from_user,
     color: r.cur_color || "#aaa",
+    isAdmin: !!r.cur_admin,
+    superAdmin: !!r.cur_super,
     timestamp: r.posted_at,
     replyTo: r.reply_to,
     replyMsg: r.reply_msg,

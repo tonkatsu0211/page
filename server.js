@@ -18,7 +18,7 @@ const { version, last_update } = require(path.join(
   "package.json"
 ));
 const multer = require("multer");
-const { safeExt, MAX_BYTES, formatLimit } = require("./fileServe");
+const { safeExt, MAX_UPLOAD_BYTES } = require("./fileServe");
 const storage = require("./storage");
 global.render = require("./render");
 global.arrayBufferToBase64 = require("./render");
@@ -58,7 +58,7 @@ setInterval(() => {
 // 画像は一旦メモリで受け取り、そのまま Neon Object Storage へ保存する
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_BYTES.uploads },
+  limits: { fileSize: MAX_UPLOAD_BYTES.uploads },
 });
 
 const users = {};

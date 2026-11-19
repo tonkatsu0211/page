@@ -15,8 +15,16 @@ module.exports = function createOnline(io, db, { fullDelay = 300, adminDelay = 3
     withUsers = false;
     try {
       const sockets = await io.fetchSockets();
+      // 名前は socket.data.username を優先し、無ければ接続時に送られた名前を使う。
       // 同じ人が複数のタブ・端末(別サーバー含む)で開いていても、1人として数える
-      const names = [...new Set(sockets.map((s) => s.data.username).filter(Boolean))];
+      const nameOf = (s) => s.data?.username || s.handshake?.auth?.username;
+      const names = [...new Set(sockets.map(nameOf).filter(Boolean))];
+      if (process.env.ONLINE_DEBUG === "1") {
+        console.log(
+          `[online] full=${full} sockets=${sockets.length} names=${JSON.stringify(names)} ` +
+            `detail=${JSON.stringify(sockets.map((s) => ({ id: s.id, data: s.data?.username ?? null, auth: s.handshake?.auth?.username ?? null })))}`
+        );
+      }
       if (full) {
         io.emit("user count", names.length);
         io.emit("user list", names);

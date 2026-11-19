@@ -95,6 +95,24 @@ CREATE INDEX IF NOT EXISTS dm_messages_conv_idx ON dm_messages (conv_key, seq);
 CREATE INDEX IF NOT EXISTS dm_messages_from_idx ON dm_messages (from_uid, seq);
 CREATE INDEX IF NOT EXISTS dm_messages_to_idx   ON dm_messages (to_uid, seq);
 
+-- オンライン中の接続(複数サーバーで共有する)。サーバーごとの server_id と socket_id で1接続を表す。
+-- seen_at は各サーバーが定期的に更新する。落ちたサーバーの行は seen_at が古くなって一覧から外れる。
+CREATE TABLE IF NOT EXISTS presence (
+  server_id    TEXT NOT NULL,
+  socket_id    TEXT NOT NULL,
+  username     TEXT NOT NULL,
+  connected_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  seen_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (server_id, socket_id)
+);
+
+-- Web Push の購読情報(複数サーバーで共有する)
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  endpoint     TEXT PRIMARY KEY,
+  subscription JSONB NOT NULL,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- アップロードされたファイルの台帳(本体は Neon Object Storage の S3 バケットに保存)
 --   bucket: "uploads" = チャット画像, "pubAssets" = 公開アセット (S3 上のキーは "<bucket>/<name>")
 CREATE TABLE IF NOT EXISTS files (
@@ -679,6 +697,89 @@ async function listDmConversations(uid) {
 }
 
 /* ------------------------------------------------------------------ */
+/* 在席(オンライン一覧)                                                */
+/* ------------------------------------------------------------------ */
+
+async function presenceAdd(serverId, socketId, username) {
+  await pool.query(
+    `INSERT INTO presence (server_id, socket_id, username) VALUES ($1, $2, $3)
+     ON CONFLICT (server_id, socket_id)
+     DO UPDATE SET username = EXCLUDED.username, seen_at = now()`,
+    [serverId, socketId, username]
+  );
+}
+
+async function presenceRemove(serverId, socketId) {
+  await pool.query("DELETE FROM presence WHERE server_id = $1 AND socket_id = $2", [
+    serverId,
+    socketId,
+  ]);
+}
+
+// このサーバーの実際の接続一覧(sockets: [{id, username}])に、表の内容を合わせる。
+// 足りない行は追加し、seen_at を更新し、実在しない行は削除する(取りこぼしの自己修復)。
+async function presenceSync(serverId, sockets) {
+  const ids = sockets.map((s) => s.id);
+  const names = sockets.map((s) => s.username);
+  if (ids.length) {
+    await pool.query(
+      `INSERT INTO presence (server_id, socket_id, username)
+       SELECT $1::text, t.id, t.username FROM unnest($2::text[], $3::text[]) AS t(id, username)
+       ON CONFLICT (server_id, socket_id)
+       DO UPDATE SET username = EXCLUDED.username, seen_at = now()`,
+      [serverId, ids, names]
+    );
+  }
+  await pool.query(
+    "DELETE FROM presence WHERE server_id = $1 AND socket_id <> ALL($2::text[])",
+    [serverId, ids]
+  );
+}
+
+// 直近 ttlSeconds 秒以内に確認できた接続の名前(重複なし、早く接続した順)
+async function presenceNames(ttlSeconds) {
+  const { rows } = await pool.query(
+    `SELECT username FROM presence
+      WHERE seen_at > now() - make_interval(secs => $1::double precision)
+      GROUP BY username
+      ORDER BY MIN(connected_at), username`,
+    [ttlSeconds]
+  );
+  return rows.map((r) => r.username);
+}
+
+// 長く更新されていない行(落ちたサーバーの残り)を削除
+async function presenceCleanup(ttlSeconds) {
+  await pool.query(
+    "DELETE FROM presence WHERE seen_at < now() - make_interval(secs => $1::double precision)",
+    [ttlSeconds]
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Web Push の購読                                                     */
+/* ------------------------------------------------------------------ */
+
+async function saveSubscription(sub) {
+  if (!sub || typeof sub.endpoint !== "string" || !sub.endpoint) return false;
+  await pool.query(
+    `INSERT INTO push_subscriptions (endpoint, subscription) VALUES ($1, $2)
+     ON CONFLICT (endpoint) DO UPDATE SET subscription = EXCLUDED.subscription`,
+    [sub.endpoint, JSON.stringify(sub)]
+  );
+  return true;
+}
+
+async function getSubscriptions() {
+  const { rows } = await pool.query("SELECT subscription FROM push_subscriptions");
+  return rows.map((r) => r.subscription);
+}
+
+async function deleteSubscription(endpoint) {
+  await pool.query("DELETE FROM push_subscriptions WHERE endpoint = $1", [endpoint]);
+}
+
+/* ------------------------------------------------------------------ */
 /* アップロードファイル                                                */
 /* ------------------------------------------------------------------ */
 
@@ -838,6 +939,16 @@ module.exports = {
   restoreDm,
   deleteDm,
   listDmConversations,
+  // 在席
+  presenceAdd,
+  presenceRemove,
+  presenceSync,
+  presenceNames,
+  presenceCleanup,
+  // Web Push
+  saveSubscription,
+  getSubscriptions,
+  deleteSubscription,
   // files(台帳)
   reserveFile,
   registerFile,

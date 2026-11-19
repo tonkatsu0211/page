@@ -74,8 +74,9 @@ function base64urlToBase64(str) {
     .padEnd(Math.ceil(str.length / 4) * 4, "=");
 }
 
-const publicKey = process.env.VAPID_PUBLIC_KEY;
-const privateKey = process.env.VAPID_SECRET_KEY;
+const publicKey =
+  "BBmY-u5pSnhmOhOLWG5w_4MN2wPWloZRzIzp2iXuJBYCJQ48_Qmw5-_vl0vEI4PDzjDBa9lPokKBSVg-V0SL8JE";
+const privateKey = "mGbOvFaAMXRMoFIKrJg44gqTJFOPJMLJkKpH5gd-UwM";
 
 webPush.setVapidDetails("mailto:example@example.com", publicKey, privateKey);
 
@@ -130,7 +131,8 @@ const RECONNECT_THRESHOLD = 5000;
 const MIN_CONNECT_INTERVAL = 10000;
 
 // オンライン人数・一覧・管理者の在席は、全サーバーの接続を集めて配信する
-const { updateAdminList, updateOnline } = require("./online")(io, db);
+const online = require("./online")(io, db);
+const { updateAdminList } = online;
 
 const jaTimestamp = () =>
   new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
@@ -157,7 +159,8 @@ function getHistoryFor(uid) {
 // 接続ごとに絞り込んだ履歴を送るので、他人宛ての /tell が全員に流れることはない。
 async function emitHistoryNoScroll() {
   const cache = new Map();
-  for (const s of await io.fetchSockets()) {
+  // 自分のサーバーに接続している人には直接送る
+  for (const s of io.of("/").sockets.values()) {
     const key = s.data.uid ?? "";
     if (!cache.has(key)) cache.set(key, getHistoryFor(key));
     try {
@@ -166,6 +169,9 @@ async function emitHistoryNoScroll() {
       console.error("履歴の再配信に失敗:", err);
     }
   }
+  // 他のサーバーに接続している人には「履歴が更新された」ことだけを全員に知らせる。
+  // 受け取ったクライアントが、自分のサーバーに履歴を要求する(requestHistoryNoScroll)。
+  io.emit("history changed");
 }
 
 // "'UID'-xxxx" ならUIDで、そうでなければユーザー名で検索(JSONにしか無ければDBへ移行)
@@ -180,7 +186,7 @@ io.on("connection", (socket) => {
   const uid = socket.handshake.auth.uid;
   lastPing[socket.id] = Date.now();
 
-  updateOnline(); // 人数・一覧・管理者の在席(全サーバー分)
+  online.track(socket, username); // DBに在席を記録し、人数・一覧を更新(全サーバー分)
 
   const now = Date.now();
   const lastDisc = lastDisconnectTime[username] || 0;
@@ -230,7 +236,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete lastPing[socket.id];
-    updateOnline();
+    online.untrack(socket);
 
     const now = Date.now();
     lastDisconnectTime[username] = now;
@@ -265,6 +271,15 @@ io.on("connection", (socket) => {
     .then(() => getHistoryFor(uid))
     .then((history) => socket.emit("chat history", history))
     .catch((err) => console.error("チャット履歴の取得に失敗:", err));
+
+  // 他のサーバーでの削除・復元の後に、クライアントが履歴を取り直す(スクロール位置は維持)
+  socket.on("requestHistoryNoScroll", async () => {
+    try {
+      socket.emit("chat history noScroll", await getHistoryFor(socket.data.uid ?? uid));
+    } catch (err) {
+      console.error("チャット履歴の取得に失敗:", err);
+    }
+  });
 
   socket.on("requestHistory", async () => {
     try {
@@ -481,7 +496,7 @@ io.on("connection", (socket) => {
           return;
         }
         socket.data.username = newName;
-        updateOnline();
+        online.rename(socket, newName);
         await sendSystemMessage(`${user} が ${newName} に名前を変更しました`);
         return;
       }
@@ -736,7 +751,7 @@ app.post(
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "tonkatsu-0211",
+    secret: "tonkatsu-0211",
     resave: false,
     saveUninitialized: false,
   })

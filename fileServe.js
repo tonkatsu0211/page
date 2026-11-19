@@ -2,8 +2,19 @@
 const path = require("path");
 const storage = require("./storage");
 
-// 1ファイルあたりの上限。環境変数 MAX_UPLOAD_MB で変更可(既定 10MB)
-const MAX_UPLOAD_BYTES = (Number(process.env.MAX_UPLOAD_MB) || 10) * 1024 * 1024;
+// 1ファイルあたりの上限(MB)。環境変数で変更できる(小数も可。例: 0.5)
+//   MAX_UPLOAD_MB_UPLOADS    ... /upload-image(チャット画像)の上限
+//   MAX_UPLOAD_MB_PUBASSETS  ... /uploads の POST(公開アセット)の上限
+//   MAX_UPLOAD_MB            ... 上の2つを個別に指定しなかった場合の共通値(既定 10)
+const toBytes = (v) => (Number(v) > 0 ? Number(v) * 1024 * 1024 : null);
+const DEFAULT_BYTES = toBytes(process.env.MAX_UPLOAD_MB) || 10 * 1024 * 1024;
+const MAX_BYTES = {
+  uploads: toBytes(process.env.MAX_UPLOAD_MB_UPLOADS) || DEFAULT_BYTES,
+  pubAssets: toBytes(process.env.MAX_UPLOAD_MB_PUBASSETS) || DEFAULT_BYTES,
+};
+
+// エラーメッセージ用("10MB" / "0.5MB")
+const formatLimit = (bytes) => `${Math.round((bytes / 1024 / 1024) * 100) / 100}MB`;
 
 // 拡張子は ".png" のような英数字のみ許可(それ以外は拡張子なし扱い)
 function safeExt(originalname) {
@@ -60,4 +71,4 @@ function serve(bucket) {
   };
 }
 
-module.exports = { serve, safeExt, MAX_UPLOAD_BYTES };
+module.exports = { serve, safeExt, MAX_BYTES, formatLimit };

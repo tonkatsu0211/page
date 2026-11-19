@@ -15,12 +15,13 @@ module.exports = function createOnline(io, db, { fullDelay = 300, adminDelay = 3
     withUsers = false;
     try {
       const sockets = await io.fetchSockets();
-      const names = sockets.map((s) => s.data.username).filter(Boolean);
+      // 同じ人が複数のタブ・端末(別サーバー含む)で開いていても、1人として数える
+      const names = [...new Set(sockets.map((s) => s.data.username).filter(Boolean))];
       if (full) {
-        io.emit("user count", sockets.length);
+        io.emit("user count", names.length);
         io.emit("user list", names);
       }
-      io.emit("admin list", await db.getAdminUsernames(), [...new Set(names)]);
+      io.emit("admin list", await db.getAdminUsernames(), names);
     } catch (err) {
       console.error("オンライン状況の更新に失敗:", err);
     }

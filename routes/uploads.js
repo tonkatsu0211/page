@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const storage = require("../storage");
-const { serve, safeExt, MAX_UPLOAD_BYTES } = require("../fileServe");
+const { serve, safeExt, MAX_BYTES, formatLimit } = require("../fileServe");
 
 function sanitizeFilename(name) {
   if (!name || !name.trim()) return null
@@ -14,7 +14,7 @@ function sanitizeFilename(name) {
 // ファイルは一旦メモリで受け取り、そのまま Object Storage へ保存する(ディスクには書かない)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_UPLOAD_BYTES },
+  limits: { fileSize: MAX_BYTES.pubAssets },
 });
 
 const receive = upload.fields([{ name: "image", maxCount: 1 }, { name: "filename", maxCount: 1 }]);
@@ -26,8 +26,8 @@ router.post(
       if (err) {
         const error =
           err.code === "LIMIT_FILE_SIZE"
-            ? `アップロード失敗: ファイルサイズ制限を超えています(最大${Math.floor(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)。`
-            : `アップロード失敗: ${err.message}`;
+            ? `アップロード失敗：ファイルサイズが大きすぎます(最大${formatLimit(MAX_BYTES.pubAssets)})。`
+            : `アップロード失敗：${err.message}`;
         return res.json({ error, url: null });
       }
       next();

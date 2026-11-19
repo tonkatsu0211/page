@@ -509,10 +509,11 @@
     }
   })
   
-  socket.on('user count', (count) => {
-    const userCountEl = document.getElementById('userCount');
-    if (userCountEl) userCountEl.textContent = count;
-  });
+	socket.on('user count', (count) => {
+	  const userCountEl = document.getElementById('userCount');
+	  if (userCountEl) userCountEl.textContent = count;
+	  document.title = `${count} | tonkatsuチャット`;
+	});
   
   socket.on('user list', (userList) => {
     if (!isAdmin) return;

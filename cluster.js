@@ -72,6 +72,21 @@ async function initRedis(io, env) {
 
   io.adapter(createAdapter(pubClient, subClient, { publishOnSpecificResponseChannel: true }));
   console.log("[cluster] サーバー間の同期を有効にしました (Redis)");
+  logServerCount(io);
+}
+
+// アダプターが認識しているサーバー数を、起動の5秒後に1回だけログに出す(同期の診断用)。
+// 両方のサーバーが動いている状態で、2台目の起動後のログが 2 になっていれば正常。
+function logServerCount(io) {
+  const t = setTimeout(async () => {
+    try {
+      const n = await io.of("/").adapter.serverCount();
+      console.log(`[cluster] アダプターが認識しているサーバー数: ${n}`);
+    } catch (err) {
+      console.error("[cluster] サーバー数を取得できません:", err.message);
+    }
+  }, 5000);
+  t.unref?.();
 }
 
 // ---- Postgres アダプター(Redis を使わない場合) ----
@@ -102,6 +117,7 @@ async function initPostgres(io, env) {
 
   io.adapter(createAdapter(pool));
   console.log("[cluster] サーバー間の同期を有効にしました (Postgres LISTEN/NOTIFY)");
+  logServerCount(io);
 }
 
 async function init(io, env = process.env) {

@@ -872,6 +872,8 @@
     }
   });
 
+	socket.on("history changed", () => socket.emit("requestHistoryNoScroll"));
+
   socket.on('chat update', (msg) => {
     try {
       if (msg.username !== username && Notification.permission === "granted") {

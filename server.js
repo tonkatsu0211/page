@@ -10,15 +10,15 @@ const { Server } = require("socket.io");
 const io = new Server(http);
 const { v4: uuidv4 } = require("uuid");
 const db = require("./db");
+const cluster = require("./cluster"); // 複数サーバー間のSocket.IO同期
 require("./dm")(io); // DM(名前空間 /dm)
-const adminUsers = new Set();
 const { version, last_update } = require(path.join(
   __dirname,
   ".",
   "package.json"
 ));
 const multer = require("multer");
-const { safeExt, MAX_UPLOAD_BYTES } = require("./fileServe");
+const { safeExt, MAX_BYTES, formatLimit } = require("./fileServe");
 const storage = require("./storage");
 global.render = require("./render");
 global.arrayBufferToBase64 = require("./render");
@@ -33,9 +33,10 @@ io.use(async (socket, next) => {
     if (await db.isBanned(uid)) {
       return next(new Error("あなたはBANされています"));
     }
-    // JSONにしか存在しない管理者でも管理者判定が効くよう、接続時にDBへ移行しておく
+    // JSONにしか存在しない管理者でも管理者判定が効くよう、接続時にDBへ移行しておく。
+    // 管理者かどうかはDBが正(サーバーごとのメモリではなく、どのサーバーでも同じ結果になる)
     const user = await db.findUserOrMigrate(socket.handshake.auth.username);
-    if (user?.isAdmin) adminUsers.add(user.username);
+    socket.data.isAdmin = !!user?.isAdmin;
     next();
   } catch (err) {
     console.error("socket auth error:", err);
@@ -58,11 +59,9 @@ setInterval(() => {
 // 画像は一旦メモリで受け取り、そのまま Neon Object Storage へ保存する
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_UPLOAD_BYTES.uploads },
+  limits: { fileSize: MAX_BYTES.uploads },
 });
 
-const users = {};
-const uids = {};
 
 
 const webPush = require("web-push");
@@ -75,30 +74,51 @@ function base64urlToBase64(str) {
     .padEnd(Math.ceil(str.length / 4) * 4, "=");
 }
 
-const publicKey =
-  "BBmY-u5pSnhmOhOLWG5w_4MN2wPWloZRzIzp2iXuJBYCJQ48_Qmw5-_vl0vEI4PDzjDBa9lPokKBSVg-V0SL8JE";
-const privateKey = "mGbOvFaAMXRMoFIKrJg44gqTJFOPJMLJkKpH5gd-UwM";
+const publicKey = process.env.VAPID_PUBLIC_KEY;
+const privateKey = process.env.VAPID_SECRET_KEY;
 
 webPush.setVapidDetails("mailto:example@example.com", publicKey, privateKey);
-
-const subscriptions = [];
 
 // 接続時に送る履歴の最大件数。環境変数 CHAT_HISTORY_LIMIT で指定(未指定なら全件)
 const HISTORY_LIMIT = Number(process.env.CHAT_HISTORY_LIMIT) || null;
 
 app.set("trust proxy", true);
 
-app.post("/subscribe", (req, res) => {
-  const subscription = req.body;
-  subscriptions.push(subscription);
-  res.status(201).json({});
+// 購読情報はDBに保存するので、どのサーバーに登録しても全サーバーから通知を送れる。
+// (元のコードは express.json() より前に登録されていて、req.body を読めなかった)
+app.post("/subscribe", express.json(), async (req, res) => {
+  try {
+    if (!(await db.saveSubscription(req.body))) {
+      return res.status(400).json({ error: "invalid subscription" });
+    }
+    res.status(201).json({});
+  } catch (err) {
+    console.error("購読の保存に失敗:", err);
+    res.status(500).json({});
+  }
 });
 
-function sendPushNotification(title, body) {
-  const payload = JSON.stringify({ title, body });
-  subscriptions.forEach((sub) => {
-    webPush.sendNotification(sub, payload).catch((err) => console.error(err));
-  });
+async function sendPushNotification(title, body) {
+  try {
+    const payload = JSON.stringify({ title, body });
+    const subs = await db.getSubscriptions();
+    await Promise.all(
+      subs.map(async (sub) => {
+        try {
+          await webPush.sendNotification(sub, payload);
+        } catch (err) {
+          if (err.statusCode === 404 || err.statusCode === 410) {
+            // 失効した購読は削除
+            await db.deleteSubscription(sub.endpoint).catch(() => {});
+          } else {
+            console.error("プッシュ通知の送信に失敗:", err.statusCode || err.message);
+          }
+        }
+      })
+    );
+  } catch (err) {
+    console.error("プッシュ通知の処理に失敗:", err);
+  }
 }
 
 
@@ -109,10 +129,8 @@ const lastDisconnectTime = {};
 const RECONNECT_THRESHOLD = 5000;
 const MIN_CONNECT_INTERVAL = 10000;
 
-function updateAdminList() {
-  const onlineUsers = new Set(Object.values(users));
-  io.emit("admin list", Array.from(adminUsers), Array.from(onlineUsers));
-}
+// オンライン人数・一覧・管理者の在席は、全サーバーの接続を集めて配信する
+const { updateAdminList, updateOnline } = require("./online")(io, db);
 
 const jaTimestamp = () =>
   new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
@@ -139,7 +157,7 @@ function getHistoryFor(uid) {
 // 接続ごとに絞り込んだ履歴を送るので、他人宛ての /tell が全員に流れることはない。
 async function emitHistoryNoScroll() {
   const cache = new Map();
-  for (const s of io.sockets.sockets.values()) {
+  for (const s of await io.fetchSockets()) {
     const key = s.data.uid ?? "";
     if (!cache.has(key)) cache.set(key, getHistoryFor(key));
     try {
@@ -160,11 +178,9 @@ function resolveUser(idOrName) {
 io.on("connection", (socket) => {
   const username = socket.handshake.auth.username;
   const uid = socket.handshake.auth.uid;
-  users[socket.id] = username;
-  uids[socket.id] = uid;
   lastPing[socket.id] = Date.now();
 
-  updateAdminList();
+  updateOnline(); // 人数・一覧・管理者の在席(全サーバー分)
 
   const now = Date.now();
   const lastDisc = lastDisconnectTime[username] || 0;
@@ -207,20 +223,14 @@ io.on("connection", (socket) => {
     lastConnectTime[username] = now;
   }
 
-  io.emit("user count", Object.keys(users).length);
-  io.emit("user list", Object.values(users));
-
   socket.on("client ping", () => {
     lastPing[socket.id] = Date.now();
     socket.emit("server ping");
   });
 
   socket.on("disconnect", () => {
-    delete users[socket.id];
     delete lastPing[socket.id];
-    delete uids[socket.id];
-    io.emit("user count", Object.keys(users).length);
-    io.emit("user list", Object.values(users));
+    updateOnline();
 
     const now = Date.now();
     lastDisconnectTime[username] = now;
@@ -249,14 +259,7 @@ io.on("connection", (socket) => {
   });
 
   socket.data.username = username;
-  socket.data.isAdmin = adminUsers.has(username);
-  socket.data.uid = uid;
-
-  users[socket.id] = username;
-  uids[socket.id] = uid;
-
-  io.emit("user count", Object.keys(users).length);
-  io.emit("user list", Object.values(users));
+  socket.data.uid = uid; // isAdmin は接続時の認証(io.use)でDBから設定済み
 
   connectSaved
     .then(() => getHistoryFor(uid))
@@ -372,7 +375,6 @@ io.on("connection", (socket) => {
         }
         target = targetUser.username;
         await db.setAdmin(target, true);
-        adminUsers.add(target);
         await sendSystemMessage(`${user} が ${target} に管理者権限を付与しました`);
         updateAdminList();
         io.emit(
@@ -478,9 +480,8 @@ io.on("connection", (socket) => {
           socket.emit("chat update", "その名前は使用できません");
           return;
         }
-        if (adminUsers.delete(user)) adminUsers.add(newName);
         socket.data.username = newName;
-        users[socket.id] = newName;
+        updateOnline();
         await sendSystemMessage(`${user} が ${newName} に名前を変更しました`);
         return;
       }
@@ -735,7 +736,7 @@ app.post(
 
 app.use(
   session({
-    secret: process.env.NODE_ENV || "tonkatsu_0211",
+    secret: process.env.SESSION_SECRET || "tonkatsu-0211",
     resave: false,
     saveUninitialized: false,
   })
@@ -992,7 +993,7 @@ const port = process.env.PORT || 3000;
 (async () => {
   try {
     await db.init(); // テーブル作成 + JSON(履歴・BAN・投票)の一回限りの移行
-    for (const name of await db.getAdminUsernames()) adminUsers.add(name);
+    await cluster.init(io); // 他のサーバーとのSocket.IO同期(Postgres LISTEN/NOTIFY)
   } catch (err) {
     console.error("DBの初期化に失敗しました:", err);
     process.exit(1);

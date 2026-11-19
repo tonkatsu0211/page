@@ -376,7 +376,7 @@ router.get(["/main", "/main.html"], ah(async (req, res) => {
     res,
     "main",
     {
-      title: "チャット",
+      title: "tonkatsuチャット",
       page: "chat/main",
       top: "tonkatsuチャット",
       username: username,
